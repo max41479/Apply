@@ -328,6 +328,16 @@ define('APPHEADER_TABLE',			$table_prefix . 'bbdkp_apphdr');
 			</edit>
 		</open>
 		
+		<open src="language/de/common.php">
+			<edit>
+				<comment lang="en"><![CDATA[new german language variable to Apply in portal. Only for german phpBB.de translation!]]></comment>
+				<comment lang="fr"><![CDATA[Ajout nom recrutement pour portail]]></comment>
+				<comment lang="de"><![CDATA[Fügt Deutsche Sprach-Variable hinzu. Für phpBB.de Übersetzung]]></comment>
+				<find><![CDATA['TRANSLATION_INFO'	=> 'Deutsche Übersetzung durch <a href="http://www.phpbb.de/">phpBB.de</a>',]]></find>
+				<action type="after-add"><![CDATA[	'APPLY'                     => 'Bewerbung',]]></action>
+			</edit>
+		</open>
+		
 		<open src="styles/prosilver/template/overall_header.html">
 			<edit>
 				<comment lang="en"><![CDATA[insert Apply link in template]]></comment>
