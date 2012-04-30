@@ -85,7 +85,7 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'APPLY_ACP_TEMPLATESETTING'	=> 'Formular Einstellungen',
 'APPLY_WELCOME'			=> 'Einladungstext',
 'APPLY_WELCOME_EXPLAIN'		=> 'BBcodes werden unterstützt. ',
-'APPLY_ACP_CHARNAME' 		=> 'Charakter Name',
+'APPLY_ACP_CHARNAME' 		=> 'Charaktername',
 'APPLY_ACP_REALM' 		=> 'Server',
 'APPLY_ACP_REGION' 			=> 'Region',
 'APPLY_ACP_APPTEMPLATEUPD'	=> 'Aktualisiere Bewerbungsbogen', 
