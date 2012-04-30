@@ -27,7 +27,7 @@ if (empty($lang) || !is_array($lang))
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
 	'ACP_DKP_APPLY'	=> 'Bewerbungskonfiguration',
-	'ACP_DKP_APPLY_EXPLAIN'	=> 'Hier kannst du die Fragenbogen einstellen.', 
+	'ACP_DKP_APPLY_EXPLAIN'	=> 'Hier kannst du die Fragenbögen einstellen.', 
 
 ));
 
