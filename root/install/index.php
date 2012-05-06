@@ -25,6 +25,11 @@ if (!file_exists($phpbb_root_path . 'umil/umil_auto.' . $phpEx))
 	trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
 }
 
+if (!file_exists($phpbb_root_path . 'install/index.' . $phpEx))
+{
+    trigger_error('Warning! Install directory has wrong name. it must be \'install\'. Please rename it and launch again.', E_USER_WARNING);
+}
+
 // The name of the mod to be displayed during installation.
 $mod_name = 'Recruitment Application';
 
@@ -46,6 +51,9 @@ $version_config_name = 'bbdkp_apply_version';
 * 'UNINSTALL_' . $mod_name . '_CONFIRM'
 */
 $language_file = 'mods/apply';
+
+//check old version. if not then trigger error
+check_oldversion();
 
 /*
 * Options to display to the user (this is purely optional, if you do not need the options you do not have to set up this variable at all)
@@ -74,7 +82,7 @@ $options = array(
 $announce = encode_announcement($user->lang['APPLY_INFO']);
 
 $versions = array(
-		'1.3.0' => array(
+		'1.3.3' => array(
 
 		// adding configs
 		'config_add' => array(
@@ -89,6 +97,7 @@ $versions = array(
 	         array('bbdkp_apply_pacolor', '#FFFFFF', true),
 	         array('bbdkp_apply_fqcolor', '#68f3f8', true),
 	         array('bbdkp_apply_forumchoice', '1', true),
+	         array('bbdkp_apply_gchoice', '0', true),
 			),
           			
 		'module_add' => array(
@@ -98,157 +107,12 @@ $versions = array(
 	           	 )
 	           ),
             
-		'table_add' => array(
-			array($table_prefix . 'bbdkp_apptemplate', array(
-						'COLUMNS'		=> array(
-							'qorder'	=> array('UINT', 0),
-							'question'	=> array('VCHAR:255', ''),
-							'explainstr'	=> array('VCHAR:255', ''),
-							'type'		=> array('VCHAR:255', ''),
-							'mandatory'	=> array('VCHAR:255', ''),
-							'options'	=> array('MTEXT_UNI', ''),
-						),
-						'PRIMARY_KEY'	=> 'qorder',),
-					),
- 		),
- 		
-		'table_row_insert' => array(
-			array($table_prefix . 'bbdkp_apptemplate', 
-				array(
-					//MANDATORY - profile questions : do not remove	or change		
-					array(
-						'qorder'		=> 1,
-						'question'		=> 'Character name',
-						'explainstr'		=> ' ',
-						'type'			=> 'Inputbox',
-						'mandatory'		=> 'True',
-						'options'		=> ' ',
-					),
-					
-					//MANDATORY - do not remove or change
-					array(
-						'qorder'		=> 2,
-						'question'		=> 'Realm',
-						'explainstr'		=> ' ',
-						'type'			=> 'Inputbox',
-						'mandatory'		=> 'True',
-						'options'		=> ' ',
-					),
-				
-					//demo questions start from index 3 - feel free to change  
-					array(
-						'qorder'		=> 3,
-						'question'		=> 'Personal Info',
-						'explainstr'		=> 'Can you tell us abit about yourself please ?',
-						'type'			=> 'Textbox',
-						'mandatory'		=> 'False',
-						'options'		=> ' ',
-					),	
-					
-					array(
-						'qorder'		=> 4,
-						'question'		=> 'Alts',
-						'explainstr'		=> 'Please list your alts.',
-						'type'			=> 'Textbox',
-						'mandatory'		=> 'True',
-						'options'		=> ' ',
-					),
-
-					array(
-						'qorder'		=>  5,
-						'question'		=> 'Reason for leaving your current guild ?',
-						'explainstr'		=> 'Was it for the lack of cookies ?',
-						'type'			=> 'Textbox',
-						'mandatory'		=> 'True',
-						'options'		=> ' ',
-					),
-					array(
-						'qorder'		=> 6,
-						'question'		=> 'Why should we choose you ?',
-						'explainstr'		=> 'What can you bring to us and what do you expect ?',
-						'type'			=> 'Textbox',
-						'mandatory'		=> 'True',
-						'options'		=> ' ',
-					),
-
-					array(
-						'qorder'		=> 7,
-						'question'		=> 'Build, Glyphs, Gear',
-						'explainstr'		=> 'Comment on your build, Glyph set, gear.',
-						'type'			=> 'Inputbox',
-						'mandatory'		=> 'True',
-						'options'		=> ' ',
-					),
-
-					
-					array(
-						'qorder'		=> 8,
-						'question'		=> 'Raid experience ',
-						'explainstr'		=> 'Describe your raid experience ',
-						'type'			=> 'Textbox',
-						'mandatory'		=> 'True',
-						'options'		=> ' ',
-					),
-
-					array(
-						'qorder'		=> 9,
-						'question'		=> 'Ranks and WOL logs ',
-						'explainstr'		=> 'link to your raid logs. ',
-						'type'			=> 'Textbox',
-						'mandatory'		=> 'True',
-						'options'		=> ' ',
-					),
-										
-					array(
-						'qorder'		=> 10,
-						'question'		=> 'Raid Days. ',
-						'explainstr'		=> 'Check the days you’re available',
-						'type'			=> 'Checkboxes',
-						'mandatory'		=> 'True',
-						'options'		=> 'monday,tuesday,wednesday,thursday,friday,saturday,sunday',
-					),	
-	
-					array(
-						'qorder'		=> 11,
-						'question'		=> 'Raid times',
-						'explainstr'		=> 'Can you agree with our raid times 7:30pm to 11pm Server time (UTC+1) ? ',
-						'type'			=> 'Textbox',
-						'mandatory'		=> 'True',
-						'options'		=> ' ',
-					),	
-	
-
-					array(
-						'qorder'		=> 12,
-						'question'		=> 'Computer/Connection info',
-						'explainstr'		=> 'Is it good enough to maintain a high FPS? what’s the spec ?',
-						'type'			=> 'Textbox',
-						'mandatory'		=> 'True',
-						'options'		=> ' ',
-					),
-									
-					array(
-						'qorder'		=> 13,
-						'question'		=> 'Are you underage ? ',
-						'explainstr'		=> 'Check yes or no',
-						'type'			=> 'Radiobuttons',
-						'mandatory'		=> 'False',
-						'options'		=> 'Yes,No',
-					),	
-				
-				))
-		), 
-		
-		'custom' => array('applyupdater', 'bbdkp_caches'), 
-	),
-	
-	'1.3.1' => array(
-		'table_add' => array(
-              array(
+	  'table_add' => array(
+            array(
               		$table_prefix . 'bbdkp_apphdr' , array(
                     'COLUMNS'        => array(
                         'announcement_id'    	=> array('INT:8', NULL, 'auto_increment'),
-                        'announcement_title' 	=> array('VCHAR_UNI', ''),
+                        'announcement_title' 	=> array('VCHAR_UNI:255', ''),
                         'announcement_msg'   	=> array('TEXT_UNI', ''),
               			'announcement_timestamp' => array('TIMESTAMP', 0),
 						'bbcode_bitfield' 		=> array('VCHAR:255', ''),
@@ -257,10 +121,22 @@ $versions = array(
               			'bbcode_options'		=> array('UINT', 7),
                     ),
                     'PRIMARY_KEY'    => 'announcement_id'), 
-                ),
-		), 
+                ),	           
+			array($table_prefix . 'bbdkp_apptemplate', array(
+						'COLUMNS'		=> array(
+							'id'		=> array('INT:8', NULL, 'auto_increment'),
+							'qorder'	=> array('UINT', 0),
+							'header'	=> array('VCHAR:255', ''),
+							'question'	=> array('VCHAR:255', ''),
+							'type'		=> array('VCHAR:255', ''),
+							'mandatory'	=> array('VCHAR:255', ''),
+							'options'	=> array('MTEXT_UNI', ''),
+						),
+						'PRIMARY_KEY'	=> 'id',),
+				),
+ 		),
  		
-		'table_row_insert'	=> array(
+		'table_row_insert' => array(
 	        array($table_prefix . 'bbdkp_apphdr' ,
 	           array(
 	                  array(
@@ -270,20 +146,116 @@ $versions = array(
 	                  	'bbcode_uid' => $announce['uid'],
 	                  	'bbcode_bitfield' => $announce['bitfield'],
 	                  	'user_id' => $user->data['user_id'] ),          
-	           ))),
-			
-		'custom' => array('fix_table_structure', ), 
-	
-	), 
+	           )),  		
+			array($table_prefix . 'bbdkp_apptemplate', 
+				array(
+					
+					array(
+						'qorder'		=> 1,
+						'header'		=> 'Personal Info',
+						'question'		=> 'Can you tell us abit about yourself please ?',
+						'type'			=> 'Textbox',
+						'mandatory'		=> 'False',
+						'options'		=> ' ',
+					),	
+					
+					array(
+						'qorder'		=> 2,
+						'header'		=> 'Alts',
+						'question'		=> 'Please list your alts.',
+						'type'			=> 'Textbox',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),
 
-	'1.3.2' => array(
-		'config_add' => array(
-	         array('bbdkp_apply_gchoice', '0', true),
-			),	
+					array(
+						'qorder'		=>  3,
+						'header'		=> 'Reason for leaving your current guild ?',
+						'question'		=> 'Was it for the lack of cookies ?',
+						'type'			=> 'Textbox',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),
+					array(
+						'qorder'		=> 4,
+						'header'		=> 'Why should we choose you ?',
+						'question'		=> 'What can you bring to us and what do you expect ?',
+						'type'			=> 'Textbox',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),
+
+					array(
+						'qorder'		=> 5,
+						'header'		=> 'Build, Glyphs, Gear',
+						'question'		=> 'Comment on your build, Glyph set, gear.',
+						'type'			=> 'Inputbox',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),
+
+					
+					array(
+						'qorder'		=> 6,
+						'header'		=> 'Raid experience ',
+						'question'		=> 'Describe your raid experience ',
+						'type'			=> 'Textbox',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),
+
+					array(
+						'qorder'		=> 7,
+						'header'		=> 'Ranks and WOL logs ',
+						'question'		=> 'link to your raid logs. ',
+						'type'			=> 'Textbox',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),
+										
+					array(
+						'qorder'		=> 8,
+						'header'		=> 'Raid Days. ',
+						'question'		=> 'Check the days you’re available',
+						'type'			=> 'Checkboxes',
+						'mandatory'		=> 'True',
+						'options'		=> 'monday,tuesday,wednesday,thursday,friday,saturday,sunday',
+					),	
+	
+					array(
+						'qorder'		=> 9,
+						'header'		=> 'Raid times',
+						'question'		=> 'Can you agree with our raid times 7:30pm to 11pm Server time (UTC+1) ? ',
+						'type'			=> 'Textbox',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),	
+	
+
+					array(
+						'qorder'		=> 10,
+						'header'		=> 'Computer/Connection info',
+						'question'		=> 'Is it good enough to maintain a high FPS? what’s the spec ?',
+						'type'			=> 'Textbox',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),
+									
+					array(
+						'qorder'		=> 11,
+						'header'		=> 'Are you underage ? ',
+						'question'		=> 'Check yes or no',
+						'type'			=> 'Radiobuttons',
+						'mandatory'		=> 'False',
+						'options'		=> 'Yes,No',
+					),	
+				
+				))
+		), 
+		
 	),
 	
-	'1.3.3' => array(
-		// no db changes only php/html fixes
+	'1.3.4' => array(
 		'custom' => array('applyupdater', 'bbdkp_caches'), 
 	),
 
@@ -352,35 +324,6 @@ function encode_announcement($text)
 	return $announce;
 }
 
-
-/**
- * 1.3.1 function for new pk/order
- *
- * @param string $action
- * @param string $version
- */
-function fix_table_structure($action, $version)
-{
-   global $umil, $table_prefix;
-   if ( ($action == 'update' || $action == 'install') && $version == '1.3.1')
-   {
-	  $umil->table_column_add($table_prefix . 'bbdkp_apptemplate', 'temp' , array('UINT',  0));
-      $umil->db->sql_query('UPDATE ' . $table_prefix . 'bbdkp_apptemplate' . ' SET temp = qorder');
-	  $umil->table_column_remove($table_prefix . 'bbdkp_apptemplate', 'qorder');
-	  $umil->db->sql_query('ALTER TABLE ' . $table_prefix . 'bbdkp_apptemplate' . ' ADD id int(11) PRIMARY KEY auto_increment not null');				
-	  $umil->db->sql_query('UPDATE ' . $table_prefix . 'bbdkp_apptemplate' . ' SET id = temp');
-	  $umil->table_column_remove($table_prefix . 'bbdkp_apptemplate', 'temp');
-	  $umil->table_column_add($table_prefix . 'bbdkp_apptemplate', 'qorder' , array('UINT',  0));
-	  $umil->db->sql_query('UPDATE ' . $table_prefix . 'bbdkp_apptemplate' . ' SET qorder = id');
-	  $umil->db->sql_query('ALTER TABLE ' . $table_prefix . 'bbdkp_apptemplate' . " CHANGE question header varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '' " );
-	  $umil->db->sql_query('ALTER TABLE ' . $table_prefix . 'bbdkp_apptemplate' . " CHANGE explainstr question varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '' " );
-	  
-	  $umil->db->sql_query('DELETE FROM ' . $table_prefix . 'bbdkp_apptemplate WHERE id <= 2 ');
-	  $umil->db->sql_query('UPDATE ' . $table_prefix . 'bbdkp_apptemplate SET id = id - 2, qorder = qorder - 2 '); 
-   }
-   
-}
-
 /**************************************
  * global function for clearing cache
  */
@@ -396,5 +339,31 @@ function clearcaches($action, $version)
     
     return 'UMIL_CACHECLEARED';
 }
+
+/***
+ * checks if there is an older install
+ */
+function check_oldversion()
+{
+	global $db, $table_prefix, $umil, $config, $phpbb_root_path, $phpEx;
+	
+	include($phpbb_root_path . 'umil/umil.' . $phpEx);
+	$umil=new umil;
+	
+	// check config		
+	if($umil->config_exists('bbdkp_apply_version'))
+    {
+		if(version_compare($config['bbdkp_apply_version'], '1.3.3') == -1 )
+		{
+			//stop here, the version is less than 1.3.3
+			trigger_error( $user->lang['ERROR_MINIMUM133'], E_USER_WARNING);  
+			
+		}
+		
+    }   	
+
+	
+}
+
 
 ?>
