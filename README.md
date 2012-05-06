@@ -6,7 +6,7 @@ Recruitment form plugin for bbDKP
 
 ## CURRENT RELEASE
 
-v1.3.3 (non-WoW)
+v1.3.4 (non-WoW)
 
 ## COMMUNITY
 
