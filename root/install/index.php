@@ -27,7 +27,7 @@ if (!file_exists($phpbb_root_path . 'umil/umil_auto.' . $phpEx))
 
 if (!file_exists($phpbb_root_path . 'install/index.' . $phpEx))
 {
-    trigger_error('Warning! Install directory has wrong name. it must be \'install\'. Please rename it and launch again.', E_USER_WARNING);
+    trigger_error('Warning! Install directory has wrong name. it must be ‘install‘. Please rename it and launch again.', E_USER_WARNING);
 }
 
 // The name of the mod to be displayed during installation.
@@ -140,7 +140,7 @@ $versions = array(
 	        array($table_prefix . 'bbdkp_apphdr' ,
 	           array(
 	                  array(
-	                  	'announcement_title' => 'Apply', 
+	                  	'announcement_title' => $user->lang['APPLY'],, 
 	                  	'announcement_timestamp' => (int) time(),
 	                  	'announcement_msg' => $announce['text'],
 	                  	'bbcode_uid' => $announce['uid'],
@@ -152,8 +152,8 @@ $versions = array(
 					
 					array(
 						'qorder'		=> 1,
-						'header'		=> 'Personal Info',
-						'question'		=> 'Can you tell us abit about yourself please ?',
+						'header'		=> $user->lang['DEFAULT_H1'],
+						'question'		=> $user->lang['DEFAULT_Q1'],
 						'type'			=> 'Textbox',
 						'mandatory'		=> 'False',
 						'options'		=> ' ',
@@ -161,8 +161,8 @@ $versions = array(
 					
 					array(
 						'qorder'		=> 2,
-						'header'		=> 'Alts',
-						'question'		=> 'Please list your alts.',
+						'header'		=> $user->lang['DEFAULT_H2'],
+						'question'		=> $user->lang['DEFAULT_Q2'],
 						'type'			=> 'Textbox',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
@@ -170,16 +170,16 @@ $versions = array(
 
 					array(
 						'qorder'		=>  3,
-						'header'		=> 'Reason for leaving your current guild ?',
-						'question'		=> 'Was it for the lack of cookies ?',
+						'header'		=> $user->lang['DEFAULT_H3'],
+						'question'		=> $user->lang['DEFAULT_Q3'],
 						'type'			=> 'Textbox',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
 					),
 					array(
 						'qorder'		=> 4,
-						'header'		=> 'Why should we choose you ?',
-						'question'		=> 'What can you bring to us and what do you expect ?',
+						'header'		=> $user->lang['DEFAULT_H4'],
+						'question'		=> $user->lang['DEFAULT_Q4'],
 						'type'			=> 'Textbox',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
@@ -187,8 +187,8 @@ $versions = array(
 
 					array(
 						'qorder'		=> 5,
-						'header'		=> 'Build, Glyphs, Gear',
-						'question'		=> 'Comment on your build, Glyph set, gear.',
+						'header'		=> $user->lang['DEFAULT_H5'],
+						'question'		=> $user->lang['DEFAULT_Q5'],
 						'type'			=> 'Inputbox',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
@@ -197,8 +197,8 @@ $versions = array(
 					
 					array(
 						'qorder'		=> 6,
-						'header'		=> 'Raid experience ',
-						'question'		=> 'Describe your raid experience ',
+						'header'		=> $user->lang['DEFAULT_H6'],
+						'question'		=> $user->lang['DEFAULT_Q6'],
 						'type'			=> 'Textbox',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
@@ -206,8 +206,8 @@ $versions = array(
 
 					array(
 						'qorder'		=> 7,
-						'header'		=> 'Ranks and WOL logs ',
-						'question'		=> 'link to your raid logs. ',
+						'header'		=> $user->lang['DEFAULT_H7'],
+						'question'		=> $user->lang['DEFAULT_Q7'],
 						'type'			=> 'Textbox',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
@@ -215,17 +215,17 @@ $versions = array(
 										
 					array(
 						'qorder'		=> 8,
-						'header'		=> 'Raid Days. ',
-						'question'		=> 'Check the days you’re available',
+						'header'		=> $user->lang['DEFAULT_H8'],
+						'question'		=> $user->lang['DEFAULT_Q8'],
 						'type'			=> 'Checkboxes',
 						'mandatory'		=> 'True',
-						'options'		=> 'monday,tuesday,wednesday,thursday,friday,saturday,sunday',
+						'options'		=> $user->lang['DEFAULT_O8'],
 					),	
 	
 					array(
 						'qorder'		=> 9,
-						'header'		=> 'Raid times',
-						'question'		=> 'Can you agree with our raid times 7:30pm to 11pm Server time (UTC+1) ? ',
+						'header'		=> $user->lang['DEFAULT_H9'],
+						'question'		=> $user->lang['DEFAULT_Q9'],
 						'type'			=> 'Textbox',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
@@ -234,8 +234,8 @@ $versions = array(
 
 					array(
 						'qorder'		=> 10,
-						'header'		=> 'Computer/Connection info',
-						'question'		=> 'Is it good enough to maintain a high FPS? what’s the spec ?',
+						'header'		=> $user->lang['DEFAULT_H10'],
+						'question'		=> $user->lang['DEFAULT_Q10'],
 						'type'			=> 'Textbox',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
@@ -243,11 +243,11 @@ $versions = array(
 									
 					array(
 						'qorder'		=> 11,
-						'header'		=> 'Are you underage ? ',
-						'question'		=> 'Check yes or no',
+						'header'		=> $user->lang['DEFAULT_H11'],
+						'question'		=> $user->lang['DEFAULT_Q11'],
 						'type'			=> 'Radiobuttons',
 						'mandatory'		=> 'False',
-						'options'		=> 'Yes,No',
+						'options'		=> $user->lang['DEFAULT_O11'],
 					),	
 				
 				))

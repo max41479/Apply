@@ -41,12 +41,6 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 
-/****** installer ********/
-'APPLY_INSTALL_MOD' =>  'Application Mod version %s installed successfully. ',
-'APPLY_UNINSTALL_MOD' =>  'Application Mod version %s uninstalled successfully. ',
-'APPLY_UPD_MOD' =>  'Application Mod updated successfully to version %s',
-'UMIL_CACHECLEARED' => 'Template, Theme, Imageset caches cleared', 
-
 /***** Questionnaire ******/
 'APPLY_MENU' => 'Application Form',
 'APPLY_TITLE' => 'Application Form',
@@ -150,6 +144,39 @@ To help us with your application please answer the questions below. Enter your c
 'APPLY_REQUIRED_LEVEL'  => 'Level is required. ', 
 'APPLY_REQUIRED_NAME'	=> 'Name is required. ', 
 'RETURN_APPLY'  =>  'Return to Application',
+
+/** installer **/
+'APPLY_INSTALL_MOD' =>  'Application Mod version %s installed successfully. ',
+'APPLY_UNINSTALL_MOD' =>  'Application Mod version %s uninstalled successfully. ',
+'APPLY_UPD_MOD' =>  'Application Mod updated successfully to version %s',
+'UMIL_CACHECLEARED' => 'Template, Theme, Imageset caches cleared', 
+'APPLY'		=> 'Apply', 
+'ERROR_MINIMUM133' => 'Minimum version required for upgrades is 1.3.3',
+'DEFAULT_Q1' => 'Can you tell us abit about yourself please ?', 
+'DEFAULT_Q2' => 'Please list your alts.', 
+'DEFAULT_Q3' => 'Reason for leaving your current guild ?', 
+'DEFAULT_Q4' => 'What can you bring to us and what do you expect ?', 
+'DEFAULT_Q5' => 'Comment on your build, Glyph set, gear.', 
+'DEFAULT_Q6' => 'Describe your raid experience ', 
+'DEFAULT_Q7' => 'link to your raid logs.', 
+'DEFAULT_Q8' => 'Check the days you’re available', 
+'DEFAULT_Q9' => 'Can you agree with our raid times 7:30pm to 11pm Server time (UTC+1) ?', 
+'DEFAULT_Q10' => 'Is it good enough to maintain a high FPS? what’s the spec ?', 
+'DEFAULT_Q11' => 'Are you underage ? Check yes or no', 
+'DEFAULT_H1' => 'Personal Info',  
+'DEFAULT_H2' => 'Alts',  
+'DEFAULT_H3' => 'Guild history',  
+'DEFAULT_H4' => 'Motivation',  
+'DEFAULT_H5' => 'Build, Glyphs, Gear',  
+'DEFAULT_H6' => 'Raid experience ',  
+'DEFAULT_H7' => 'Ranks and WOL logs',  
+'DEFAULT_H8' => 'Raid Days',  
+'DEFAULT_H9' => 'Raid times',  
+'DEFAULT_H10' => 'Computer/Connection info',  
+'DEFAULT_H11' => 'Age',  
+'DEFAULT_O8' => 'monday,tuesday,wednesday,thursday,friday,saturday,sunday',  
+'DEFAULT_O11' => 'yes,no',  
+
 
 ));
 

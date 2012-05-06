@@ -41,12 +41,6 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 
-/****** installer ********/
-'APPLY_INSTALL_MOD' =>  'Mod de Recrutement Version %s a été installé avec succes. ',
-'APPLY_UNINSTALL_MOD' =>  'Mod de Recrutement Version %s a été déinstallé avec succès. ',
-'APPLY_UPD_MOD' =>  'Mod de Recrutement actualisé à la version %s ',
-'UMIL_CACHECLEARED' => 'La Cache Template, Theme, et Imageset sont vidées', 
-
 /***** Questionnaire ******/
 'APPLY_MENU' => 'Candidatures',
 'APPLY_TITLE' => 'Formulaire de recrutement',
@@ -145,6 +139,39 @@ $lang = array_merge($lang, array(
 'APPLY_REQUIRED_LEVEL'  => 'Niveau obligatoire',  
 'APPLY_REQUIRED_NAME'	=> 'Nom obligatoire.', 
 'RETURN_APPLY'  =>  'Retourne au formulaire.',
+
+/****** installer ********/
+'APPLY_INSTALL_MOD' =>  'Mod de Recrutement Version %s a été installé avec succes. ',
+'APPLY_UNINSTALL_MOD' =>  'Mod de Recrutement Version %s a été déinstallé avec succès. ',
+'APPLY_UPD_MOD' =>  'Mod de Recrutement actualisé à la version %s ',
+'UMIL_CACHECLEARED' => 'La Cache Template, Theme, et Imageset sont vidées', 
+'APPLY'		=> 'Recrute', 
+'ERROR_MINIMUM133' => 'Version minimale pour mise à jour est 1.3.3',
+'DEFAULT_Q1' => 'Veuillez nous raconter un peu de vous', 
+'DEFAULT_Q2' => 'Veuillez nommer vos Alts.', 
+'DEFAULT_Q3' => 'Raison d‘avoir quitté votre ancienne guilde ?', 
+'DEFAULT_Q4' => 'Quest-ce que vous nous apporteriez et pourquoi on devrait vous inviter ?', 
+'DEFAULT_Q5' => 'Commentez votre Charactère, Glyphs, et équipement.', 
+'DEFAULT_Q6' => 'Décrivez votre experience Raid', 
+'DEFAULT_Q7' => 'Lien vers un log de Raid.', 
+'DEFAULT_Q8' => 'Cochez les jours auquelles vous êtes disponible', 
+'DEFAULT_Q9' => 'Etes-vous d‘accord avec ces temps de raid ? 19:30 à 23:00 UTC+1 ?', 
+'DEFAULT_Q10' => 'Est-ce que votre PC est assez puissant pour soutenir un FPS elevé ?' , 
+'DEFAULT_Q11' => 'ëtes-vous majeur ? Cochez oui ou non.', 
+'DEFAULT_H1' => 'Informations personelles',  
+'DEFAULT_H2' => 'Alts',  
+'DEFAULT_H3' => 'Histoire de guilde',  
+'DEFAULT_H4' => 'Motivation',  
+'DEFAULT_H5' => 'Construction, Glyphs, Equipement',  
+'DEFAULT_H6' => 'Experience',  
+'DEFAULT_H7' => 'Logs',  
+'DEFAULT_H8' => 'Jours de raid',  
+'DEFAULT_H9' => 'temps de raid',  
+'DEFAULT_H10' => 'Ordinateur et connection',  
+'DEFAULT_H11' => 'Age',  
+'DEFAULT_O8' => 'lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche',  
+'DEFAULT_O11' => 'oui,non',  
+
 ));
 
 ?>

@@ -41,12 +41,6 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 
-/****** installer ********/
-'APPLY_INSTALL_MOD' =>  'Bewerbungs Mod Version %s erfolgreich installiert. ',
-'APPLY_UNINSTALL_MOD' =>  'Bewerbungs Mod Version %s erfolgreich deinstalliert. ',
-'APPLY_UPD_MOD' =>  'Bewerbungs Mod erfolgreich zu Version %s aktualisiert',
-'UMIL_CACHECLEARED' => 'Template, Theme, Imageset Caches geleert', 
-
 /***** Questionnaire ******/
 'APPLY_MENU' => 'Bewerbungen',
 'APPLY_TITLE' => 'Bewerbungs-Formular',
@@ -148,6 +142,38 @@ Um uns mit deiner Bewerbung zu untersützen, beantworte bitte die unten aufgefü
 'APPLY_REQUIRED_NAME'	=> 'Name ist erforderlich. ', 
 
 'RETURN_APPLY'  =>  'Zurück zum Fragebogen.',
+
+/** installer **/
+'APPLY_INSTALL_MOD' =>  'Bewerbungs Mod Version %s erfolgreich installiert. ',
+'APPLY_UNINSTALL_MOD' =>  'Bewerbungs Mod Version %s erfolgreich deinstalliert. ',
+'APPLY_UPD_MOD' =>  'Bewerbungs Mod erfolgreich zu Version %s aktualisiert',
+'UMIL_CACHECLEARED' => 'Template, Theme, Imageset Caches geleert', 
+'APPLY'		=> 'Bewerbe', 
+'ERROR_MINIMUM133' => 'Minimum Version benötigt ist 1.3.3',
+'DEFAULT_Q1' => 'Kannst du uns etwas über dich erzählen ?', 
+'DEFAULT_Q2' => 'Bitte nenne deine Alts.', 
+'DEFAULT_Q3' => 'Grund zum verlassen deiner vorherige Gilde ?', 
+'DEFAULT_Q4' => 'Was bringst du uns und weshalb sollten wir dir einladen ?', 
+'DEFAULT_Q5' => 'Kommentiere deinen Charakteraufbau, Glyphs, und Ausrüstung.', 
+'DEFAULT_Q6' => 'Beschreibe dein Raiderfahrung', 
+'DEFAULT_Q7' => 'Füge ein link zur Raid logs zu.', 
+'DEFAULT_Q8' => 'Kreuze die Tage an bei welche du generell verfügbar bist', 
+'DEFAULT_Q9' => 'Bist du enverstanden mit folgende Raidzeiten 19:30 bis 23:00 Serverzeit (UTC+1) ?', 
+'DEFAULT_Q10' => 'Ist es gut genug für ein hohes FPS ? Nenne den Spec' , 
+'DEFAULT_Q11' => 'Bist du mehrjärig ? Kreuz Ja oder Nein an.', 
+'DEFAULT_H1' => 'Informationen zur Person',  
+'DEFAULT_H2' => 'Alts',  
+'DEFAULT_H3' => 'Gildenhistorie',  
+'DEFAULT_H4' => 'Motivation',  
+'DEFAULT_H5' => 'Aufbau, Glyphs, Ausrüstung',  
+'DEFAULT_H6' => 'Raiderfahrung',  
+'DEFAULT_H7' => 'Raking und Wol Logs',  
+'DEFAULT_H8' => 'Raid Tage',  
+'DEFAULT_H9' => 'Raidzeiten',  
+'DEFAULT_H10' => 'Computer Connection info',  
+'DEFAULT_H11' => 'Alter',  
+'DEFAULT_O8' => 'montag,dienstag,mittwoch,donnerstag,freitag,samstag,sonntag',  
+'DEFAULT_O11' => 'ja,nein',  
 
 
 ));
