@@ -689,7 +689,7 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 				
 			case 'Selectbox':
 			    $type = '<select class="inputbox" name="templatefield_' . $row['qorder'] . '" tabindex="' . $row['qorder'] . '">';
-			    $type .= '<option value="">----------------</option>';
+			    //$type .= '<option value="">----------------</option>';
 			         $select_option = explode(',', $row['options']);
 			         foreach($select_option as $value) 
 			         {
