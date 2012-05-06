@@ -6,6 +6,7 @@
  * @copyright 2009 bbdkp <http://code.google.com/p/bbdkp/>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @version $Id$
+ * @translation various authors, killerpommes
  * 
  */
 
@@ -25,8 +26,8 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'ACP_DKP_APPLY'	=> 'Bewerbungs Konfiguration',
-	'ACP_DKP_APPLY_EXPLAIN'	=> 'Hier kannst du der Fragenbogen austippen.', 
+	'ACP_DKP_APPLY'	=> 'Bewerbungskonfiguration',
+	'ACP_DKP_APPLY_EXPLAIN'	=> 'Hier kannst du die Fragenbögen einstellen.', 
 
 ));
 
