@@ -140,7 +140,7 @@ $versions = array(
 	        array($table_prefix . 'bbdkp_apphdr' ,
 	           array(
 	                  array(
-	                  	'announcement_title' => $user->lang['APPLY'],, 
+	                  	'announcement_title' => $user->lang['APPLY'], 
 	                  	'announcement_timestamp' => (int) time(),
 	                  	'announcement_msg' => $announce['text'],
 	                  	'bbcode_uid' => $announce['uid'],
