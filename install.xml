@@ -342,7 +342,7 @@ define('APPHEADER_TABLE',			$table_prefix . 'bbdkp_apphdr');
 				<comment lang="fr"><![CDATA[inserer lien Recrutement dans entête]]></comment>
 				<comment lang="de"><![CDATA[inseriere Link im Template]]></comment>								
 				<find><![CDATA[<li class="icon-home"><a href="{U_PORTAL}">{L_PORTAL}</a></li>]]></find>
-				<action type="after-add"><![CDATA[<li class="icon-faq"><a href="{U_APPLY}">{L_APPLY}</a></li>]]></action>
+				<action type="after-add"><![CDATA[<li class="icon-pages"><a href="{U_APPLY}">{L_APPLY}</a></li>]]></action>
 			</edit>
 		</open>
 

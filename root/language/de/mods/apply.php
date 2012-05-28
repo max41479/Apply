@@ -157,7 +157,7 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'DEFAULT_Q3' => 'Grund zum verlassen deiner vorherige Gilde ?', 
 'DEFAULT_Q4' => 'Was bringst du uns und weshalb sollten wir dir einladen ?', 
 'DEFAULT_Q5' => 'Kommentiere deinen Charakteraufbau, Glyphs, und Ausrüstung.', 
-'DEFAULT_Q6' => 'Beschreibe dein Raiderfahrung', 
+'DEFAULT_Q6' => 'Beschreibe deine Raiderfahrung', 
 'DEFAULT_Q7' => 'Füge ein link zur Raid logs zu.', 
 'DEFAULT_Q8' => 'Kreuze die Tage an bei welche du generell verfügbar bist', 
 'DEFAULT_Q9' => 'Bist du enverstanden mit folgende Raidzeiten 19:30 bis 23:00 Serverzeit (UTC+1) ?', 
