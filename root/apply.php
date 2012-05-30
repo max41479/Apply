@@ -6,7 +6,8 @@
 * @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Kapli, Malfate, Sajaki, Blazeflack, Twizted
-* 
+* @version 1.3.5
+* @uses bbDKP 1.2.7
 */
 
 /**
@@ -149,7 +150,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name)
 	
 	//character class
 	$sql_array = array(
-		'SELECT'	=>	' r.race_id, r.image_female_small, r.image_male_small, l.name as race_name ', 	 
+		'SELECT'	=>	' r.race_id, r.image_female, r.image_male, l.name as race_name ', 	 
 		'FROM'		=> array(
 				RACE_TABLE		=> 'r',
 				BB_LANGUAGE		=> 'l', 
@@ -163,7 +164,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name)
 	if(isset($row))
 	{
 		$race_name = $row['race_name']; 
-		$race_image = (string) (($candidate_genderid == 0) ? $row['image_male_small'] : $row['image_female_small']); 
+		$race_image = (string) (($candidate_genderid == 0) ? $row['image_male'] : $row['image_female']); 
 		$race_image = (strlen($race_image) > 1) ? $board_url . "images/race_images/" . $race_image . ".png" : ''; 
 		$race_image_exists = (strlen($race_image) > 1) ? true : false;
 	}
