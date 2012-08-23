@@ -667,13 +667,14 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 	while ( $row = $db->sql_fetchrow($result) )
 	{
 		$template->assign_block_vars('apptemplate', array(
-				'QORDER'		=> $row['qorder'],
-				'TITLE'			=> $row['header'],
-				'QUESTION'		=> $row['question'],
-				'TYPE'   		=> $row['type'],
-				'DOMNAME'		=> 'templatefield_' . $row['qorder'],
-				'TABINDEX'		=> $row['qorder'],
-				'S_MANDATORY' 	=> ($row['mandatory'] == 'True') ? true :false )
+				'QORDER'			=> $row['qorder'],
+				'TITLE'				=> $row['header'],
+				'QUESTION'			=> $row['question'],
+				'TYPE'   			=> $row['type'],
+				'DOMNAME'			=> 'templatefield_' . $row['qorder'],
+				'TABINDEX'			=> $row['qorder'],
+				'S_MANDATORY' 		=> ($row['mandatory'] == 'True') ? true :false, 
+				)
 		);
 		
 		switch($row['type'])
@@ -729,7 +730,6 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 		'APPLY_REALM'			=> str_replace("+", " ", $config['bbdkp_apply_realm']), 
 		'FORMQCOLOR'			=> $config['bbdkp_apply_fqcolor'], 
 		'S_FORM_ENCTYPE'		=> $form_enctype,
-		'S_BBCODE_ALLOWED'		=> true, 
 		// javascript
 		'LA_ALERT_AJAX'		  => $user->lang['ALERT_AJAX'],
 		'LA_ALERT_OLDBROWSER' => $user->lang['ALERT_OLDBROWSER'],
