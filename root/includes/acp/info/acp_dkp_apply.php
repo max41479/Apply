@@ -28,7 +28,7 @@ class acp_dkp_apply_info
 		return array(
 			'filename'	=> 'acp_dkp_apply',
 			'title'		=> 'ACP_DKP_APPLY',
-			'version'	=> '1.3.3',
+			'version'	=> '1.3.5',
 			'modes'		=> array(
 					'apply_settings'	=> array(
 						'title' => 'ACP_DKP_APPLY', 

@@ -3,6 +3,7 @@
 * Apply Installer
 * Powered by bbDkp (c) 2009 www.bbdkp.com
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+* @version 1.3.5
 *
 */
 
@@ -154,7 +155,7 @@ $versions = array(
 						'qorder'		=> 1,
 						'header'		=> $user->lang['DEFAULT_H1'],
 						'question'		=> $user->lang['DEFAULT_Q1'],
-						'type'			=> 'Textbox',
+						'type'			=> 'Textboxbbcode',
 						'mandatory'		=> 'False',
 						'options'		=> ' ',
 					),	
@@ -163,7 +164,7 @@ $versions = array(
 						'qorder'		=> 2,
 						'header'		=> $user->lang['DEFAULT_H2'],
 						'question'		=> $user->lang['DEFAULT_Q2'],
-						'type'			=> 'Textbox',
+						'type'			=> 'Inputbox',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
 					),
@@ -172,7 +173,7 @@ $versions = array(
 						'qorder'		=>  3,
 						'header'		=> $user->lang['DEFAULT_H3'],
 						'question'		=> $user->lang['DEFAULT_Q3'],
-						'type'			=> 'Textbox',
+						'type'			=> 'Textboxbbcode',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
 					),
@@ -180,7 +181,7 @@ $versions = array(
 						'qorder'		=> 4,
 						'header'		=> $user->lang['DEFAULT_H4'],
 						'question'		=> $user->lang['DEFAULT_Q4'],
-						'type'			=> 'Textbox',
+						'type'			=> 'Textboxbbcode',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
 					),
@@ -189,7 +190,7 @@ $versions = array(
 						'qorder'		=> 5,
 						'header'		=> $user->lang['DEFAULT_H5'],
 						'question'		=> $user->lang['DEFAULT_Q5'],
-						'type'			=> 'Inputbox',
+						'type'			=> 'Textbox',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
 					),
@@ -199,7 +200,7 @@ $versions = array(
 						'qorder'		=> 6,
 						'header'		=> $user->lang['DEFAULT_H6'],
 						'question'		=> $user->lang['DEFAULT_Q6'],
-						'type'			=> 'Textbox',
+						'type'			=> 'Textboxbbcode',
 						'mandatory'		=> 'True',
 						'options'		=> ' ',
 					),
@@ -260,7 +261,9 @@ $versions = array(
 	),
 
 	'1.3.5' => array(
-		'custom' => array('applyupdater', 'bbdkp_caches'), 
+		'custom' => array('applyupdater', 'bbdkp_caches'),
+		// add new type
+			
 	),
 	
 );
@@ -289,7 +292,7 @@ function applyupdater($action, $version)
 			array(
 				array( 
 					'name'  => 'apply', 
-					'value'  => '1', 
+					'value'  => '1',
 					'version'  => $version, 								
 					'orginal_copyright'  => 'Kapli, Malfate', 				
 					'bbdkp_copyright'  => 'bbDKP Team', 				

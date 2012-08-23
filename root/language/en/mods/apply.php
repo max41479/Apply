@@ -5,7 +5,7 @@
 * @package bbDkp
 * @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version $Id$
+* @version 1.3.5
 * 
 */
  
@@ -96,15 +96,16 @@ To help us with your application please answer the questions below. Enter your c
 'ACP_DKP_APPLY_EXPLAIN'  	=> 'Here you can set all preferences of the Recruitment Mod',
 'APPLY_ACP_APPTEMPLATENEW'  => 'Application template New item', 
 'APPLY_CHGMAND' 			=> 'Change Questionnaire here. ',
-'APPLY_CHGMAND_EXPLAIN' 	=> 'Change the type mandatory check, question type, Title and question. The two first questions are reserved. <br /> In case of a Selectbox, radiobutton or checkbox, separate the options with a comma "," with no spaces.(ex. 1,2,3,4,5") ',
+'APPLY_CHGMAND_EXPLAIN' 	=> 'Change the type mandatory check, question type (Inputbox, Textbox, Textbox with bbcode buttons, selectbox, radiobuttons or checkboxes), Title and question.  <br /> In case of a Selectbox, radiobutton or checkbox, separate the options with a comma "," with no spaces.(ex. 1,2,3,4,5") ',
 'APPLY_ACP_NEWQUESTION' 	=> 'Enter new questions here.',
-'APPLY_ACP_NEWQUESTION_EXPLAIN' => 'Check if mandatory, select the type, enter the title, question. <br /> Separate the checkbox, radiobutton, or selectbox options with a comma "," with no spaces.', 
+'APPLY_ACP_NEWQUESTION_EXPLAIN' => 'Check if mandatory, select the type (Inputbox, Textbox, Textbox with bbcode buttons, Selectbox, Radiobuttons or Checkboxes), enter the title, question. <br /> Separate the checkbox, radiobutton, or selectbox options with a comma "," with no spaces.', 
 'APPLY_ACP_INPUTBOX' 		=> 'Inputbox',	
 'APPLY_ACP_TXTBOX' 			=> 'Textbox', 
+'APPLY_ACP_TXTBOXBBCODE'	=> 'Textbox with bbcode',
 'APPLY_ACP_SELECTBOX' 		=> 'Selectbox',
 'APPLY_ACP_RADIOBOX' 		=> 'Radiobuttons',
 'APPLY_ACP_CHECKBOX' 		=> 'Checkboxes',
-'APPLY_ACP_CHECKBOX' 		=> 'Checkboxes',
+
 
 //warnings
 'APPLY_ACP_RETURN' 			=> '<h3>Return to Application config.</h3>',

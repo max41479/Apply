@@ -5,9 +5,9 @@
 *
 * @package bbDkp.acp
 * @author Kapli
-* @version $Id$
 * @copyright (c) 2009 bbdkp http://code.google.com/p/bbdkp/
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+* @version 1.3.5
 * 
 */
 
@@ -229,8 +229,6 @@ class acp_dkp_apply extends bbDkp_Admin
                     {
                         trigger_error( $user->lang['APPLY_ACP_QUESTNADD']  .  $link, E_USER_WARNING);    
                     }
-                        
-                    
                 }
                 
          		/*
@@ -333,13 +331,31 @@ class acp_dkp_apply extends bbDkp_Admin
                 */
                 $sql = 'SELECT * FROM ' . APPTEMPLATE_TABLE . ' ORDER BY qorder';
                 
+                $type = array(
+                		'Inputbox' => $user->lang['APPLY_ACP_INPUTBOX'],
+                		'Textbox' => $user->lang['APPLY_ACP_TXTBOX'],
+                		'Textboxbbcode' => $user->lang['APPLY_ACP_TXTBOXBBCODE'],
+                		'Selectbox'=> $user->lang['APPLY_ACP_SELECTBOX'],
+                		'Radiobuttons' => $user->lang['APPLY_ACP_RADIOBOX'],
+                		'Checkboxes' => $user->lang['APPLY_ACP_CHECKBOX']
+                );
+                
+                foreach ($type as $key => $value)
+                {
+                	$template->assign_block_vars('template_type', array(
+                			'TYPE' => $key ,
+                			'VALUE' => $value,
+                			'SELECTED' => ($value == $row['type']) ? ' selected="selected"' : '' ,
+                	));
+                }
+                
                 $result = $db->sql_query($sql);
                 while ($row = $db->sql_fetchrow($result)) 
                 {
                     $checked = '';
                     if ($row['mandatory'] == 'True') 
                     {
-                        $checked = 'checked="checked"';
+                        $checked = ' checked="checked"';
                     }
                     
                     $template->assign_block_vars('apptemplate', array(
@@ -355,12 +371,12 @@ class acp_dkp_apply extends bbDkp_Admin
                     	'U_DELETE'		 => append_sid("{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;delete=1&amp;id={$row['id']}"),
                       ));
                     
-                    $type = array('Inputbox' , 'Textbox', 'Selectbox', 'Radiobuttons', 'Checkboxes');
-                    foreach ($type as $t_name => $t_value) 
+                    foreach ($type as $key => $value) 
                     {
                         $template->assign_block_vars('apptemplate.template_type', array(
-                        	'TYPE' => $t_value , 
-                        	'SELECTED' => ($t_value == $row['type']) ? ' selected="selected"' : '' , 
+                        	'TYPE' => $key , 
+                        	'VALUE' => $value,
+                        	'SELECTED' => ($value == $row['type']) ? ' selected="selected"' : '' , 
                         	));
                     }
                 }
