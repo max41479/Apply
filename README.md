@@ -1,29 +1,27 @@
 [![bbDKP](http://www.bbDKP.com/images/site_logo.png)](http://www.bbDKP.com)
 
-## ABOUT
+## about
 
 Recruitment form plugin for bbDKP
 
-## CURRENT RELEASE
+It is the same as Appforms but with added functionality
 
-v1.3.4 (non-WoW)
+-	inserts member in database
+-	has extra fields for mmo character
 
-## COMMUNITY
+## current
+
+v1.3.5
+
+## community
 
 Find support and more on [bbDKP.com](http://www.bbdkp.com)! 
 
-## CONTRIBUTE
+## contribute
 
-1. [Create an account on bbDKP.com](http://www.bbDKP.com/ucp.php?mode=register)
-2. [Create a ticket (unless there already is one)](http://www.bbdkp.com/tracker.php)
-3. [Read our Git Contribution Guidelines](http://www.bbdkp.com/viewtopic.php?f=60&t=1854); if you're new to git, also read [Git Primer](http://www.bbdkp.com/viewtopic.php?f=60&t=1853)
-4. Send us a pull request
+-	Send us a pull request
 
-## LICENSE
+## license
 
 [GNU General Public License v2](http://opensource.org/licenses/gpl-2.0.php)
 
-## TODO
-
-* Wow version
-* Standalone version
