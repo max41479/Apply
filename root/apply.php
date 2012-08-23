@@ -7,7 +7,7 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Kapli, Malfate, Sajaki, Blazeflack, Twizted
 * @version 1.3.5
-* @uses bbDKP 1.2.7
+* @uses bbDKP 1.2.7 or higher
 */
 
 /**
@@ -99,6 +99,7 @@ if ($submit)
 
 	$candidate_name = utf8_normalize_nfc(request_var('candidate_name', ' ', true));
 	// check for validate name. name can only be alphanumeric without spaces or special characters
+	// this is to keep gibberish out of our dkpmember database
 	//if this preg_match returns true then there is something other than letters
    if (preg_match('/[^a-zA-ZàäåâÅÂçÇéèëËêÊïÏîÎíÍìÌæŒæÆÅóòÓÒöÖôÔøØüÜ\s]+/', $candidate_name  ))
    {
@@ -172,6 +173,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name)
 	$db->sql_freeresult($result);
 	
 	$candidate_classid = request_var('candidate_class_id', 0);
+	
 	//character class
 	$sql_array = array(
 		'SELECT'	=>	' c.class_armor_type AS armor_type , c.colorcode, c.imagename,  c.class_id, l.name as class_name ', 	 
@@ -280,7 +282,6 @@ function make_apply_posting($post_data, $current_time, $candidate_name)
 	$apply_post .= '[size=150][b]' .$user->lang['APPLY_CHAR_MOTIVATION'] . '[/b][/size]';
 	$apply_post .= '<br /><br />';
 	
-	//$apply_post .= '[list]';
 	// complete with formatted questions and answers
 	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . ' ORDER BY qorder' ;
 	$result = $db->sql_query_limit($sql, 100, 0);
@@ -332,8 +333,6 @@ function make_apply_posting($post_data, $current_time, $candidate_name)
 		}
 	}
 	$db->sql_freeresult($result);
-
-	//$apply_post .= '[/list]';
 	
 	// variables to hold the parameters for submit_post
 	$poll = $uid = $bitfield = $options = ''; 
@@ -342,6 +341,8 @@ function make_apply_posting($post_data, $current_time, $candidate_name)
 	generate_text_for_storage($apply_post, $uid, $bitfield, $options, true, true, true);
 
 	// subject & username
+	//@todo let user enter subject ?
+	//$post_data['post_subject'] = utf8_normalize_nfc(request_var('headline', $user->data['username'], true));
 	$post_data['post_subject']	= $candidate_name . " - " . $candidate_level . " " . $race_name . " ". $class_name;
 	$post_data['username']	= $user->data['username'];
 	
@@ -571,39 +572,34 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 		trigger_error($user->lang['APPLY_NO_GUILD']);
 	}
 	
-	
-	//game
-	$games = array(
-		'aion'       => $user->lang['AION'],
-		'daoc'       => $user->lang['DAOC'], 
-		'eq'         => $user->lang['EQ'], 
-		'eq2'        => $user->lang['EQ2'],
-		'FFXI'       => $user->lang['FFXI'],
-		'lotro'      => $user->lang['LOTRO'], 
-		'rift'       => $user->lang['RIFT'],
-		'swtor'      => $user->lang['SWTOR'], 
-		'vanguard' 	 => $user->lang['VANGUARD'],
-		'warhammer'  => $user->lang['WARHAMMER'],
-		'wow'        => $user->lang['WOW'], 
-      );
-    $installed_games = array();
-    foreach($games as $gameid => $gamename)
-    {
-     	//add value to dropdown when the game config value is 1
-     	if ($config['bbdkp_games_' . $gameid] == 1)
-     	{
-     		$template->assign_block_vars('game_row', array(
+	// get list of possible games */ 
+	if (!class_exists('bbDKP_Admin'))
+	{
+		require("{$phpbb_root_path}includes/bbdkp/bbdkp.$phpEx");
+	}
+	$bbdkp = new bbDKP_Admin();
+	$installed_games = array();
+	$i=0;
+	foreach($bbdkp->games as $gameid => $gamename)
+	{
+		if ($config['bbdkp_games_' . $gameid] == 1)
+		{
+			$installed_games[$gameid] = $gamename;
+			
+			if($i==0) $gamepreset =  $gameid;	
+			$i+=1;
+			
+			$template->assign_block_vars('game_row', array(
 				'VALUE' => $gameid,
 				'SELECTED' => ( (isset($member['game_id']) ? $member['game_id'] : '') == $gameid ) ? ' selected="selected"' : '',
 				'OPTION'   => $gamename, 
-		));
-      		$installed_games[] = $gameid; 
-    	} 
-    }
+			));
+		}
+			
+	}
      
 	// Race dropdown
 	// reloading is done from ajax to prevent redraw
-    $gamepreset = $installed_games[0];
 	$sql_array = array(
 	'SELECT'	=>	'  r.race_id, l.name as race_name ', 
 	'FROM'		=> array(
@@ -670,78 +666,54 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 					
 	while ( $row = $db->sql_fetchrow($result) )
 	{
+		$template->assign_block_vars('apptemplate', array(
+				'QORDER'		=> $row['qorder'],
+				'TITLE'			=> $row['header'],
+				'QUESTION'		=> $row['question'],
+				'TYPE'   		=> $row['type'],
+				'DOMNAME'		=> 'templatefield_' . $row['qorder'],
+				'TABINDEX'		=> $row['qorder'],
+				'S_MANDATORY' 	=> ($row['mandatory'] == 'True') ? true :false )
+		);
+		
 		switch($row['type'])
 		{
-			case 'Inputbox':
-				$type = '<input class="text" style="width:300px;" 
-				type="text" name="templatefield_' . $row['qorder'] . '" 
-				size="40" maxlength="60" tabindex="' . $row['qorder'] . '" />';
-				break;
-				
-			case 'Textbox':
-				$onfocus =  ' onfocus="' . "this.value=''; setbg('#e5fff3');" . '"';
-				$onblur = ' onblur="setbg(' . "white)". '" ' ; 
-				
-				$type = '<textarea class="apply" '. $onfocus . $onblur. 'name="templatefield_' . $row['qorder'] . '" rows="3" cols="76" 
-				tabindex="' . $row['qorder'] . '" onselect="storeCaret(this);" 
-				onclick="storeCaret(this);" 
-				onkeyup="storeCaret(this);" ></textarea>';
-				break;
-				
 			case 'Selectbox':
-			    $type = '<select class="inputbox" name="templatefield_' . $row['qorder'] . '" tabindex="' . $row['qorder'] . '">';
-			    //$type .= '<option value="">----------------</option>';
 			         $select_option = explode(',', $row['options']);
 			         foreach($select_option as $value) 
 			         {
-			             $type .='<option value="'. $value .'">'. $value .'</option>';
+			         	$template->assign_block_vars('apptemplate.selectboxoptions', array(
+		         			'KEY'		=> $value,
+		         			'VALUE'		=> $value,
+			         	));
 			         }           
-			    $type .= '</select>';             
 				break;
-				
 			case 'Radiobuttons':
-			    $radio_option = explode(',', $row['options']);
-			  
-			    $type = '';
-			    foreach($radio_option as $value) 
-			    {
-			       $type .='<input type="radio" name="templatefield_'. $row['qorder'] .'" value="'. $value .'"/>&nbsp;'. $value .'&nbsp;&nbsp;';
-			    }           
+				$radio_option = explode(',', $row['options']);
+				foreach($radio_option as $value)
+				{
+					$template->assign_block_vars('apptemplate.radiobuttonoptions', array(
+							'KEY'		=> $value,
+							'VALUE'		=> $value,
+					));
+				}
 				break;
-				
 			case 'Checkboxes':
-		        $check_option = explode(',', $row['options']);
-		         
-		        $type = '';
-		        foreach($check_option as $value) 
-		        {
-		           $type .='<input type="checkbox" name="templatefield_'. $row['qorder'] .'[]" value="'. $value .'"/>&nbsp;'. $value .'&nbsp;&nbsp;';
-		        }           
+				$check_option = explode(',', $row['options']);
+				foreach($check_option as $value)
+				{
+					$template->assign_block_vars('apptemplate.checkboxoptions', array(
+							'KEY'		=> $value,
+							'VALUE'		=> $value,
+					));
+				}
 				break;
 		}
-		
-		$mandatory = '';
-		
-		if ( $row['mandatory'] == 'True' )
-		{
-			$mandatory = '&nbsp;<span style="color:red">' . $user->lang['MANDATORY']. '</span>';
-		}
-
-		$template->assign_block_vars('apptemplate', array(
-			'QORDER'		=> $row['qorder'],
-			'TITLE'			=> $row['header'],
-			'QUESTION'		=> $row['question'],
-			'OPTIONS'   	=> $row['options'],
-			'TYPE'			=> $type,
-			'MANDATORY' 	=> $mandatory)
-		);					
-			
 	}
 	$db->sql_freeresult($result);
 	
 	$form_enctype = (@ini_get('file_uploads') == '0' || strtolower(@ini_get('file_uploads')) == 'off' || !$config['allow_attachments'] || !$auth->acl_get('u_attach') || !$auth->acl_get('f_attach', $post_data['forum_id'])) ? '' : ' enctype="multipart/form-data"';
 	add_form_key($form_key);
-	
 	
 	// assign global template vars to questionnaire
 	$template->assign_vars(array(
@@ -757,6 +729,7 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 		'APPLY_REALM'			=> str_replace("+", " ", $config['bbdkp_apply_realm']), 
 		'FORMQCOLOR'			=> $config['bbdkp_apply_fqcolor'], 
 		'S_FORM_ENCTYPE'		=> $form_enctype,
+		'S_BBCODE_ALLOWED'		=> true, 
 		// javascript
 		'LA_ALERT_AJAX'		  => $user->lang['ALERT_AJAX'],
 		'LA_ALERT_OLDBROWSER' => $user->lang['ALERT_OLDBROWSER'],

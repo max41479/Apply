@@ -8,6 +8,7 @@ It is the same as Appforms but with added functionality
 
 -	inserts member in database
 -	has extra fields for mmo character
+-	questions were preset for guilds
 
 ## current
 
