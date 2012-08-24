@@ -345,7 +345,7 @@ class acp_dkp_apply extends bbDkp_Admin
                 	$template->assign_block_vars('template_type', array(
                 			'TYPE' => $key ,
                 			'VALUE' => $value,
-                			'SELECTED' => ($value == $row['type']) ? ' selected="selected"' : '' ,
+                			'SELECTED' => ($key == $row['type']) ? ' selected="selected"' : '' ,
                 	));
                 }
                 
@@ -376,7 +376,7 @@ class acp_dkp_apply extends bbDkp_Admin
                         $template->assign_block_vars('apptemplate.template_type', array(
                         	'TYPE' => $key , 
                         	'VALUE' => $value,
-                        	'SELECTED' => ($value == $row['type']) ? ' selected="selected"' : '' , 
+                        	'SELECTED' => ($key == $row['type']) ? ' selected="selected"' : '' , 
                         	));
                     }
                 }
