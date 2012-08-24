@@ -336,6 +336,7 @@
 				<find><![CDATA[// Additional tables]]></find>
 				<action type="after-add"><![CDATA[define('APPTEMPLATE_TABLE',			$table_prefix . 'bbdkp_apptemplate');
 define('APPHEADER_TABLE',			$table_prefix . 'bbdkp_apphdr');
+define('APPTEMPLATELIST_TABLE',			$table_prefix . 'bbdkp_apptemplatelist');
 	]]></action>
 			</edit>
 		</open>

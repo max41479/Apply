@@ -268,6 +268,26 @@ $versions = array(
 	
 	'1.3.6' => array(
 			
+	  'table_add' => array(
+            array(
+              		$table_prefix . 'bbdkp_apptemplatelist' , array(
+						'COLUMNS'		=> array(
+							'templateid'	=> array('INT:8', NULL, 'auto_increment'),
+							'status'		=> array('BOOL', 0),
+						),
+						'PRIMARY_KEY'	=> 'templateid',),
+				),
+ 		),
+		
+		'table_row_insert' => array(
+			array($table_prefix . 'bbdkp_apptemplatelist' ,
+					array(
+							array(
+									'templateid' => 1, 
+									'status' => 1)
+					)),
+		),			
+					
 		'table_column_add' => array(
 				array($table_prefix . 'bbdkp_apptemplate', 'templateid' , array('UINT', 0)),
 				array($table_prefix . 'bbdkp_apptemplate', 'lineid' , array('UINT', 0)),
@@ -374,12 +394,8 @@ function check_oldversion()
 		{
 			//stop here, the version is less than 1.3.3
 			trigger_error( $user->lang['ERROR_MINIMUM133'], E_USER_WARNING);  
-			
 		}
-		
     }   	
-
-	
 }
 
 /**
