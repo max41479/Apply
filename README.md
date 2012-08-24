@@ -12,7 +12,7 @@ It is the same as Appforms but with added functionality
 
 ## current
 
-v1.3.5
+v1.3.5.1
 
 ## community
 

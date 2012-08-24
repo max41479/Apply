@@ -265,7 +265,12 @@ $versions = array(
 		// add new type
 			
 	),
-	
+
+	'1.3.5.1' => array(
+		// fix issue 224, no db change
+			
+	),
+		
 );
 
 // We include the UMIF Auto file and everything else will be handled automatically.
