@@ -3,7 +3,7 @@
 * Apply Installer
 * Powered by bbDkp (c) 2009 www.bbdkp.com
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.3.5
+* @version 1.3.6
 *
 */
 
@@ -266,6 +266,16 @@ $versions = array(
 			
 	),
 	
+	'1.3.6' => array(
+			
+		'table_column_add' => array(
+				array($table_prefix . 'bbdkp_apptemplate', 'templateid' , array('UINT', 0)),
+				array($table_prefix . 'bbdkp_apptemplate', 'lineid' , array('UINT', 0)),
+		),
+			
+		'custom' => array('tableupd136', 'applyupdater', 'bbdkp_caches'),
+		),
+		
 );
 
 // We include the UMIF Auto file and everything else will be handled automatically.
@@ -370,6 +380,38 @@ function check_oldversion()
     }   	
 
 	
+}
+
+/**
+ * version 1.3.6 : adds a new double pk to template table
+ */
+function tableupd136($action, $version)
+{
+	global $user, $umil, $config, $db, $table_prefix;
+	
+	switch ($action)
+	{
+	
+		case 'install' :
+		case 'update' :
+			switch ($version)
+			{
+				case '1.3.6':
+					//insert values in new columns
+					$db->sql_query('UPDATE ' . $table_prefix . 'bbdkp_apptemplate SET templateid = 1, lineid = id');
+					// make new unique composite key 
+					$db->sql_query('CREATE UNIQUE INDEX template ON ' . $table_prefix . 'bbdkp_apptemplate (templateid, lineid) ');
+					break;
+			}
+			break;
+		case 'uninstall':
+			switch ($version)
+			{
+				case '1.3.6':
+					$db->sql_query('TRUNCATE TABLE ' . $table_prefix . "bbdkp_apptemplate ");
+			}
+			break;
+	}
 }
 
 
