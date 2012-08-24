@@ -115,9 +115,9 @@
 	<tr>
 	<th style="width:8%; text-align:left">{L_ID}</th>
     <th style="width:17%; text-align:left">{L_TYPE}</th>
-    <th style="width:25%; text-align:center">{L_ACP_APPLY_HEADER}</th>
-    <th style="width:25%; text-align:center">{L_ACP_APPLY_QUESTION}</th>
-    <th style="width:25%; text-align:center">{L_ACP_APPLY_CONTENTS}</th>
+    <th style="width:20%; text-align:center">{L_ACP_APPLY_HEADER}</th>
+    <th style="width:20%; text-align:center">{L_ACP_APPLY_QUESTION}</th>
+    <th style="width:20%; text-align:center">{L_ACP_APPLY_CONTENTS}</th>
   </tr>
   </thead>
   <tbody>
@@ -141,15 +141,15 @@
 				<!-- END template_type -->
 			</select>
 		</td>
-	    <td style="width:25%; text-align:center; overflow:ellipsis">
+	    <td style="width:20%; text-align:center; overflow:ellipsis">
 	    <textarea style="width:100%; resize:none;" rows="2" cols="10"  
 	    class="text" name="q_header[{apptemplate.ID}]">{apptemplate.HEADER}</textarea></td>
 	    
-	    <td style="width:25%; text-align:center; overflow:ellipsis">
+	    <td style="width:20%; text-align:center; overflow:ellipsis">
 	    <textarea style="width:100%; resize:none;" rows="2" cols="10"
 	    class="text" name="q_question[{apptemplate.ID}]" >{apptemplate.QUESTION}</textarea></td>
 	    
-	    <td style="width:25%; text-align:center; overflow:ellipsis">
+	    <td style="width:20%; text-align:center; overflow:ellipsis">
 	    <textarea style="width:95%; resize:none;" rows="2" cols="10"
 	    class="text" name="q_options[{apptemplate.ID}]" >{apptemplate.OPTIONS}</textarea></td>
 	  </tr>
@@ -162,6 +162,7 @@
 
 </fieldset>
 
+
 <fieldset>
 <legend>{L_APPLY_ACP_APPTEMPLATENEW}</legend>
 	<dl>
@@ -171,35 +172,33 @@
 <table cellspacing="1">
 	<thead>
 	<tr>
-    <th align="left">{L_TYPE}</th>
-    <th align="left">{L_ACP_APPLY_HEADER}</th>
-    <th align="center">{L_ACP_APPLY_QUESTION}</th>
-    <th align="left">{L_ACP_APPLY_CONTENTS}</th>
+    <th style="width:30%; text-align:left">{L_TYPE}</th>
+    <th style="width:20%; text-align:left">{L_ACP_APPLY_HEADER}</th>
+    <th style="width:20%; text-align:left">{L_ACP_APPLY_QUESTION}</th>
+    <th style="width:20%; text-align:left">{L_ACP_APPLY_CONTENTS}</th>
   </tr>
   </thead>
   <tbody>
 	  <tr class="row1">
 	    <td>
-	    	<input type="checkbox" name="app_add_mandatory" value="True" />&nbsp;
-	    	<select name="app_add_type" class="input" id="app_add_type">
-				<option value="Inputbox">{L_APPLY_ACP_INPUTBOX}</option>
-				<option value="Textbox">{L_APPLY_ACP_TXTBOX}</option>
-				<option value="Selectbox">{L_APPLY_ACP_SELECTBOX}</option>
-                <option value="Radiobuttons">{L_APPLY_ACP_RADIOBOX}</option>
-                <option value="Checkboxes">{L_APPLY_ACP_CHECKBOX}</option>
-         	</select>
+         	<input type="checkbox" name="app_add_mandatory" value="True" />&nbsp;
+         	<select name="app_add_type" class="input" id="app_add_type">
+				<!-- BEGIN template_type -->
+				<option value="{template_type.TYPE}"{template_type.SELECTED}>{template_type.VALUE}</option>
+				<!-- END template_type -->
+			</select>
 	    </td>
 	    
 	    <td>
-	      <textarea style="width:95%; resize:none;" rows="2" cols="10"
+	      <textarea style="width:100%; resize:none;" rows="2" cols="10"
 	    	class="text" name="app_add_title" onclick="this.value ='';" onblur="if(this.value == '') { this.value = '{L_ACP_APPLY_HEADER}' };" >{L_ACP_APPLY_HEADER}</textarea>
 	    </td>
 	    <td>
-	      <textarea style="width:95%; resize:none;" rows="2" cols="10"
+	      <textarea style="width:100%; resize:none;" rows="2" cols="10"
 	    	class="text" name="app_add_question" onclick="this.value ='';" onblur="if(this.value == '') { this.value = '{L_ACP_APPLY_QUESTION}' };" >{L_ACP_APPLY_QUESTION}</textarea>
 	    </td>
 	    <td>
-	   	      <textarea style="width:95%; resize:none;" rows="2" cols="10"
+	   	      <textarea style="width:100%; resize:none;" rows="2" cols="10"
 	    	class="text" name="app_add_options" ></textarea>
 	    </td>
 	    
