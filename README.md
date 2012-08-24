@@ -20,7 +20,7 @@ Recruitment form plugin for bbDKP
 	- edit apply2.php, set template var to the new id
 	- make a new link in your frontpage to point to it. 
 	
-Apply is the same as Appforms but with added functionality
+Apply is the same as [Appforms](https://github.com/Sajaki/Appforms) but with added functionality:
 
 -	inserts member in bbDKP database
 -	has extra fields for mmo characters
