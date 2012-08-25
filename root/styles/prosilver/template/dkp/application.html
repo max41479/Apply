@@ -381,23 +381,6 @@ function classracestateChanged()
 	<dd><input type="text" name="candidate_realm" size="25" maxlength="25" class="input" /> <span style="color:red">{L_MANDATORY}</span> </dd>
 </dl>
 
-<!-- IF S_SHOW_GUILDSELECT -->
-<dl>
-	<dt><strong>{L_GUILD}:</strong></dt>
-  	<dd>
-  	  <div>
-  	  <select id="candidate_guild_id" name="candidate_guild_id" class="input">
-       <!-- BEGIN guild_row -->
-       <option value="{guild_row.VALUE}"{guild_row.SELECTED}>{guild_row.OPTION}</option>
-        <!-- END guild_row -->
-    </select>
-    </div>
-    </dd>
-</dl>
-<!-- ELSE -->
-	<input type="hidden" name="candidate_guild_id" value="{GUILD_ID}" class="input" />
-<!-- ENDIF -->
-
 <dl>
     <dt><strong>{L_APPLY_LEVEL}</strong></dt>
 	<dd><input type="text" name="candidate_level" size="3" maxlength="3" value="{MEMBER_LEVEL}" class="input" /> <span style="color:red">{L_MANDATORY}</span> </dd>
