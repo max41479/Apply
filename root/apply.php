@@ -293,7 +293,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	$apply_post .= '<br /><br />';
 	
 	// complete with formatted questions and answers
-	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . ' ORDER BY qorder' ;
+	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id .'  ORDER BY qorder' ;
 	$result = $db->sql_query_limit($sql, 100, 0);
 	while ( $row = $db->sql_fetchrow($result) )
 	{

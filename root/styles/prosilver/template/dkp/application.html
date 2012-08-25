@@ -2,7 +2,7 @@
 
 <!-- 
 apply plugin for bbDKP 
- @version 1.3.5 
+ @version 1.3.6
 -->
 
 <!-- DEFINE $TYPE_INPUTBOX = 'Inputbox' -->
@@ -515,7 +515,7 @@ function classracestateChanged()
 			<input type="radio" name="{apptemplate.DOMNAME}" tabindex="{apptemplate.TABINDEX}" value="{apptemplate.radiobuttonoptions.KEY}"/>&nbsp;{apptemplate.radiobuttonoptions.VALUE}&nbsp;&nbsp;<!-- END radiobuttonoptions -->
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_CHECKBOX -->
 			<!-- BEGIN checkboxoptions -->
-			<input type="radio" name="{apptemplate.DOMNAME}" tabindex="{apptemplate.TABINDEX}" value="{apptemplate.checkboxoptions.KEY}"/>&nbsp;{apptemplate.checkboxoptions.VALUE}&nbsp;&nbsp;<!-- END checkboxoptions -->	
+			<input type="checkbox" name="{apptemplate.DOMNAME}[]" tabindex="{apptemplate.TABINDEX}" value="{apptemplate.checkboxoptions.KEY}"/>&nbsp;{apptemplate.checkboxoptions.VALUE}&nbsp;&nbsp;<!-- END checkboxoptions -->	
 	<!-- ENDIF -->
 	</dd>
 </dl>
