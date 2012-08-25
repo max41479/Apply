@@ -112,9 +112,12 @@ To help us with your application please answer the questions below. Enter your c
 'APPLY_ACP_QUESTUPD' 		=> 'Apply Questions Updated',
 //addnew
 'APPLY_ACP_ORDQUEST' 		=> 'You need to fill out order, question and options before adding.',
-'APPLY_ACP_QUESTNOTADD' 	=> 'ERROR : New question not saved !', 
-'APPLY_ACP_QUESTNADD' 		=> 'New question Saved !',   
+'APPLY_ACP_QUESTNOTADD' 	=> 'ERROR : New question not added !', 
+'APPLY_ACP_QUESTNADD' 		=> 'New question added.',   
 'APPLY_ACP_EXPLAINOPTIONS' 	=> 'Seperate Options with a comma "," with no spaces.',  
+'APPLY_ACP_TEMPLATEADD' 	=> 'New template added.', 
+'REQUIRED'					=> 'Required', 
+
 
 /** ACP settings for posting template **/
 'APPLY_COLORSETTINGS' 		=> 'Apply Color Settings',
