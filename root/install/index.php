@@ -277,7 +277,7 @@ $versions = array(
 							'forum_id'		=> array('INT:8', 0),
 							'status'		=> array('BOOL', 0),
 						),
-						'PRIMARY_KEY'	=> 'templateid',),
+						'PRIMARY_KEY'	=> 'template_id',),
 				),
  		),
 		
@@ -297,7 +297,7 @@ $versions = array(
 				array($table_prefix . 'bbdkp_apptemplate', 'lineid' , array('UINT', 0)),
 		),
 		
-		'config_add' => array(
+		'config_remove' => array(
 				array('bbdkp_apply_visibilitypref'),
 				array('bbdkp_apply_simplerecruit' ),
 				array('bbdkp_apply_forum_id_private'),

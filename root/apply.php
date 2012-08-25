@@ -3,13 +3,14 @@
 * Application form created by Kapli (bbDKP developer)
 * 
 * @package bbDKP
-* @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
+* @copyright (c) 2009 bbDkp https://github.com/bbDKP/Apply
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Kapli, Malfate, Sajaki, Blazeflack, Twizted
-* @version 1.3.5
-* @uses bbDKP 1.2.7 or higher
+* @version 1.3.6
 */
 
+
+// do not change below this line
 /**
 * @ignore
 */ 
@@ -20,6 +21,9 @@ include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+
+// set apply template id from $_GET: 
+$template_id = request_var('template_id', 1);
 
 // Start session management
 $user->session_begin();
@@ -49,7 +53,7 @@ if ($config['enable_post_confirm'] && !$user->data['is_registered'])
 }
 
 //check if visitor can access the form
-$post_data = check_apply_form_access();
+$post_data = check_apply_form_access($template_id);
 
 //request variables
 $submit	= (isset($_POST['post'])) ? true : false;
@@ -98,6 +102,7 @@ if ($submit)
 	$db->sql_freeresult($result);
 
 	$candidate_name = utf8_normalize_nfc(request_var('candidate_name', ' ', true));
+	
 	// check for validate name. name can only be alphanumeric without spaces or special characters
 	// this is to keep gibberish out of our dkpmember database
 	//if this preg_match returns true then there is something other than letters
@@ -109,19 +114,18 @@ if ($submit)
 	if (!sizeof($error))
 	{
 		// continue to posting
-		make_apply_posting($post_data, $current_time, $candidate_name);
+		make_apply_posting($post_data, $current_time, $candidate_name, $template_id);
 	}
-	
 	
 }
 
-fill_application_form($form_key, $post_data, $submit, $error, $captcha);
+fill_application_form($form_key, $post_data, $submit, $error, $captcha, $template_id);
 
 /**
  * post application on forum
  *
  */
-function make_apply_posting($post_data, $current_time, $candidate_name)
+function make_apply_posting($post_data, $current_time, $candidate_name, $template_id)
 {
 	global $auth, $config, $db, $user, $phpbb_root_path, $phpEx;
 	
@@ -315,6 +319,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name)
 					break;
 				case 'Inputbox':
 				case 'Textbox':
+				case 'Textboxbbcode':					
 				case 'Selectbox':					
 				case 'Radiobuttons':			
 					$fieldcontents = utf8_normalize_nfc(request_var('templatefield_' . $row['qorder'], ' ', true));	
@@ -378,15 +383,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name)
 		//submit post
 		$post_url = submit_post('post', $post_data['post_subject'], $post_data['username'], POST_NORMAL, $poll, $data);
 		
-		//if we're posting to private forum then redirect to portal, else redirect to post
-		if($post_data['forum_id'] == $config['bbdkp_apply_forum_id_private'])
-		{
-			$redirect_url = append_sid("{$phpbb_root_path}portal.$phpEx"); 
-		}
-		else
-		{
-			$redirect_url = $post_url;
-		}
+		$redirect_url = $post_url;
 			
 		if ($config['enable_post_confirm'] && (isset($captcha) && $captcha->is_solved() === true))
 		{
@@ -475,7 +472,7 @@ function register_bbdkp(dkp_character $candidate)
  *  build Application form 
  *
  */
-function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
+function fill_application_form($form_key, $post_data, $submit, $error, $captcha, $template_id)
 {
 	global $user, $template, $config, $phpbb_root_path, $phpEx, $auth, $db;
 	
@@ -661,7 +658,12 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
              	
 	// Start assigning vars for main posting page ...
 	// main questionnaire 
-	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . ' ORDER BY qorder ASC';
+	$sql = "SELECT a.id, a.qorder, a.header, a.question, a.type, a.mandatory, a.options, a.template_id, a.lineid, b.template_name, b.forum_id 
+		FROM " . APPTEMPLATE_TABLE . ' a, ' . 
+			APPTEMPLATELIST_TABLE . ' b 
+			WHERE a.template_id = b.template_id 
+			AND a.template_id = ' . $template_id . '
+			ORDER BY a.qorder ASC ';
 	$result = $db->sql_query($sql);
 					
 	while ( $row = $db->sql_fetchrow($result) )
@@ -672,6 +674,7 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 				'TITLE'				=> $row['header'],
 				'QUESTION'			=> $row['question'],
 				'TYPE'   			=> $row['type'],
+				'FORUM_ID'			=> $row['forum_id'], 
 				'DOMNAME'			=> 'templatefield_' . $row['qorder'],
 				'TABINDEX'			=> $row['qorder'],
 				)
@@ -719,9 +722,6 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 	// assign global template vars to questionnaire
 	$template->assign_vars(array(
 		'WELCOME_MSG'			=> $welcome_message,	
-		'S_SHOW_FORUMCHOICE'	=> ( $config['bbdkp_apply_forumchoice'] == '1' ) ? TRUE : FALSE,
-		'PUBLIC_YES_CHECKED' 	=> ( $config['bbdkp_apply_visibilitypref'] == '1' ) ? ' checked="checked"' : '',
-		'PUBLIC_NO_CHECKED'  	=> ( $config['bbdkp_apply_visibilitypref'] == '0' ) ? ' checked="checked"' : '', 
 		'MALE_CHECKED'			=> ' checked="checked"',
 		'L_POST_A'				=> $page_title,
 		'ERROR'					=> (sizeof($error)) ? implode('<br />', $error) : '',
@@ -735,7 +735,6 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 		'LA_ALERT_OLDBROWSER' => $user->lang['ALERT_OLDBROWSER'],
 		'LA_MSG_NAME_EMPTY'	  => $user->lang['APPLY_REQUIRED_NAME'],
 		'LA_MSG_LEVEL_EMPTY'  => $user->lang['APPLY_REQUIRED_LEVEL'],	
-		
 		)
 	);
 		
@@ -756,39 +755,15 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
  *
  * @return array $post_data
  */
-function check_apply_form_access()
+function check_apply_form_access($template_id)
 {
 	global $auth, $db, $config, $user;		
 	
 	$user->add_lang(array('posting'));
-	//find out which forum we will be posting to
-	if($config['bbdkp_apply_forumchoice'] == '1')
-	{
-		//user can choose
-		if(request_var('publ', 1) == 1 )
-		{
-			// if user made choice for public or if it is a guest then get public forumid 
-			$forum_id = $config['bbdkp_apply_forum_id_public'];
-		}
-		else 
-		{
-			$forum_id = $config['bbdkp_apply_forum_id_private'];
-		}
-	}
-	else
-	{
-		//fetch forum from $config
-		if($config['bbdkp_apply_visibilitypref'] == '1')  
-		{
-			$forum_id = $config['bbdkp_apply_forum_id_public'];
-		}
-		else 
-		{
-			$forum_id = $config['bbdkp_apply_forum_id_private'];
-		}
-	}
 	
-	$sql = 'SELECT * FROM ' . FORUMS_TABLE . ' WHERE forum_id = ' . $forum_id;
+	$sql = 'SELECT a.* FROM ' . FORUMS_TABLE . ' a, ' . APPTEMPLATELIST_TABLE .' b 
+				WHERE a.forum_id = b.forum_id 
+				AND b.template_id = ' . $template_id;
 	$result = $db->sql_query($sql);
 	$post_data = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
@@ -805,7 +780,7 @@ function check_apply_form_access()
 	// check authorisations
 	$is_authed = false;
 	// user has posting permission to the forum ?  
-	if ($auth->acl_get('f_post', $forum_id))
+	if ($auth->acl_get('f_post', $post_data['forum_id']))
 	{
 		//user is authorised for the forum
 		$is_authed = true;
@@ -849,87 +824,71 @@ function check_apply_form_access()
 /**
  * sends a personal message with the contents of the form
  */
-function pm_sendform()
+function pm_sendform($message, $user_id = 2, $sender_id = 2)
 {
 	global $user, $config;
 	global $phpEx, $phpbb_root_path;
 
 	include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
-	include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
-	include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+	include_once($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+	$sender = $this->get_user_info($sender_id);
+	
+	$message_parser = new parse_message(); 
+  
+	$data=array();
+	$messenger->template('raidplan_delete', $row['user_lang']);
+	$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . 
+	$user->lang['DELRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' . 
+	$user->format_date($this->start_time, $config['rp_date_time_format'], true);
+	 
+	$userids = array($this->poster);
+	$rlname = array();
+	user_get_id_name($userids, $rlname);
+	 
+	$messenger->assign_vars(array(
+			'RAIDLEADER'		=> $rlname[$this->poster],
+			'USERNAME'			=> htmlspecialchars_decode($row['username']),
+			'EVENT_SUBJECT'		=> $subject,
+			'EVENT'				=> $this->eventlist->events[$this->event_type]['event_name'],
+			'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
+			'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
+			'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
+			'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
+			'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;raidplanid=".$this->id
+	));
+		
+	$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
+	$messenger->msg = str_replace("\r\n", "\n", $messenger->msg);
+		
+	$messenger->msg = utf8_normalize_nfc($messenger->msg);
+	$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+	$allow_bbcode = $allow_smilies = $allow_urls = true;
+	generate_text_for_storage($messenger->msg, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+	$messenger->msg = generate_text_for_display($messenger->msg, $uid, $bitfield, $options);
 
-	//@todo find addressee
-	$emailrecipients = array();
-	$messenger = new messenger();
-	foreach($rpm->send_user_data as $id => $row)
+	$data = array(
+			'address_list'      => array('u' => array($row['user_id'] => 'to')),
+			'from_user_id'      => $user->data['user_id'],
+			'from_username'     => $user->data['username'],
+			'icon_id'           => 0,
+			'from_user_ip'      => $user->data['user_ip'],
+
+			'enable_bbcode'     => true,
+			'enable_smilies'    => true,
+			'enable_urls'       => true,
+			'enable_sig'        => true,
+				
+			'message'           => $messenger->msg,
+			'bbcode_bitfield'   => $this->bbcode['bitfield'],
+			'bbcode_uid'        => $this->bbcode['uid'],
+	);
+		
+	if($config['rp_pm_rpchange'] == 1 &&  (int) $row['user_allow_pm'] == 1)
 	{
-		$data=array();
-		// get template
-		switch ($trigger)
-		{
-			case 1:
-				$messenger->template('raidplan_add', $row['user_lang']);
-				$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
-				break;
-			case 2:
-				$messenger->template('raidplan_update', $row['user_lang']);
-				$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UPDRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' .$user->format_date($this->start_time, $config['rp_date_time_format'], true);
-				break;
-			case 3:
-				$messenger->template('raidplan_delete', $row['user_lang']);
-				$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['DELRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
-				break;
-		}
-		 
-		$userids = array($this->poster);
-		$rlname = array();
-		user_get_id_name($userids, $rlname);
-		 
-		$messenger->assign_vars(array(
-				'RAIDLEADER'		=> $rlname[$this->poster],
-				'USERNAME'			=> htmlspecialchars_decode($row['username']),
-				'EVENT_SUBJECT'		=> $subject,
-				'EVENT'				=> $this->eventlist->events[$this->event_type]['event_name'],
-				'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
-				'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
-				'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
-				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
-				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;raidplanid=".$this->id
-		));
-			
-		$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
-		$messenger->msg = str_replace("\r\n", "\n", $messenger->msg);
-			
-		$messenger->msg = utf8_normalize_nfc($messenger->msg);
-		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
-		$allow_bbcode = $allow_smilies = $allow_urls = true;
-		generate_text_for_storage($messenger->msg, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
-		$messenger->msg = generate_text_for_display($messenger->msg, $uid, $bitfield, $options);
-
-		$data = array(
-				'address_list'      => array('u' => array($row['user_id'] => 'to')),
-				'from_user_id'      => $user->data['user_id'],
-				'from_username'     => $user->data['username'],
-				'icon_id'           => 0,
-				'from_user_ip'      => $user->data['user_ip'],
-
-				'enable_bbcode'     => true,
-				'enable_smilies'    => true,
-				'enable_urls'       => true,
-				'enable_sig'        => true,
-					
-				'message'           => $messenger->msg,
-				'bbcode_bitfield'   => $this->bbcode['bitfield'],
-				'bbcode_uid'        => $this->bbcode['uid'],
-		);
-			
-		if($config['rp_pm_rpchange'] == 1 &&  (int) $row['user_allow_pm'] == 1)
-		{
-			// send a PM
-			submit_pm('post',$subject, $data, false);
-		}
-			
+		// send a PM
+		submit_pm('post',$subject, $data, false);
 	}
+	
 
 }
 
