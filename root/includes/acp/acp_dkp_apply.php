@@ -69,6 +69,38 @@ class acp_dkp_apply extends bbDkp_Admin
                 /**
                  * loading template types
                  */
+                
+                //getting guilds
+                $sql_array = array(
+                		'SELECT'    => 'a.id, a.name, a.realm, a.region ',
+                		'FROM'      => array(
+                				GUILD_TABLE => 'a',
+                				MEMBER_LIST_TABLE => 'b'
+                		),
+                		'WHERE'     =>  'a.id = b.member_guild_id and id != 0',
+                		'GROUP_BY'  =>  'a.id, a.name, a.realm, a.region',
+                		'ORDER_BY'	=>  'a.id ASC'
+                );
+                $sql = $db->sql_build_query('SELECT', $sql_array);
+                $result = $db->sql_query($sql);
+               	while ( $row = $db->sql_fetchrow($result) )
+               	{
+               		$guilds[] = array(
+               			'id' 	=> $row['id'],
+               			'name' 	=> $row['name'],               				
+               			);
+               		
+               		$template->assign_block_vars('guild_row', array(
+               				'VALUE' => $row['id'],
+               				'SELECTED' =>  '',
+               				'OPTION'   => $row['name']
+               		));
+               		
+               	}
+               	$db->sql_freeresult($result);
+               	
+
+               	// getting template defiitions
                 $applytemplate_id = 0; $i=0;
                 if(!isset ($_POST['applytemplate_id'] ))
                 {
@@ -90,18 +122,31 @@ class acp_dkp_apply extends bbDkp_Admin
                 
                 //echo $applytemplate_id;
                 
-                $result = $db->sql_query('SELECT * FROM ' . APPTEMPLATELIST_TABLE);
+                $result = $db->sql_query('SELECT * FROM ' . APPTEMPLATELIST_TABLE );
                 while ( $row = $db->sql_fetchrow($result) )
                 {
+                	foreach ($guilds as $key => $guild)
+                	{
+	                	if($row['guild_id'] == $guild['id'])
+	                	{
+	                		$guildname = $guild['name'];
+	                	}
+                	}
+                	
+                	$foruminfo = apply_get_forum_info ($row['forum_id']);
+                	
                 	$template->assign_block_vars('apptemplatelist', array(
                 			'ID'					=> $row['template_id'],
                 			'STATUS'				=> $row['status'],
                 			'TEMPLATE_NAME'			=> $row['template_name'],
-                			'FORUMID'				=> $row['forum_id'],
+                			'GUILDNAME'				=> $guildname, 
+                			'FORUMID'				=> $foruminfo['forum_name'],
                 			'SELECTED'				=> ($applytemplate_id == $row['template_id']) ? ' selected = "selected"' : '',
                 			'FORUM_OPTIONS' 		=> make_forum_select($row['forum_id'],false, false, true),
                 			'U_DELETE_TEMPLATE'		=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;apptemplatedelete=1&amp;template_id={$row['template_id']}"),
                 	));
+                	
+                	
                 }
                 $db->sql_freeresult($result);
 
@@ -459,6 +504,17 @@ class acp_dkp_apply extends bbDkp_Admin
       }
    }
  
+}
+
+function apply_get_forum_info($forum_id)
+{
+	global $db;
+	// get some forum info
+	$sql = 'SELECT * FROM ' . FORUMS_TABLE . " WHERE forum_id = $forum_id";
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
+	return $row;
 }
 
 ?>

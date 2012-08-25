@@ -134,13 +134,19 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	switch ($config['bbdkp_apply_gchoice'])
 	{
 		case '1':
-			$candidate_guild_id = request_var('candidate_guild_id', 0);
+			// add to template defined guild
+			$sql = "SELECT guild_id from " . APPTEMPLATELIST_TABLE . " WHERE template_id  = " . $template_id;
+			$result = $db->sql_query($sql);	
+			$candidate_guild_id = $db->sql_fetchfield('guild_id');
+			$db->sql_freeresult($result);
+			
 			$sql = "SELECT max(rank_id) as rank_id from " . MEMBER_RANKS_TABLE . " WHERE rank_id < 90 and guild_id = " . $candidate_guild_id;
 			$result = $db->sql_query($sql);	
 			$candidate_rank_id = max((int) $db->sql_fetchfield('rank_id'), 0);
 			$db->sql_freeresult($result);
 			break;
 		case '0':
+			// do not add to guild
 		default:
 			$candidate_guild_id = 0;
 			$candidate_rank_id = 99;
@@ -346,7 +352,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	generate_text_for_storage($apply_post, $uid, $bitfield, $options, true, true, true);
 
 	// subject & username
-	//@todo let user enter subject ?
+
 	//$post_data['post_subject'] = utf8_normalize_nfc(request_var('headline', $user->data['username'], true));
 	$post_data['post_subject']	= $candidate_name . " - " . $candidate_level . " " . $race_name . " ". $class_name;
 	$post_data['username']	= $user->data['username'];
@@ -515,58 +521,6 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha,
 		{
 			$s_hidden_fields .= build_hidden_fields($captcha->get_hidden_fields());
 		}
-	}
-	
-	//get the hightest guildid with members
-	$sql_array = array(
-	    'SELECT'    => 'a.id, a.name, a.realm, a.region ',
-	    'FROM'      => array(
-	        GUILD_TABLE => 'a',
-	        MEMBER_LIST_TABLE => 'b'
-	    ),
-	    'WHERE'     =>  'a.id = b.member_guild_id and id != 0',
-	    'GROUP_BY'  =>  'a.id, a.name, a.realm, a.region', 
-	    'ORDER_BY'	=>  'a.id ASC'
-	);
-	$sql = $db->sql_build_query('SELECT', $sql_array);
-	$result = $db->sql_query($sql);
-
-	$i=0;
-	$guild_id = 0;
-	while ( $row = $db->sql_fetchrow($result) )
-	{
-		$guild_id = (int) $row['id']; 
-		$i+=1;
-	}
-	$db->sql_freeresult($result);
-	
-	if($i==1)
-	{
-		//only one guild, take this one
-		$template->assign_vars(array(
-		'GUILD_ID'				=> $guild_id,
-		'S_SHOW_GUILDSELECT'	=> false,
-		));
-				
-	}
-	elseif($i>1)
-	{
-		//multiple guilds, show a dropdown.
-		$template->assign_var('S_SHOW_GUILDSELECT',true);
-		$result = $db->sql_query($sql);
-		while ( $row = $db->sql_fetchrow($result) )
-		{
-			$template->assign_block_vars('guild_row', array(
-			'VALUE' => $row['id'],
-			'SELECTED' =>  '',
-			'OPTION'   => $row['name'] . ', ' . $row['realm'] . '-' . strtolower($row['region'])
-			));
-		}
-		$db->sql_freeresult($result);
-	}
-	else 
-	{
-		trigger_error($user->lang['APPLY_NO_GUILD']);
 	}
 	
 	// get list of possible games */ 

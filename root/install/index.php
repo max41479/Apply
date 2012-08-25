@@ -275,6 +275,7 @@ $versions = array(
 							'template_id'	=> array('INT:8', NULL, 'auto_increment'),
 							'template_name'	=> array('VCHAR_UNI:255', ''),
 							'forum_id'		=> array('INT:8', 0),
+							'guild_id'		=> array('INT:8', 1),
 							'status'		=> array('BOOL', 0),
 						),
 						'PRIMARY_KEY'	=> 'template_id',),
@@ -288,6 +289,7 @@ $versions = array(
 									'template_id' => 1, 
 									'template_name'	=> 'Default',
 									'forum_id'	=> '2',
+									'guild_id'  => get_guild_id(), 
 									'status' => 1)
 					)),
 		),			
@@ -442,5 +444,33 @@ function tableupd136($action, $version)
 	}
 }
 
-
+/**
+ * gets the default guildid to create a template for. 
+ */
+function get_guild_id()
+{
+	global $db;
+	
+	$sql_array = array(
+			'SELECT'    => 'a.id',
+			'FROM'      => array(
+					GUILD_TABLE => 'a',
+					MEMBER_LIST_TABLE => 'b'
+			),
+			'WHERE'     =>  'a.id = b.member_guild_id and id != 0',
+			'GROUP_BY'  =>  'a.id, a.name, a.realm, a.region',
+			'ORDER_BY'	=>  'a.id ASC'
+	);
+	$sql = $db->sql_build_query('SELECT', $sql_array);
+	$result = $db->sql_query($sql);
+	
+	$i=0;
+	$guild_id = 0;
+	while ( $row = $db->sql_fetchrow($result) )
+	{
+		$guild  = $row['id'];
+	}
+	$db->sql_freeresult($result);
+	return $guild;
+}
 ?>
