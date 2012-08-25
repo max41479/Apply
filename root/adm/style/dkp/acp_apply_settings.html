@@ -113,7 +113,7 @@
 	</p>
 </fieldset>
 
-<!-- IF apptemplate -->
+<!-- IF .apptemplatelist -->
 
 <fieldset>	
 <legend>{L_APPLY_ACP_APPTEMPLATELINES}</legend>
@@ -124,6 +124,8 @@
 <!-- BEGIN apptemplatelist -->
    		 <option value="{apptemplatelist.ID}" {apptemplatelist.SELECTED} >{apptemplatelist.TEMPLATE_NAME}</option><!-- END apptemplatelist -->
   	</select>
+
+<!-- IF .apptemplate -->
 
 <dl>
 	<dt style= "width: 100%"><br/><br/><label>{L_APPLY_CHGMAND}</label><br/>{L_APPLY_CHGMAND_EXPLAIN}</dt>
@@ -179,7 +181,7 @@
 		<input type="submit" name="appformquestionupdate" value="{L_UPDATE}" class="button1" />
 	</p>
 
-
+<!-- ENDIF -->
 	<dl>
 		<dt style= "width: 100%"><label>{L_APPLY_ACP_NEWQUESTION}</label><br />{L_APPLY_ACP_NEWQUESTION_EXPLAIN}</dt>
 	</dl>
@@ -227,9 +229,9 @@
 <p class="quick">
 	<input type="submit" name="appformquestionadd" id="appformquestionadd" value="{L_ADD}" class="button1" />
 </p>
-
 </fieldset>
 <!-- ENDIF -->
+
 
 <script type="text/javascript" charset="utf-8">
  $(document).ready(function() {
