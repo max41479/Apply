@@ -37,7 +37,8 @@ class acp_dkp_apply extends bbDkp_Admin
 	  $user->add_lang(array('mods/dkp_common'));
 	  $user->add_lang(array('mods/apply'));
 	  
-	  $template_id_hidden = request_var('template_id_hidden', 0); 
+	  $template_id_hidden = request_var('template_id_hidden', request_var('applytemplate_id', 0)); 
+	  
 	  $form_key = 'dkp_apply';
 	  add_form_key($form_key);
 	  
@@ -136,6 +137,7 @@ class acp_dkp_apply extends bbDkp_Admin
                     $sql = 'INSERT INTO ' . APPTEMPLATELIST_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
                     $db->sql_query($sql);
                     
+                    meta_refresh(1, $this->u_action);
                     trigger_error( $user->lang['APPLY_ACP_TEMPLATEADD']  .  $link, E_USER_NOTICE);
                }
                
@@ -172,7 +174,9 @@ class acp_dkp_apply extends bbDkp_Admin
                     $sql = 'INSERT INTO ' . APPTEMPLATE_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
                     $db->sql_query($sql);
                     
+                    meta_refresh(1, $this->u_action);
                     trigger_error( $user->lang['APPLY_ACP_QUESTNADD']  .  $link, E_USER_NOTICE);
+                    
                     
                 }
                
@@ -212,6 +216,7 @@ class acp_dkp_apply extends bbDkp_Admin
 					//delete question handler
 					$sql = "DELETE FROM " . APPTEMPLATE_TABLE . " WHERE id = '" . $qid . "'";
 		            $db->sql_query($sql);
+		            meta_refresh(1, $this->u_action);
 		            trigger_error("Question " . $qid . " deleted" . $link, E_USER_WARNING);
                }
                				
@@ -249,7 +254,7 @@ class acp_dkp_apply extends bbDkp_Admin
 						$db->sql_query($sql);	
 							
 					}
-					
+					meta_refresh(1, $this->u_action);
                     trigger_error( $user->lang['APPLY_ACP_QUESTUPD']  . $link);    
                 }
                 
@@ -295,11 +300,17 @@ class acp_dkp_apply extends bbDkp_Admin
 				$db->sql_freeresult($result);
 				
 				$textarr = generate_text_for_edit($text, $uid, $bitfield, 7);
-				$applytemplate_id = request_var('applytemplate_id', 0); 
+				$applytemplate_id = 0; 
 				$result = $db->sql_query('SELECT * FROM ' . APPTEMPLATELIST_TABLE);
+				$i=0;
 				while ( $row = $db->sql_fetchrow($result) )
 				{
-					 $template->assign_block_vars('apptemplatelist', array(
+					if($i==0) 
+					{
+						$applytemplate_id = $row['template_id'];
+					}
+					$i+=1; 
+					$template->assign_block_vars('apptemplatelist', array(
 						'ID'					=> $row['template_id'],
 						'STATUS'				=> $row['status'],
 					 	'TEMPLATE_NAME'			=> $row['template_name'],
@@ -381,7 +392,7 @@ class acp_dkp_apply extends bbDkp_Admin
                 	));
                 }
                 
-                $sql = 'SELECT * FROM ' . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $applytemplate_id . '  ORDER BY qorder ';
+                $sql = 'SELECT * FROM ' . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id_hidden . '  ORDER BY qorder ';
                 $result = $db->sql_query($sql);
                 while ($row = $db->sql_fetchrow($result)) 
                 {
