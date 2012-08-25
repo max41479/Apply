@@ -16,8 +16,7 @@ Recruitment form plugin for bbDKP
 	- radiobutton
 - multiple forms : 
 	- make a new template in acp
-	- rename a copy of apply.php to apply2.php.
-	- edit apply2.php, set template var to the new id
+	- call template 2 by browsing to apply.php?template_id=2
 	- make a new link in your frontpage to point to it. 
 	
 Apply is the same as [Appforms](https://github.com/Sajaki/Appforms) but with added functionality:
