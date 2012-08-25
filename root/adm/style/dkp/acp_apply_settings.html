@@ -98,7 +98,7 @@
 	    <td><input type="text" name="template_name" id="template_name" size="50" maxlength="50" class="input" /></td>
 	    <td>
 	     <select name="new_applyforum_id" id="new_applyforum_id" class="input" >
-    		{apptemplatelist.FORUM_OPTIONS}
+    		{ADDTEMPLATEFORUM_OPTIONS}
      	</select>
      </td>
 	    
@@ -109,23 +109,21 @@
 	</table>
 
   	<p class="quick">
-		<input type="submit" name="apptemplateadd" value="{L_ADD}" class="button1" />
+		<input type="submit" name="apptemplateadd" id="apptemplateadd" value="{L_ADD}" class="button1" />
 	</p>
 </fieldset>
 
-<!-- IF .apptemplate -->
+<!-- IF apptemplate -->
 
 <fieldset>	
 <legend>{L_APPLY_ACP_APPTEMPLATELINES}</legend>
 
 
 <input type="hidden" name="template_id_hidden" value="{TEMPLATE_ID}" />
-<!-- BEGIN apptemplatelist -->
     <select name="applytemplate_id" id="applytemplate_id" class="input" onchange="javascript:form.submit();" >
-   		 <option value="{apptemplatelist.ID}" {apptemplatelist.SELECTED} >{apptemplatelist.TEMPLATE_NAME}</option>
+<!-- BEGIN apptemplatelist -->
+   		 <option value="{apptemplatelist.ID}" {apptemplatelist.SELECTED} >{apptemplatelist.TEMPLATE_NAME}</option><!-- END apptemplatelist -->
   	</select>
-<!-- END apptemplatelist -->
-
 
 <dl>
 	<dt style= "width: 100%"><br/><br/><label>{L_APPLY_CHGMAND}</label><br/>{L_APPLY_CHGMAND_EXPLAIN}</dt>
@@ -189,7 +187,8 @@
 <table cellspacing="1">
 	<thead>
 	<tr>
-    <th style="width:30%; text-align:left">{L_TYPE}</th>
+    <th style="width:5%; text-align:left">{L_REQUIRED}</th>
+    <th style="width:25%; text-align:left">{L_TYPE}</th>
     <th style="width:20%; text-align:left">{L_ACP_APPLY_HEADER}</th>
     <th style="width:20%; text-align:left">{L_ACP_APPLY_QUESTION}</th>
     <th style="width:20%; text-align:left">{L_ACP_APPLY_CONTENTS}</th>
@@ -197,8 +196,10 @@
   </thead>
   <tbody>
 	  <tr class="row3">
-	    <td>
+	  	<td>
          	<input type="checkbox" name="app_add_mandatory" value="True" />&nbsp;
+	  	</td>
+	    <td>
          	<select name="app_add_type" class="input" id="app_add_type">
 				<!-- BEGIN template_type -->
 				<option value="{template_type.TYPE}"{template_type.SELECTED}>{template_type.VALUE}</option>
@@ -224,7 +225,7 @@
 </table>
 
 <p class="quick">
-	<input type="submit" name="appformquestionadd" value="{L_ADD}" class="button1" />
+	<input type="submit" name="appformquestionadd" id="appformquestionadd" value="{L_ADD}" class="button1" />
 </p>
 
 </fieldset>

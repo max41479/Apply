@@ -37,6 +37,7 @@ class acp_dkp_apply extends bbDkp_Admin
 	  $user->add_lang(array('mods/dkp_common'));
 	  $user->add_lang(array('mods/apply'));
 	  
+	  $template_id_hidden = request_var('template_id_hidden', 0); 
 	  $form_key = 'dkp_apply';
 	  add_form_key($form_key);
 	  
@@ -51,7 +52,7 @@ class acp_dkp_apply extends bbDkp_Admin
                 $appformsettings = (isset($_POST['appformsettings'])) ? true : false;
 
                 $apptemplatedelete = (isset($_GET['apptemplatedelete'])) ? true : false;
-				$apptemplateadd = (isset($_GET['apptemplateadd'])) ? true : false;
+				$apptemplateadd = (isset($_POST['apptemplateadd'])) ? true : false;
 				
 				$appquestionmove_up = (isset($_GET['appquestionmove_up'])) ? true : false;
 				$appquestionmove_down = (isset($_GET['appquestionmove_down'])) ? true : false;
@@ -125,9 +126,55 @@ class acp_dkp_apply extends bbDkp_Admin
                
                if($apptemplateadd)
                {
-               	
-               	
+                    $sql_ary = array(
+                        'status'     	=> 1, 
+    				 	'template_name' => utf8_normalize_nfc (request_var('template_name', ' ', true )),
+                    	'forum_id'   	=> request_var('new_applyforum_id', 0)
+                    );
+                    
+                    // insert new question
+                    $sql = 'INSERT INTO ' . APPTEMPLATELIST_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+                    $db->sql_query($sql);
+                    
+                    trigger_error( $user->lang['APPLY_ACP_TEMPLATEADD']  .  $link, E_USER_NOTICE);
                }
+               
+		       /**
+		        * template questions
+		        */
+                if ($appformquestionadd) 
+                {
+					if (!check_form_key($form_key))
+					{
+						trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
+					}
+					
+                    $sql = 'SELECT max(qorder) + 1 as maxorder, lineid + 1 as maxline_id 
+                     	FROM ' . APPTEMPLATE_TABLE . ' WHERE template_id= ' . $template_id_hidden; 
+					$result = $db->sql_query($sql);
+					$max_order = (int) $db->sql_fetchfield('maxorder', 0, $result);
+					$maxline_id = (int) $db->sql_fetchfield('maxline_id', 0, $result);
+					
+					$db->sql_freeresult($result);
+					
+                    $sql_ary = array(
+                        'qorder'     	=> $max_order,
+                    	'template_id'	=> $template_id_hidden, 
+                    	'lineid'		=> $maxline_id,  
+    				 	'header'   		=> utf8_normalize_nfc (request_var('app_add_title', ' ', true )),
+                    	'question'   	=> utf8_normalize_nfc (request_var('app_add_question', ' ', true )),
+                        'options'   	=> utf8_normalize_nfc (request_var('app_add_options', ' ', true )),                    
+                        'type'       	=> utf8_normalize_nfc (request_var('app_add_type', ' ', true )),
+                        'mandatory' 	=> (isset($_POST['app_add_mandatory']) ? 'True': 'False')
+                    );
+                    
+                    // insert new question
+                    $sql = 'INSERT INTO ' . APPTEMPLATE_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+                    $db->sql_query($sql);
+                    
+                    trigger_error( $user->lang['APPLY_ACP_QUESTNADD']  .  $link, E_USER_NOTICE);
+                    
+                }
                
                $qid = request_var('id', 0);
       		   //user pressed question order arrows
@@ -206,33 +253,6 @@ class acp_dkp_apply extends bbDkp_Admin
                     trigger_error( $user->lang['APPLY_ACP_QUESTUPD']  . $link);    
                 }
                 
-
-                if ($appformquestionadd) 
-                {
-					if (!check_form_key($form_key))
-					{
-						trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
-					}
-					
-                    $sql = 'SELECT max(qorder) + 1 as maxorder FROM ' . APPTEMPLATE_TABLE; 
-					$result = $db->sql_query($sql);
-					$max_order = (int) $db->sql_fetchfield('maxorder', 0, $result);
-					$db->sql_freeresult($result);
-					
-                    $sql_ary = array(
-                        'qorder'     	=> $max_order, 
-    				 	'header'   		=> utf8_normalize_nfc (request_var('app_add_title', ' ', true )),
-                    	'question'   	=> utf8_normalize_nfc (request_var('app_add_question', ' ', true )),
-                        'options'   	=> utf8_normalize_nfc (request_var('app_add_options', ' ', true )),                    
-                        'type'       	=> utf8_normalize_nfc (request_var('app_add_type', ' ', true )),
-                        'mandatory' 	=> (isset($_POST['app_add_mandatory']) ? 'True': 'False')
-                    );
-                    
-                    // insert new question
-                    $sql = 'INSERT INTO ' . APPTEMPLATE_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-                    trigger_error( $user->lang['APPLY_ACP_QUESTNADD']  .  $link, E_USER_WARNING);
-                    
-                }
                 
          		/*
                  * color settings handler
@@ -275,7 +295,7 @@ class acp_dkp_apply extends bbDkp_Admin
 				$db->sql_freeresult($result);
 				
 				$textarr = generate_text_for_edit($text, $uid, $bitfield, 7);
-				
+				$applytemplate_id = request_var('applytemplate_id', 0); 
 				$result = $db->sql_query('SELECT * FROM ' . APPTEMPLATELIST_TABLE);
 				while ( $row = $db->sql_fetchrow($result) )
 				{
@@ -284,7 +304,7 @@ class acp_dkp_apply extends bbDkp_Admin
 						'STATUS'				=> $row['status'],
 					 	'TEMPLATE_NAME'			=> $row['template_name'],
 					 	'FORUMID'				=> $row['forum_id'],
-					 	'SELECTED'				=> (request_var('applytemplate_id', 0) == $row['template_id']) ? ' selected = "selected"' : '', 
+					 	'SELECTED'				=> ($applytemplate_id == $row['template_id']) ? ' selected = "selected"' : '', 
 						'FORUM_OPTIONS' 		=> make_forum_select($row['forum_id'],false, false, true),
 					 	'U_DELETE_TEMPLATE'		=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;apptemplatedelete=1&amp;template_id={$row['template_id']}"),
 					 ));
@@ -292,7 +312,8 @@ class acp_dkp_apply extends bbDkp_Admin
 				$db->sql_freeresult($result);
 				
 			    $template->assign_vars(array(
-			    	'TEMPLATE_ID'			=> request_var('applytemplate_id', 0), 
+			    	'TEMPLATE_ID'			=> $applytemplate_id, 
+			    	'ADDTEMPLATEFORUM_OPTIONS' 	=> make_forum_select(0,false, false, true),
                 	'WELCOME_MESSAGE' 		=> $textarr['text'],
                 	'REALM'        			=> str_replace("+", " ", $config['bbdkp_apply_realm']), 
                 	'PUBLIC_YES_CHECKED' 	=> ( $config['bbdkp_apply_visibilitypref'] == '1' ) ? ' checked="checked"' : '',
@@ -360,7 +381,7 @@ class acp_dkp_apply extends bbDkp_Admin
                 	));
                 }
                 
-                $sql = 'SELECT * FROM ' . APPTEMPLATE_TABLE . ' ORDER BY qorder';
+                $sql = 'SELECT * FROM ' . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $applytemplate_id . '  ORDER BY qorder ';
                 $result = $db->sql_query($sql);
                 while ($row = $db->sql_fetchrow($result)) 
                 {
