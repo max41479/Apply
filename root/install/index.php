@@ -272,7 +272,9 @@ $versions = array(
             array(
               		$table_prefix . 'bbdkp_apptemplatelist' , array(
 						'COLUMNS'		=> array(
-							'templateid'	=> array('INT:8', NULL, 'auto_increment'),
+							'template_id'	=> array('INT:8', NULL, 'auto_increment'),
+							'template_name'	=> array('VCHAR_UNI:255', ''),
+							'forum_id'		=> array('INT:8', 0),
 							'status'		=> array('BOOL', 0),
 						),
 						'PRIMARY_KEY'	=> 'templateid',),
@@ -283,15 +285,25 @@ $versions = array(
 			array($table_prefix . 'bbdkp_apptemplatelist' ,
 					array(
 							array(
-									'templateid' => 1, 
+									'template_id' => 1, 
+									'template_name'	=> 'Default',
+									'forum_id'	=> '2',
 									'status' => 1)
 					)),
 		),			
 					
 		'table_column_add' => array(
-				array($table_prefix . 'bbdkp_apptemplate', 'templateid' , array('UINT', 0)),
+				array($table_prefix . 'bbdkp_apptemplate', 'template_id' , array('UINT', 0)),
 				array($table_prefix . 'bbdkp_apptemplate', 'lineid' , array('UINT', 0)),
 		),
+		
+		'config_add' => array(
+				array('bbdkp_apply_visibilitypref'),
+				array('bbdkp_apply_simplerecruit' ),
+				array('bbdkp_apply_forum_id_private'),
+				array('bbdkp_apply_forum_id_public'),
+				array('bbdkp_apply_forumchoice', ),
+			),
 			
 		'custom' => array('tableupd136', 'applyupdater', 'bbdkp_caches'),
 		),
@@ -414,9 +426,9 @@ function tableupd136($action, $version)
 			{
 				case '1.3.6':
 					//insert values in new columns
-					$db->sql_query('UPDATE ' . $table_prefix . 'bbdkp_apptemplate SET templateid = 1, lineid = id');
+					$db->sql_query('UPDATE ' . $table_prefix . 'bbdkp_apptemplate SET template_id = 1, lineid = id');
 					// make new unique composite key 
-					$db->sql_query('CREATE UNIQUE INDEX template ON ' . $table_prefix . 'bbdkp_apptemplate (templateid, lineid) ');
+					$db->sql_query('CREATE UNIQUE INDEX template ON ' . $table_prefix . 'bbdkp_apptemplate (template_id, lineid) ');
 					break;
 			}
 			break;
