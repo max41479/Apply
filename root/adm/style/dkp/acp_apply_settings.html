@@ -42,31 +42,8 @@
 	   </select>
 	   </dd>
 	</dl>
-	   
-	<p class="quick">
-		<input type="submit" name="savearm" value="{L_UPDATE}" class="button1" />
-	</p>
-
-
-
-</fieldset>
-
-
 	
-<fieldset>
-<legend>{L_APPLY_ACP_PRISETTING}</legend>
-<br />
-  
- 
- 
-   <dl>
-    <dt><label>{L_APPLY_ACP_FORUM_CHOICE}</label><br />{L_APPLY_ACP_FORUM_CHOICE_EXPLAIN}</dt>
-    <dd> 
-    	<input type="radio" name="forumchoice" value="1"{FORUM_CHOICE_YES_CHECKED} />&nbsp;{L_YES}&nbsp;
-    	<input type="radio" name="forumchoice" value="0"{FORUM_CHOICE_NO_CHECKED} />&nbsp;{L_NO}
-     </dd>
-   </dl>
-   
+	   
    <dl>
     <dt><label>{L_APPLY_ACP_GUESTPOST}</label><br/>{L_APPLY_ACP_GUESTPOST_EXPLAIN}</dt>
     <dd>
@@ -77,41 +54,82 @@
      </select>
      </dd>
   </dl>
-  	
+	   
+	<p class="quick">
+		<input type="submit" name="appformsettings" value="{L_UPDATE}" class="button1" />
+	</p>
+
+</fieldset>
+
+
+<fieldset>
+<legend>{L_APPLY_ACP_APPTEMPLATELIST}</legend>
 
 	<table cellspacing="1">
 	<thead>
 	  <tr>
 	    <th style="text-align:left; width: 10%; white-space: nowrap;">{L_ACTION}</th>
 	    <th style="text-align:left; width: 20%; white-space: nowrap;">{L_ID}</th>
-	    <th style="text-align:left; width: 70%; white-space: nowrap;">{L_NAME}</th>
+	    <th style="text-align:left; width: 50%; white-space: nowrap;">{L_NAME}</th>
+	    <th style="text-align:left; width: 20%; white-space: nowrap;">{L_FORUM}</th>
 	  </tr>
 	  </thead>
 	<tbody>
 	  <!-- BEGIN apptemplatelist -->
-	  <tr
-	  <!-- IF apptemplatelist.S_ROW_COUNT is even --> class="row1"><!-- ELSE --> class="row2"><!-- ENDIF -->
+	  <!-- IF apptemplatelist.S_ROW_COUNT is even --> <tr class="row1"><!-- ELSE --> <tr class="row2"><!-- ENDIF -->
 	    <td>
 			<a href="{apptemplatelist.U_DELETE_TEMPLATE}">{ICON_DELETE}</a>
 		</td>
 	    <td>{apptemplatelist.ID}</td>
-	    <td>{apptemplatelist.NAME}</td>
+	    <td>{apptemplatelist.TEMPLATE_NAME}</td>
+	    <td>
+	     <select name="applyforum_id" id="applyforum_id" class="input" >
+    		{apptemplatelist.FORUM_OPTIONS}
+     	</select>
+    	</td>
 	  </tr>
 	  <!-- END apptemplatelist -->
+
+	  <tr class="row3">
+	    <td>
+		</td>
+		<td>
+		</td>
+	    <td><input type="text" name="template_name" id="template_name" size="50" maxlength="50" class="input" /></td>
+	    <td>
+	     <select name="new_applyforum_id" id="new_applyforum_id" class="input" >
+    		{apptemplatelist.FORUM_OPTIONS}
+     	</select>
+     </td>
+	    
+	  </tr>
+
 	  </tbody>
+
 	</table>
 
   	<p class="quick">
-		<input type="submit" name="savepri" value="{L_UPDATE}" class="button1" />
+		<input type="submit" name="apptemplateadd" value="{L_ADD}" class="button1" />
 	</p>
-	
 </fieldset>
 
-<fieldset>
-<legend>{L_APPLY_ACP_APPTEMPLATEUPD}</legend>
-	<dl>
-		<dt style= "width: 100%"><label>{L_APPLY_CHGMAND}</label><br/>{L_APPLY_CHGMAND_EXPLAIN}</dt>
-	</dl>
+<!-- IF .apptemplate -->
+
+<fieldset>	
+<legend>{L_APPLY_ACP_APPTEMPLATELINES}</legend>
+
+
+<input type="hidden" name="template_id_hidden" value="{TEMPLATE_ID}" />
+<!-- BEGIN apptemplatelist -->
+    <select name="applytemplate_id" id="applytemplate_id" class="input" onchange="javascript:form.submit();" >
+   		 <option value="{apptemplatelist.ID}" {apptemplatelist.SELECTED} >{apptemplatelist.TEMPLATE_NAME}</option>
+  	</select>
+<!-- END apptemplatelist -->
+
+
+<dl>
+	<dt style= "width: 100%"><br/><br/><label>{L_APPLY_CHGMAND}</label><br/>{L_APPLY_CHGMAND_EXPLAIN}</dt>
+</dl>
 <table cellspacing="1">
 	<thead>
 	<tr>
@@ -122,6 +140,7 @@
     <th style="width:20%; text-align:center">{L_ACP_APPLY_CONTENTS}</th>
   </tr>
   </thead>
+  
   <tbody>
    <!-- BEGIN apptemplate -->
 	  <!-- IF apptemplate.S_ROW_COUNT is even -->
@@ -130,10 +149,10 @@
 	  <tr class="row2">
 	  <!-- ENDIF -->
 	    <td style="width:5%; text-align:center">
-	    <!-- IF apptemplate.QORDER <= 1 and not PREVIOUS_PAGE -->{ICON_MOVE_UP_DISABLED}<!-- ELSE --><a href="{apptemplate.U_MOVE_UP}">{ICON_MOVE_UP}</a><!-- ENDIF -->
+	    <!-- IF apptemplate.QORDER <= 1 and not PREVIOUS_PAGE -->{ICON_MOVE_UP_DISABLED}<!-- ELSE --><a href="{apptemplate.U_APPQUESTIONMOVE_UP}">{ICON_MOVE_UP}</a><!-- ENDIF -->
 		<!-- IF apptemplate.S_LAST_ROW and not NEXT_PAGE --> {ICON_MOVE_DOWN_DISABLED}
-		<!-- ELSE --><a href="{apptemplate.U_MOVE_DOWN}">{ICON_MOVE_DOWN}</a>
-		<!-- ENDIF --><a href="{apptemplate.U_DELETE}">{ICON_DELETE}</a>
+		<!-- ELSE --><a href="{apptemplate.U_APPQUESTIONMOVE_DOWN}">{ICON_MOVE_DOWN}</a>
+		<!-- ENDIF --><a href="{apptemplate.U_APPQUESTIONDELETE}">{ICON_DELETE}</a>
 		</td>
 	    <td style="width:20%; text-align:left">
 	    <input type="checkbox" name="q_mandatory[{apptemplate.ID}]" value="True" {apptemplate.DISABLED} {apptemplate.CHECKED} />&nbsp;
@@ -158,15 +177,11 @@
 	  <!-- END apptemplate -->
 	  </tbody>
 </table>
-<p class="quick">
-	<input type="submit" name="update" value="{L_UPDATE}" class="button1" />
-</p>
-
-</fieldset>
+	<p class="quick">
+		<input type="submit" name="appformquestionupdate" value="{L_UPDATE}" class="button1" />
+	</p>
 
 
-<fieldset>
-<legend>{L_APPLY_ACP_APPTEMPLATENEW}</legend>
 	<dl>
 		<dt style= "width: 100%"><label>{L_APPLY_ACP_NEWQUESTION}</label><br />{L_APPLY_ACP_NEWQUESTION_EXPLAIN}</dt>
 	</dl>
@@ -181,7 +196,7 @@
   </tr>
   </thead>
   <tbody>
-	  <tr class="row2">
+	  <tr class="row3">
 	    <td>
          	<input type="checkbox" name="app_add_mandatory" value="True" />&nbsp;
          	<select name="app_add_type" class="input" id="app_add_type">
@@ -209,9 +224,11 @@
 </table>
 
 <p class="quick">
-	<input type="submit" name="add" value="{L_ADD}" class="button1" />
+	<input type="submit" name="appformquestionadd" value="{L_ADD}" class="button1" />
 </p>
+
 </fieldset>
+<!-- ENDIF -->
 
 <script type="text/javascript" charset="utf-8">
  $(document).ready(function() {

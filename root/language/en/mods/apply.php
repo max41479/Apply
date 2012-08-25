@@ -60,19 +60,7 @@ To help us with your application please answer the questions below. Enter your c
 'APPLY_TALENT'  => 'Talent: ',
 'APPLY_PROFF'  =>  'Profession: ',
 
-/***** ACP Privacy settings *****/
-'APPLY_ACP_PRISETTING'		=> 'Privacy Settings',
-'APPLY_ACP_FORUM_PUB'		=> 'Recruitment forum (Public) ',
-'APPLY_ACP_FORUM_PRI'		=> 'Recruitment forum (Private) ',
-'APPLY_ACP_FORUM_PRI_EXPLAIN'	=> 'Set Group forum permission of Guests and Applicants to: <br />"Post"->"Can start new topics"->"Yes",<br/> "Can read forum" -> "No" ',
-'APPLY_ACP_FORUM_PREF'		=> 'User preference (Private or Public) ',
-'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'decides in which forum the application will be published.',
-'APPLY_ACP_FORUM_CHOICE' =>  'Allow User to choose Privacy setting ?',
-'APPLY_ACP_FORUM_CHOICE_EXPLAIN' =>  'If your guild does not allow public applications, set this to "No"',
-'APPLY_ACP_PUBLIC'			=> 'Public',
-'APPLY_ACP_PRIVATE'			=> 'Private',
-'APPLY_ACP_GUESTPOST' 		=> 'Can guests posts? :',
-'APPLY_ACP_GUESTPOST_EXPLAIN' 	=> 'If you set Guest posting On, don’t forget to set "Enable visual confirmation for guest postings:" to "Yes".' ,  
+'CONFIRM_DELETE_TEMPLATE'	=> 'Please confirm template deletion. ', 
 
 /***** ACP Armory settings *****/
 'APPLY_ACP_TEMPLATESETTING'	=> 'Template Settings',
@@ -81,9 +69,15 @@ To help us with your application please answer the questions below. Enter your c
 'APPLY_ACP_CHARNAME' 		=> 'Character name',
 'APPLY_ACP_REALM' 			=> 'Realm',
 'APPLY_ACP_REGION' 			=> 'Region',
-'APPLY_ACP_APPTEMPLATEUPD'	=> 'Update Application template', 
+'APPLY_ACP_APPTEMPLATELIST'	=> 'Application templates', 
 
 /***** ACP template settings *****/
+'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'decides in which forum the application will be published.',
+'APPLY_ACP_FORUM_PUB'		=> 'Forum',
+'APPLY_ACP_PUBLIC'			=> 'Public',
+'APPLY_ACP_GUESTPOST' 		=> 'Can guests posts? :',
+'APPLY_ACP_GUESTPOST_EXPLAIN' 	=> 'If you set Guest posting On, don’t forget to set "Enable visual confirmation for guest postings:" to "Yes".' ,  
+
 'ACP_APPLY_MANDATORY'  		 => 'Mandatory',
 'ACP_APPLY_HEADER'  		 => 'Title',
 'ACP_APPLY_QUESTION'  		 => 'Question',
@@ -94,7 +88,7 @@ To help us with your application please answer the questions below. Enter your c
 'ACP_APPLY_GSEL'  			 => 'add to selected guild',
 
 'ACP_DKP_APPLY_EXPLAIN'  	=> 'Here you can set all preferences of the Recruitment Mod',
-'APPLY_ACP_APPTEMPLATENEW'  => 'Application template New item', 
+'APPLY_ACP_APPTEMPLATELINES'  => 'Template lines', 
 'APPLY_CHGMAND' 			=> 'Change Questionnaire here. ',
 'APPLY_CHGMAND_EXPLAIN' 	=> 'Change the type mandatory check, question type (Inputbox, Textbox, Textbox with bbcode buttons, selectbox, radiobuttons or checkboxes), Title and question.  <br /> In case of a Selectbox, radiobutton or checkbox, separate the options with a comma "," with no spaces.(ex. 1,2,3,4,5") ',
 'APPLY_ACP_NEWQUESTION' 	=> 'Enter new questions here.',

@@ -591,7 +591,7 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 			
 			$template->assign_block_vars('game_row', array(
 				'VALUE' => $gameid,
-				'SELECTED' => ( (isset($member['game_id']) ? $member['game_id'] : '') == $gameid ) ? ' selected="selected"' : '',
+				'SELECTED' => ((isset($member['game_id']) ? $member['game_id'] : '') == $gameid ) ? ' selected="selected"' : '',
 				'OPTION'   => $gamename, 
 			));
 		}
@@ -668,12 +668,12 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 	{
 		$template->assign_block_vars('apptemplate', array(
 				'QORDER'			=> $row['qorder'],
+				'S_MANDATORY'		=> ($row['mandatory'] =='True') ? true:false ,
 				'TITLE'				=> $row['header'],
 				'QUESTION'			=> $row['question'],
 				'TYPE'   			=> $row['type'],
 				'DOMNAME'			=> 'templatefield_' . $row['qorder'],
 				'TABINDEX'			=> $row['qorder'],
-				'S_MANDATORY' 		=> ($row['mandatory'] == 'True') ? true :false, 
 				)
 		);
 		
@@ -681,7 +681,7 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 		{
 			case 'Selectbox':
 			         $select_option = explode(',', $row['options']);
-			         foreach($select_option as $value) 
+			         foreach($select_option as  $key =>  $value) 
 			         {
 			         	$template->assign_block_vars('apptemplate.selectboxoptions', array(
 		         			'KEY'		=> $value,
@@ -691,7 +691,7 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 				break;
 			case 'Radiobuttons':
 				$radio_option = explode(',', $row['options']);
-				foreach($radio_option as $value)
+				foreach($radio_option as $key => $value)
 				{
 					$template->assign_block_vars('apptemplate.radiobuttonoptions', array(
 							'KEY'		=> $value,
@@ -701,7 +701,7 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha)
 				break;
 			case 'Checkboxes':
 				$check_option = explode(',', $row['options']);
-				foreach($check_option as $value)
+				foreach($check_option as  $key => $value)
 				{
 					$template->assign_block_vars('apptemplate.checkboxoptions', array(
 							'KEY'		=> $value,
@@ -845,3 +845,92 @@ function check_apply_form_access()
 		
 	
 }
+
+/**
+ * sends a personal message with the contents of the form
+ */
+function pm_sendform()
+{
+	global $user, $config;
+	global $phpEx, $phpbb_root_path;
+
+	include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
+	include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
+	include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+
+	//@todo find addressee
+	$emailrecipients = array();
+	$messenger = new messenger();
+	foreach($rpm->send_user_data as $id => $row)
+	{
+		$data=array();
+		// get template
+		switch ($trigger)
+		{
+			case 1:
+				$messenger->template('raidplan_add', $row['user_lang']);
+				$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+				break;
+			case 2:
+				$messenger->template('raidplan_update', $row['user_lang']);
+				$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UPDRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' .$user->format_date($this->start_time, $config['rp_date_time_format'], true);
+				break;
+			case 3:
+				$messenger->template('raidplan_delete', $row['user_lang']);
+				$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['DELRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+				break;
+		}
+		 
+		$userids = array($this->poster);
+		$rlname = array();
+		user_get_id_name($userids, $rlname);
+		 
+		$messenger->assign_vars(array(
+				'RAIDLEADER'		=> $rlname[$this->poster],
+				'USERNAME'			=> htmlspecialchars_decode($row['username']),
+				'EVENT_SUBJECT'		=> $subject,
+				'EVENT'				=> $this->eventlist->events[$this->event_type]['event_name'],
+				'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
+				'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
+				'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
+				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
+				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;raidplanid=".$this->id
+		));
+			
+		$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
+		$messenger->msg = str_replace("\r\n", "\n", $messenger->msg);
+			
+		$messenger->msg = utf8_normalize_nfc($messenger->msg);
+		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+		$allow_bbcode = $allow_smilies = $allow_urls = true;
+		generate_text_for_storage($messenger->msg, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+		$messenger->msg = generate_text_for_display($messenger->msg, $uid, $bitfield, $options);
+
+		$data = array(
+				'address_list'      => array('u' => array($row['user_id'] => 'to')),
+				'from_user_id'      => $user->data['user_id'],
+				'from_username'     => $user->data['username'],
+				'icon_id'           => 0,
+				'from_user_ip'      => $user->data['user_ip'],
+
+				'enable_bbcode'     => true,
+				'enable_smilies'    => true,
+				'enable_urls'       => true,
+				'enable_sig'        => true,
+					
+				'message'           => $messenger->msg,
+				'bbcode_bitfield'   => $this->bbcode['bitfield'],
+				'bbcode_uid'        => $this->bbcode['uid'],
+		);
+			
+		if($config['rp_pm_rpchange'] == 1 &&  (int) $row['user_allow_pm'] == 1)
+		{
+			// send a PM
+			submit_pm('post',$subject, $data, false);
+		}
+			
+	}
+
+}
+
+
