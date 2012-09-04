@@ -5,7 +5,7 @@
 * @package bbDkp
 * @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.3.6
+* @version 1.3.7
 * 
 */
  
@@ -59,8 +59,9 @@ To help us with your application please answer the questions below. Enter your c
 'APPLY_RACE'  => 'Race: ',
 'APPLY_TALENT'  => 'Talent: ',
 'APPLY_PROFF'  =>  'Profession: ',
-
-'CONFIRM_DELETE_TEMPLATE'	=> 'Please confirm template deletion. ', 
+'TEMPLATE'	=> 'Template', 
+'CONFIRM_DELETE_TEMPLATE'	=> 'Please confirm deletion of template %s. ', 
+'ALERT_TEMPLATENAME_EMPTY'	=> 'Template name can’t be empty',
 
 /***** ACP Armory settings *****/
 'APPLY_ACP_TEMPLATESETTING'	=> 'Template Settings',
@@ -70,9 +71,11 @@ To help us with your application please answer the questions below. Enter your c
 'APPLY_ACP_REALM' 			=> 'Realm',
 'APPLY_ACP_REGION' 			=> 'Region',
 'APPLY_ACP_APPTEMPLATELIST'	=> 'Application templates', 
+'APPLY_ACP_APPTEMPLATELIST_EXPLAIN'	=> 'the template ID is needed as a parameter for apply.php : for example template id 7 is called by url http://www.myguild.org/apply.php?template_id=7; make as many links on your forum as you have templates. ',
+'TEMPLATE_ID'				=> 'Template ID', 
 
 /***** ACP template settings *****/
-'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'decides in which forum the application will be published.',
+'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'decides in which forum the application will be published. Set up the forum acccess priveleges beforehand.',
 'APPLY_ACP_FORUM_PUB'		=> 'Forum',
 'APPLY_ACP_PUBLIC'			=> 'Public',
 'APPLY_ACP_GUESTPOST' 		=> 'Can guests posts? :',
@@ -82,8 +85,7 @@ To help us with your application please answer the questions below. Enter your c
 'ACP_APPLY_HEADER'  		 => 'Title',
 'ACP_APPLY_QUESTION'  		 => 'Question',
 'ACP_APPLY_CONTENTS'  		 => 'Select Options',
-'ACP_APPLY_WHATGUILD'  		 => 'Select how candidate will be added to memberlist. ',
-'ACP_APPLY_WHATGUILD_EXPLAIN' => 'candidate will be added to lowest rank if added to guild.',
+'ACP_APPLY_WHATGUILD_EXPLAIN' => 'Select the Guild to which a candidate will be added.',
 'ACP_APPLY_GNONE'  			 => 'add to None',
 'ACP_APPLY_GSEL'  			 => 'add to selected guild',
 

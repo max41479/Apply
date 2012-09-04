@@ -7,7 +7,7 @@
 * @author Kapli
 * @copyright (c) 2009 bbdkp http://code.google.com/p/bbdkp/
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.3.6
+* @version 1.3.7
 * 
 */
 
@@ -104,23 +104,29 @@ class acp_dkp_apply extends bbDkp_Admin
                 $applytemplate_id = 0; $i=0;
                 if(!isset ($_POST['applytemplate_id'] ))
                 {
-	                $result = $db->sql_query('SELECT * FROM ' . APPTEMPLATELIST_TABLE);
-	                while ( $row = $db->sql_fetchrow($result) )
-	                {
-	                	if($i==0)
-	                	{
-	                		$applytemplate_id = $row['template_id'];
+                	$applytemplate_id = request_var('template_id', 0);
+                	if ($applytemplate_id == 0)
+                	{
+                		//get first row
+		                $result = $db->sql_query('SELECT * FROM ' . APPTEMPLATELIST_TABLE);
+		                while ( $row = $db->sql_fetchrow($result) )
+		                {
+		                	if($i==0)
+		                	{
+		                		$applytemplate_id = $row['template_id'];
+		                	}
+		                	$i += 1;
+		                
 	                	}
-	                	$i += 1;
-	                }
-	                $db->sql_freeresult($result);
+	                	$db->sql_freeresult($result);
+                	}
+                	
+                	
                 }
                 else
                 {
                 	$applytemplate_id = request_var('applytemplate_id', 0); 
                 }
-                
-                //echo $applytemplate_id;
                 
                 $result = $db->sql_query('SELECT * FROM ' . APPTEMPLATELIST_TABLE );
                 while ( $row = $db->sql_fetchrow($result) )
@@ -173,7 +179,11 @@ class acp_dkp_apply extends bbDkp_Admin
                 	));
                 }
 
-                $sql = 'SELECT * FROM ' . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $applytemplate_id . '  ORDER BY qorder ';
+                $sql = 'SELECT * FROM ' . APPTEMPLATE_TABLE . ' a 
+                		INNER JOIN ' . APPTEMPLATELIST_TABLE . ' b
+		                ON b.template_id = a.template_id 
+		                WHERE a.template_id = ' . $applytemplate_id . '  
+		                ORDER BY a.qorder ';
                 $result = $db->sql_query($sql);
                 while ($row = $db->sql_fetchrow($result))
                 {
@@ -185,6 +195,7 @@ class acp_dkp_apply extends bbDkp_Admin
                 
                 	$template->assign_block_vars('apptemplate', array(
                 			'QORDER'         => $row['qorder'] ,
+                			'TEMPLATE'		 => $row['template_name'],  
                 			'HEADER'      	 => $row['header'] ,
                 			'QUESTION'       => $row['question'] ,
                 			'MANDATORY'      => $row['mandatory'] ,
@@ -229,18 +240,7 @@ class acp_dkp_apply extends bbDkp_Admin
                 		'SELECTED' 	=> ('False' == $config['bbdkp_apply_guests']) ? ' selected="selected"' : '' ,
                 		'OPTION' 	=> 'False'));
                 
-                // where do we put candidate ?
-                $template->assign_block_vars('guild', array(
-                		'VALUE' 	=> '0' ,
-                		'SELECTED' 	=> ('0' == $config['bbdkp_apply_gchoice']) ? ' selected="selected"' : '' ,
-                		'OPTION' 	=> $user->lang['ACP_APPLY_GNONE']));
-                
-                $template->assign_block_vars('guild', array(
-                		'VALUE' 	=> '1' ,
-                		'SELECTED' 	=> ('1' == $config['bbdkp_apply_gchoice']) ? ' selected="selected"' : '' ,
-                		'OPTION' 	=> $user->lang['ACP_APPLY_GSEL']));
-
-                $template->assign_vars(array(
+                 $template->assign_vars(array(
                 		'TEMPLATE_ID'			=> $applytemplate_id,
                 		'ADDTEMPLATEFORUM_OPTIONS' 	=> make_forum_select(0,false, false, true),
                 		'WELCOME_MESSAGE' 		=> $textarr['text'],
@@ -299,7 +299,6 @@ class acp_dkp_apply extends bbDkp_Admin
                     set_config('bbdkp_apply_guests', request_var('guests', ''), true );	
                     set_config('bbdkp_apply_realm', utf8_normalize_nfc(str_replace(" ", "+", request_var('realm','', true)))  , true );	
                     set_config('bbdkp_apply_region', request_var('region', ''), true );	
-					set_config('bbdkp_apply_gchoice', request_var('guild_choice', ''), true );	
                     $cache->destroy('config');
                     
                     meta_refresh(1, $this->u_action);
@@ -330,7 +329,7 @@ class acp_dkp_apply extends bbDkp_Admin
 							));
 						
 						$template->assign_vars ( array ('S_HIDDEN_FIELDS' => $s_hidden_fields ) );
-						confirm_box ( false, $user->lang ['CONFIRM_DELETE_TEMPLATE'], $s_hidden_fields );
+						confirm_box ( false,  sprintf($user->lang ['CONFIRM_DELETE_TEMPLATE'], $applytemplate_id ), $s_hidden_fields );
 					}
                }
 

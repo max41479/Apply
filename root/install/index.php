@@ -3,7 +3,7 @@
 * Apply Installer
 * Powered by bbDkp (c) 2009 www.bbdkp.com
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.3.6
+* @version 1.3.7
 *
 */
 
@@ -309,6 +309,14 @@ $versions = array(
 			
 		'custom' => array('tableupd136', 'applyupdater', 'bbdkp_caches'),
 		),
+		
+	'1.3.7' => array(
+		'config_remove' => array(
+				array('bbdkp_apply_gchoice', ),
+			),
+			
+	),		
+		
 		
 );
 

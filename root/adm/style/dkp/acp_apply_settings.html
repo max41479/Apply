@@ -1,20 +1,49 @@
 <!-- INCLUDE overall_header.html -->
+
+<script type="text/javascript">
+// <![CDATA[ 
+
+function check_addtemplate()
+{
+	if (document.getElementById("template_name").value.length < 1)
+    {
+        alert('{L_ALERT_TEMPLATENAME_EMPTY}');
+        return false;
+    }
+    return true;
+}
+
+//]]>
+</script>
 <a name="maincontent"></a>
 
 <h1>{L_ACP_DKP_APPLY}&nbsp;{APPLY_VERS}</h1>
 
 <p>{L_ACP_DKP_APPLY_EXPLAIN}</p>
 
-<form method="post" action="{F_ADD_CONFIG}" id="acp_apply" onsubmit="return check_form(this)">
+<form method="post" action="{F_ADD_CONFIG}" id="acp_apply">
 
 <fieldset>
 <legend>{L_APPLY_ACP_APPTEMPLATELIST}</legend>
+
+<dl>
+	<dt style= "width: 100%"><label>{L_TEMPLATE_ID}:</label>{L_APPLY_ACP_APPTEMPLATELIST_EXPLAIN}</dt>
+</dl>
+
+<dl>
+	<dt style= "width: 100%"><label>{L_FORUM}:</label>{L_APPLY_ACP_FORUM_PREF_EXPLAIN}</dt>
+</dl>
+
+
+<dl>
+	<dt style= "width: 100%"><label>{L_GUILD}:</label>{L_ACP_APPLY_WHATGUILD_EXPLAIN}</dt>
+</dl>
 
 	<table cellspacing="1" style="width:60%">
 	<thead>
 	  <tr>
 	    <th style="text-align:left; width: 5%; white-space: nowrap;">{L_ACTION}</th>
-	    <th style="text-align:left; width: 5%; white-space: nowrap;">{L_ID}</th>
+	    <th style="text-align:left; width: 5%; white-space: nowrap; color:#FF3333">{L_TEMPLATE_ID}</th>
 	    <th style="text-align:left; width: 19%; white-space: nowrap;">{L_NAME}</th>
 	    <th style="text-align:left; width: 70%; white-space: nowrap;">{L_FORUM}</th>
 	    <th>{L_GUILD}</th>
@@ -26,8 +55,8 @@
 	    <td>
 			<a href="{apptemplatelist.U_DELETE_TEMPLATE}">{ICON_DELETE}</a>
 		</td>
-	    <td>{apptemplatelist.ID}</td>
-	    <td>{apptemplatelist.TEMPLATE_NAME}</td>
+	    <td><strong>{apptemplatelist.ID}</strong></td>
+	    <td><strong>{apptemplatelist.TEMPLATE_NAME}</strong></td>
 	    <td>
     		{apptemplatelist.FORUMID}
     	</td>
@@ -39,7 +68,7 @@
 
 	  <tr class="row3">
 	    <td>
-				<input type="submit" name="apptemplateadd" id="apptemplateadd" value="{L_ADD}" class="button1" />
+			<input type="submit" name="apptemplateadd" id="apptemplateadd" value="{L_ADD}" class="button1" onclick="return check_addtemplate();"/>
 		</td>
 		<td>
 		</td>
@@ -63,23 +92,31 @@
 	</table>
 <br />
 
+</fieldset>
+</form>
 
 <!-- IF .apptemplatelist -->
+<form method="post" action="{F_ADD_CONFIG}" id="acp_apply">
 
+<fieldset>
 	
 <legend>{L_APPLY_ACP_APPTEMPLATELINES}</legend>
 
 <input type="hidden" name="template_id_hidden" value="{TEMPLATE_ID}" />
+
     <select name="applytemplate_id" id="applytemplate_id" class="input" onchange="javascript:form.submit();" >
-<!-- BEGIN apptemplatelist -->
+	<!-- BEGIN apptemplatelist -->
    		 <option value="{apptemplatelist.ID}" {apptemplatelist.SELECTED} >{apptemplatelist.TEMPLATE_NAME}</option><!-- END apptemplatelist -->
   	</select>
 <dl>
 	<dt style= "width: 100%"><label>{L_APPLY_CHGMAND}</label><br/>{L_APPLY_CHGMAND_EXPLAIN}</dt>
 </dl>
+
+<!-- IF .apptemplate -->
 <table cellspacing="1">
 	<thead>
 	<tr>
+	<th style="width:8%; text-align:left">{L_TEMPLATE}</th>
 	<th style="width:8%; text-align:left">{L_ACTION}</th>
     <th style="width:17%; text-align:left">{L_TYPE}</th>
     <th style="width:20%; text-align:center">{L_ACP_APPLY_HEADER}</th>
@@ -95,6 +132,7 @@
 	  <!-- ELSE -->
 	  <tr class="row2">
 	  <!-- ENDIF -->
+	  	<td style="width:10%; text-align:left">{apptemplate.TEMPLATE}</td>
 	    <td style="width:5%; text-align:center">
 	    <!-- IF apptemplate.QORDER <= 1 and not PREVIOUS_PAGE -->{ICON_MOVE_UP_DISABLED}<!-- ELSE --><a href="{apptemplate.U_APPQUESTIONMOVE_UP}">{ICON_MOVE_UP}</a><!-- ENDIF -->
 		<!-- IF apptemplate.S_LAST_ROW and not NEXT_PAGE --> {ICON_MOVE_DOWN_DISABLED}
@@ -127,7 +165,7 @@
 	<p class="quick">
 		<input type="submit" name="appformquestionupdate" value="{L_UPDATE}" class="button1" />
 	</p>
-
+<!-- ENDIF -->
 	
 <table cellspacing="1">
 	<thead>
@@ -200,18 +238,6 @@
 	   </dd>
 	</dl>
 	  
-	<dl>
-	  <dt><label>{L_ACP_APPLY_WHATGUILD}</label><br />{L_ACP_APPLY_WHATGUILD_EXPLAIN}</dt>
-	  <dd>
-	  <select name="guild_choice" class="input" id="guild_choice">
-	    <!-- BEGIN guild -->
-	   <option value="{guild.VALUE}"{guild.SELECTED}>{guild.OPTION}</option>
-	   <!-- END guild -->
-	   </select>
-	   </dd>
-	</dl>
-	
-	   
    <dl>
     <dt><label>{L_APPLY_ACP_GUESTPOST}</label><br/>{L_APPLY_ACP_GUESTPOST_EXPLAIN}</dt>
     <dd>
