@@ -80,14 +80,14 @@ To help us with your application please answer the questions below. Enter your c
 'APPLY_ACP_PUBLIC'			=> 'Public',
 'APPLY_ACP_GUESTPOST' 		=> 'Can guests posts? :',
 'APPLY_ACP_GUESTPOST_EXPLAIN' 	=> 'If you set Guest posting On, don’t forget to set "Enable visual confirmation for guest postings:" to "Yes".' ,  
-
 'ACP_APPLY_MANDATORY'  		 => 'Mandatory',
 'ACP_APPLY_HEADER'  		 => 'Title',
 'ACP_APPLY_QUESTION'  		 => 'Question',
 'ACP_APPLY_CONTENTS'  		 => 'Select Options',
-'ACP_APPLY_WHATGUILD_EXPLAIN' => 'Select the Guild to which a candidate will be added.',
+'ACP_APPLY_WHATGUILD_EXPLAIN' 	 => 'Select the Guild to which a candidate will be added.',
 'ACP_APPLY_GNONE'  			 => 'add to None',
 'ACP_APPLY_GSEL'  			 => 'add to selected guild',
+
 
 'ACP_DKP_APPLY_EXPLAIN'  	=> 'Here you can set all preferences of the Recruitment Mod',
 'APPLY_ACP_APPTEMPLATELINES'  => 'Template lines', 

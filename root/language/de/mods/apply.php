@@ -5,7 +5,7 @@
 * @package bbDkp
 * @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version $Id$
+* @version 1.3.7
 * @translation various authors, killerpommes
 * 
 */
@@ -60,20 +60,9 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'APPLY_RACE'  => 'Rasse: ',
 'APPLY_TALENT'  => 'Talente: ',
 'APPLY_PROFF'  =>  'Berufe: ',
-
-/***** ACP Privacy settings *****/
-'APPLY_ACP_PRISETTING'		=> 'Privatsphäre Einstellung',
-'APPLY_ACP_FORUM_PUB'		=> 'Bewerbungs Forum (öffentlich) ',
-'APPLY_ACP_FORUM_PRI'		=> 'Bewerbungs Forum (privat) ',
-'APPLY_ACP_FORUM_PRI_EXPLAIN'	=> 'Setze die Gruppenberechtigung für das Forum für Gäste/Bewerber auf: <br />"Post"->"Kann neue Beiträge schreiben"->"Ja",<br/> "Kann Forum lesen" -> "Nein" ',
-'APPLY_ACP_FORUM_PREF'		=> 'Nutzer Einstellung (privat oder öffentlich) ',
-'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'Entscheidet in welches Forum die Bewerbung geschrieben wird.',
-'APPLY_ACP_FORUM_CHOICE' =>  'Erlaube dem Nutzer die Auswahl "Privat"?',
-'APPLY_ACP_FORUM_CHOICE_EXPLAIN' =>  'Wenn deine Gilde keine privaten Bewerbungen erlaubt, setze diese Option auf "Nein"',
-'APPLY_ACP_PUBLIC'			=> 'öffentlich',
-'APPLY_ACP_PRIVATE'			=> 'privat',
-'APPLY_ACP_GUESTPOST' 		=> 'Können Gäste schreiben? :',
-'APPLY_ACP_GUESTPOST_EXPLAIN' 	=> 'Wenn die Option aktiviert ist, vergiss nicht die Option "Aktiviere visuelle Bestätigung für Gast Beiträge:" auf "Ja" zu setzen.' ,  
+'TEMPLATE'	=> 'Schablone', 
+'CONFIRM_DELETE_TEMPLATE'	=> 'Bitte bestätige die Löschung von Schablone %s. ', 
+'ALERT_TEMPLATENAME_EMPTY'	=> 'Name der Vorlage kann nicht leer sein',
 
 /***** ACP Armory settings *****/
 'APPLY_ACP_TEMPLATESETTING'	=> 'Formular Einstellungen',
@@ -82,18 +71,23 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'APPLY_ACP_CHARNAME' 		=> 'Charaktername',
 'APPLY_ACP_REALM' 		=> 'Server',
 'APPLY_ACP_REGION' 			=> 'Region',
-'APPLY_ACP_APPTEMPLATEUPD'	=> 'Aktualisiere Bewerbungsbogen', 
+'APPLY_ACP_APPTEMPLATEUPD'	=> 'Aktualisiere Bewerbungsbogen',
+'APPLY_ACP_APPTEMPLATELIST_EXPLAIN'	=> 'Die Vorlage ID wird benötigt als Parameter für apply.php : zb Schablone id 7 wird aufgerufen bei url http://www.myguild.org/apply.php?template_id=7; mache zoviel Schnittstellen wie du Vorlagen angemacht hast. ',
+'TEMPLATE_ID'				=> 'Template ID', 
 
 /***** ACP template settings *****/
+'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'Entscheidet in welches Forum die Bewerbung geschrieben wird.',
+'APPLY_ACP_FORUM_PUB'		=> 'Bewerbungs Forum (öffentlich) ',
+'APPLY_ACP_PUBLIC'			=> 'öffentlich',
+'APPLY_ACP_GUESTPOST' 		=> 'Können Gäste schreiben? :',
+'APPLY_ACP_GUESTPOST_EXPLAIN' 	=> 'Wenn die Option aktiviert ist, vergiss nicht die Option "Aktiviere visuelle Bestätigung für Gast Beiträge:" auf "Ja" zu setzen.' ,  
 'ACP_APPLY_MANDATORY'  		=> 'erforderlich',
 'ACP_APPLY_HEADER'  		=> 'Kopfzeile',
 'ACP_APPLY_QUESTION'  		 => 'Frage',
 'ACP_APPLY_CONTENTS'  		=> 'Wähle Optionen',
-'ACP_APPLY_WHATGUILD'  		 => 'Wie soll der Bewerber zur Mitgliederdatei hinzugefügt werden? ',
 'ACP_APPLY_WHATGUILD_EXPLAIN' => 'Bewerber bekommt den niedrigsten Rank falls er zur Gilde hinzugefügt wird.',
 'ACP_APPLY_GNONE'  			 => 'zu Keine hinzufügen',
 'ACP_APPLY_GSEL'  			 => 'zu ausgewählte Gilde hinzufügen',
-
 'ACP_DKP_APPLY_EXPLAIN'  	=> 'Hier kannst du alle Einstellungen zum Bewerbungsformular vornehmen.',
 'APPLY_ACP_APPTEMPLATENEW'  => 'Bewerbungsvorlage für neue Frage', 
 'APPLY_CHGMAND' 			=> 'Ändere bestehende Fragen hier. ',
@@ -102,6 +96,7 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'APPLY_ACP_NEWQUESTION_EXPLAIN' => 'Prüfe ob Pflichtfeld, gib die Ordnungszahl, Frage und Eingabeart an. Grenze verschiedene Optionen durch Komma "," ohne Leerzeichen voneinander ab.', 
 'APPLY_ACP_INPUTBOX' 		=> 'Eingabefeld',	
 'APPLY_ACP_TXTBOX' 			=> 'Textbox', 
+'APPLY_ACP_TXTBOXBBCODE'	=> 'Textbox mit bbcode',
 'APPLY_ACP_SELECTBOX' 		=> 'Auswahlbox (selectbox)',
 'APPLY_ACP_RADIOBOX' 		=> 'Auswahlknöpfe (radiobutton)',
 'APPLY_ACP_CHECKBOX' 		=> 'Kontrollkästchen (checkbox)',
@@ -115,10 +110,12 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'APPLY_ACP_TWOREALM' 		=> 'Du kannst keine 2 Server oder Charakternamen einrichten.', 
 'APPLY_ACP_QUESTUPD' 		=> 'Bewerbungsfragen aktualisiert',
 //addnew
-'APPLY_ACP_ORDQUEST' 		=> 'Du musst die Reihenfolge, Fragen und Optionen ausfüllen bevor die Frage gespeichert werden darf.',
+Ver'APPLY_ACP_ORDQUEST' 		=> 'Du musst die Reihenfolge, Fragen und Optionen ausfüllen bevor die Frage gespeichert werden darf.',
 'APPLY_ACP_QUESTNOTADD' 	=> 'Fehler : Frage wurde nicht gespeichert !', 
 'APPLY_ACP_QUESTNADD' 		=> 'Neue Frage wurde gespeichert !',   
 'APPLY_ACP_EXPLAINOPTIONS' 	=> 'Begrenze einzelne Optionen mit Komma "," ohne Leerzeichen.',  
+'APPLY_ACP_TEMPLATEADD' 	=> 'Neue Schablone gespeichert.', 
+'REQUIRED'					=> 'Erforderlich', 
 
 /** ACP settings for posting template **/
 'APPLY_COLORSETTINGS' 		=> 'Farbinstellungen',
