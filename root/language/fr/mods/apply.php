@@ -5,7 +5,7 @@
 * @package bbDkp
 * @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version $Id$
+* @version 1.3.7
 * 
 */
  
@@ -53,25 +53,15 @@ $lang = array_merge($lang, array(
 'APPLY_NAME' => ' Nom de caractère: ',
 'APPLY_QUESTION'  => 'Question ',
 'APPLY_ANSWER'  => 'Réponse ',
+'APPLY_REALM1' => 'Royaume: ',
 'APPLY_LEVEL'  => 'Niveau: ',
 'APPLY_CLASS'  => 'Classe: ',
 'APPLY_RACE'  => 'Race: ',
 'APPLY_TALENT'  => 'Talents: ',
 'APPLY_PROFF'  =>  'Proffessions: ',
-
-/***** ACP Privacy settings *****/
-'APPLY_ACP_PRISETTING'		=> 'Règlages vie privée',
-'APPLY_ACP_FORUM_PUB'		=> 'Forum de recrutement (public) ',
-'APPLY_ACP_FORUM_PRI'		=> 'Forum de recrutement (privé) ',
-'APPLY_ACP_FORUM_PRI_EXPLAIN'	=> 'Configure les droits d’accès de groupe pour le Forum pour les Visiteurs anonymes et utilisateurs insccrits: <br />"Post"->"Peut écrire"->"Oui",<br/> "Peut lire" -> "Non" ',
-'APPLY_ACP_FORUM_PREF'		=> 'Permisssions d’utilisateurs (Privé ou public) ',
-'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'décide dans quel forum la candidature sera écrite.',
-'APPLY_ACP_FORUM_CHOICE' =>  'Permettre l’utilisateur le choix d’une candidature privée ?',
-'APPLY_ACP_FORUM_CHOICE_EXPLAIN' =>  'Si ta guilde ne permet pas de candidatures privées, choisis "Non"',
-'APPLY_ACP_PUBLIC'			=> 'public',
-'APPLY_ACP_PRIVATE'			=> 'privé',
-'APPLY_ACP_GUESTPOST' 		=> 'Permettre les invités de poster ? :',
-'APPLY_ACP_GUESTPOST_EXPLAIN' 	=> 'Si cette option est activée, n’oublies pas l’option "Activer la confirmation Anti-spam  pour invités" à "oui".' ,  
+'TEMPLATE'	=> 'Modèle', 
+'CONFIRM_DELETE_TEMPLATE'	=> 'Confirme suppression du modèle %s. ', 
+'ALERT_TEMPLATENAME_EMPTY'	=> 'Le nom de modèle ne peut être vide',
 
 /***** ACP Armory settings *****/
 'APPLY_ACP_TEMPLATESETTING'	=> 'Règlages gabarit',
@@ -80,42 +70,55 @@ $lang = array_merge($lang, array(
 'APPLY_ACP_CHARNAME' 		=> 'Nom de Caractère',
 'APPLY_ACP_REALM' 		=> 'Royaume',
 'APPLY_ACP_REGION' 		=> 'Region',
-'APPLY_ACP_APPTEMPLATEUPD'	=> 'Mise à jour du modèle', 
+'APPLY_ACP_APPTEMPLATELIST'	=> 'Modèles de formulaires', 
+'APPLY_ACP_APPTEMPLATELIST_EXPLAIN'	=> 'L’id du modèle est utilisé comme paramètre dans apply.php : par example modèle 7 est appellé par url http://www.myguild.org/apply.php?template_id=7; fais autant de liens que tu as créés de modèles. ',
+'TEMPLATE_ID'				=> 'Modèle', 
 
 /***** ACP template settings ******/
+'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'décide dans quel forum la candidature sera écrite.',
+'APPLY_ACP_FORUM_PUB'		=> 'Forum de recrutement (public) ',
+'APPLY_ACP_PUBLIC'			=> 'public',
+'APPLY_ACP_GUESTPOST' 		=> 'Permettre les invités de poster ? :',
+'APPLY_ACP_GUESTPOST_EXPLAIN' 	=> 'Si cette option est activée, n’oublies pas l’option "Activer la confirmation Anti-spam  pour invités" à "oui".' ,  
 'ACP_APPLY_MANDATORY'  		=> 'Obligatoire',
 'ACP_APPLY_HEADER'  		=> 'Entête',
 'ACP_APPLY_EXPLAIN'  		=> 'Explanation',
 'ACP_APPLY_CONTENTS'  		=> 'Contenu',
+'ACP_APPLY_WHATGUILD_EXPLAIN' 	 => 'Décide dans quelle Guilde la candidature sera suvegardée.',
+'ACP_APPLY_GNONE'  			 => 'Ajouter à ‘Hors Guilde‘',
+'ACP_APPLY_GSEL'  			 => 'Ajouter à sa guilde selectionnée.',
+
+
 'ACP_DKP_APPLY_EXPLAIN'  => 'Ici tu peux saisir toutes les configurations du formulaire de recrutement.',
-'APPLY_ACP_APPTEMPLATENEW'  => 'Nouvelle question', 
+'APPLY_ACP_APPTEMPLATELINES'  => 'Lignes de modèle', 
 'APPLY_CHGMAND' 			=> 'Autres questions existantes ici. ',
 'APPLY_CHGMAND_EXPLAIN' 	=> 'Change le flag d’obligation, la séquence, la question et la métode de saisie. le séparateur des options est une virgule "," sans espace. Les permières 2 questions sont réservés.',
 'APPLY_ACP_NEWQUESTION' 	=> 'Saisis les nouvelles questions ici.',
 'APPLY_ACP_NEWQUESTION_EXPLAIN' => 'Controle si obligatoire, entre la sequence, la question et la métode de saisie. le séparateur des options est une virgule "," sans espace. ', 
 'APPLY_ACP_INPUTBOX' 		=> 'champ de saisie',	
-'APPLY_ACP_TXTBOX' 			=> 'Texte', 
+'APPLY_ACP_TXTBOX' 			=> 'Texte',
+'APPLY_ACP_TXTBOXBBCODE'	=> 'Texte avec bbcode', 
 'APPLY_ACP_SELECTBOX' 		=> 'Choix',
 'APPLY_ACP_RADIOBOX' 		=> 'Option radio',
 'APPLY_ACP_CHECKBOX' 		=> 'checkbox',
-'ACP_APPLY_WHATGUILD'  		 => 'Comment ajouter candidat à la liste des membres ? ',
-'ACP_APPLY_WHATGUILD_EXPLAIN' => 'Candidat aura le rang le plus bas si àjouté à une guilde.',
-'ACP_APPLY_GNONE'  			 => 'Ajouter à ‘Hors Guilde‘',
-'ACP_APPLY_GSEL'  			 => 'Ajouter à sa guilde selectionnée.',
 
 //warnings
 'APPLY_ACP_RETURN' 		=> '<h3>Retour au formulaire de recrutement</h3>',
 'APPLY_ACP_REALMBLANKWARN' 	=> 'Le champ Serveur le peut être vide.', 
 'APPLY_ACP_SETTINGSAVED' 	=> 'Règlages enregistrées',
 'APPLY_NO_GUILD'		=> 'Pas de Guilde trouvé.', 
+
 //upd
 'APPLY_ACP_TWOREALM' 		=> 'Seulement un nom de caractère est permis.', 
 'APPLY_ACP_QUESTUPD' 		=> 'questions de formulaire enregistrées',
+
 //addnew
 'APPLY_ACP_ORDQUEST' 		=> 'tu dois remplir l’ordre, la question et les options avant d’ajouter.',
 'APPLY_ACP_QUESTNOTADD' 	=> 'Erreur: nouvelle question n’a pas été sauvegardée !', 
 'APPLY_ACP_QUESTNADD' 		=> 'Nouvelle question sauvegardée !',   
 'APPLY_ACP_EXPLAINOPTIONS' 	=> 'Sépare les options avec une virgule "," sans espaces.',  
+'APPLY_ACP_TEMPLATEADD' 	=> 'Nouveau modèle ajouté.', 
+'REQUIRED'					=> 'Requis', 
 
 /** ACP settings for posting template **/
 'APPLY_COLORSETTINGS' 		=> 'Règlages Couleurs',
@@ -135,7 +138,7 @@ $lang = array_merge($lang, array(
 %s',
 'APPLY_CHAR_BUILD' 	=> '[color=%s][u]Spécialisation de talents : [/u][/color]%s',
 'APPLY_CHAR_URL' => '[color=%s][/color][url=%s]Lien Armurerie[/url]', 
-'ERROR_NAME'  =>  'Erreur : Nom doit être alphabetique (a-zA-ZàäåâÅÂçÇéèëêïÏîÎæŒæÆÅóòÓÒöÖôÔøØüÜ sont permis). ',
+'APPLY_ERROR_NAME'  =>  'Erreur : Nom doit être alphabetique (a-zA-ZàäåâÅÂçÇéèëêïÏîÎæŒæÆÅóòÓÒöÖôÔøØüÜ sont permis). ',
 'APPLY_REQUIRED_LEVEL'  => 'Niveau obligatoire',  
 'APPLY_REQUIRED_NAME'	=> 'Nom obligatoire.', 
 'RETURN_APPLY'  =>  'Retourne au formulaire.',
