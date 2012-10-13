@@ -5,7 +5,7 @@
 * @package bbDkp
 * @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.3.7
+* @version 1.3.8
 * @translation various authors, killerpommes
 * 
 */
@@ -110,7 +110,7 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'APPLY_ACP_TWOREALM' 		=> 'Du kannst keine 2 Server oder Charakternamen einrichten.', 
 'APPLY_ACP_QUESTUPD' 		=> 'Bewerbungsfragen aktualisiert',
 //addnew
-Ver'APPLY_ACP_ORDQUEST' 		=> 'Du musst die Reihenfolge, Fragen und Optionen ausfüllen bevor die Frage gespeichert werden darf.',
+'APPLY_ACP_ORDQUEST' 		=> 'Du musst die Reihenfolge, Fragen und Optionen ausfüllen bevor die Frage gespeichert werden darf.',
 'APPLY_ACP_QUESTNOTADD' 	=> 'Fehler : Frage wurde nicht gespeichert !', 
 'APPLY_ACP_QUESTNADD' 		=> 'Neue Frage wurde gespeichert !',   
 'APPLY_ACP_EXPLAINOPTIONS' 	=> 'Begrenze einzelne Optionen mit Komma "," ohne Leerzeichen.',  

@@ -6,7 +6,7 @@
 * @copyright (c) 2009 bbDkp https://github.com/bbDKP/Apply
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Kapli, Malfate, Sajaki, Blazeflack, Twizted
-* @version 1.3.6
+* @version 1.3.8
 */
 
 
@@ -24,6 +24,8 @@ include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 
 // set apply template id from $_GET: 
 $template_id = request_var('template_id', 1);
+
+///@todo check $template_id
 
 // Start session management
 $user->session_begin();

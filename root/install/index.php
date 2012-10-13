@@ -3,7 +3,7 @@
 * Apply Installer
 * Powered by bbDkp (c) 2009 www.bbdkp.com
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.3.7
+* @version 1.3.8
 *
 */
 
@@ -165,7 +165,7 @@ $versions = array(
 						'header'		=> $user->lang['DEFAULT_H2'],
 						'question'		=> $user->lang['DEFAULT_Q2'],
 						'type'			=> 'Inputbox',
-						'mandatory'		=> 'True',
+						'mandatory'		=> 'False',
 						'options'		=> ' ',
 					),
 
@@ -174,7 +174,7 @@ $versions = array(
 						'header'		=> $user->lang['DEFAULT_H3'],
 						'question'		=> $user->lang['DEFAULT_Q3'],
 						'type'			=> 'Textboxbbcode',
-						'mandatory'		=> 'True',
+						'mandatory'		=> 'False',
 						'options'		=> ' ',
 					),
 					array(
@@ -191,7 +191,7 @@ $versions = array(
 						'header'		=> $user->lang['DEFAULT_H5'],
 						'question'		=> $user->lang['DEFAULT_Q5'],
 						'type'			=> 'Textbox',
-						'mandatory'		=> 'True',
+						'mandatory'		=> 'False',
 						'options'		=> ' ',
 					),
 
@@ -201,7 +201,7 @@ $versions = array(
 						'header'		=> $user->lang['DEFAULT_H6'],
 						'question'		=> $user->lang['DEFAULT_Q6'],
 						'type'			=> 'Textboxbbcode',
-						'mandatory'		=> 'True',
+						'mandatory'		=> 'False',
 						'options'		=> ' ',
 					),
 
@@ -210,7 +210,7 @@ $versions = array(
 						'header'		=> $user->lang['DEFAULT_H7'],
 						'question'		=> $user->lang['DEFAULT_Q7'],
 						'type'			=> 'Textbox',
-						'mandatory'		=> 'True',
+						'mandatory'		=> 'False',
 						'options'		=> ' ',
 					),
 										
@@ -219,7 +219,7 @@ $versions = array(
 						'header'		=> $user->lang['DEFAULT_H8'],
 						'question'		=> $user->lang['DEFAULT_Q8'],
 						'type'			=> 'Checkboxes',
-						'mandatory'		=> 'True',
+						'mandatory'		=> 'False',
 						'options'		=> $user->lang['DEFAULT_O8'],
 					),	
 	
@@ -228,7 +228,7 @@ $versions = array(
 						'header'		=> $user->lang['DEFAULT_H9'],
 						'question'		=> $user->lang['DEFAULT_Q9'],
 						'type'			=> 'Textbox',
-						'mandatory'		=> 'True',
+						'mandatory'		=> 'False',
 						'options'		=> ' ',
 					),	
 	
@@ -238,7 +238,7 @@ $versions = array(
 						'header'		=> $user->lang['DEFAULT_H10'],
 						'question'		=> $user->lang['DEFAULT_Q10'],
 						'type'			=> 'Textbox',
-						'mandatory'		=> 'True',
+						'mandatory'		=> 'False',
 						'options'		=> ' ',
 					),
 									
@@ -307,7 +307,7 @@ $versions = array(
 				array('bbdkp_apply_forumchoice', ),
 			),
 			
-		'custom' => array('tableupd136', 'applyupdater', 'bbdkp_caches'),
+		'custom' => array('tableupd136' ),
 		),
 		
 	'1.3.7' => array(
@@ -316,7 +316,10 @@ $versions = array(
 			),
 			
 	),		
-		
+
+	'1.3.8' => array(
+		'custom' => array( 'applyupdater', 'bbdkp_caches'),
+		),		
 		
 );
 
@@ -421,7 +424,7 @@ function check_oldversion()
 }
 
 /**
- * version 1.3.6 : adds a new double pk to template table
+ * version 1.3.8 : adds a new double pk to template table
  */
 function tableupd136($action, $version)
 {
@@ -434,7 +437,7 @@ function tableupd136($action, $version)
 		case 'update' :
 			switch ($version)
 			{
-				case '1.3.6':
+				case '1.3.8':
 					//insert values in new columns
 					$db->sql_query('UPDATE ' . $table_prefix . 'bbdkp_apptemplate SET template_id = 1, lineid = id');
 					// make new unique composite key 
@@ -445,7 +448,7 @@ function tableupd136($action, $version)
 		case 'uninstall':
 			switch ($version)
 			{
-				case '1.3.6':
+				case '1.3.8':
 					$db->sql_query('TRUNCATE TABLE ' . $table_prefix . "bbdkp_apptemplate ");
 			}
 			break;
