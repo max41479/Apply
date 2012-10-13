@@ -71,7 +71,7 @@ To help us with your application please answer the questions below. Enter your c
 'APPLY_ACP_REALM' 			=> 'Realm',
 'APPLY_ACP_REGION' 			=> 'Region',
 'APPLY_ACP_APPTEMPLATELIST'	=> 'Application templates', 
-'APPLY_ACP_APPTEMPLATELIST_EXPLAIN'	=> 'the template ID is needed as a parameter for apply.php : for example template id 7 is called by url http://www.myguild.org/apply.php?template_id=7; make as many links on your forum as you have templates. ',
+'APPLY_ACP_APPTEMPLATELIST_EXPLAIN'	=> 'The Apply form can either be called by simply making a new post in the forum or directly by calling url http://www.domain.tld/apply.php?template_id=7; make as many links on your forum as you have templates. ',
 'TEMPLATE_ID'				=> 'Template ID', 
 
 /***** ACP template settings *****/
@@ -88,6 +88,7 @@ To help us with your application please answer the questions below. Enter your c
 'ACP_APPLY_GNONE'  			 => 'add to None',
 'ACP_APPLY_GSEL'  			 => 'add to selected guild',
 
+'ACP_APPLY_TEMPLATEEDIT_SUCCESS'  	=> 'Template %s edited successfully',
 
 'ACP_DKP_APPLY_EXPLAIN'  	=> 'Here you can set all preferences of the Recruitment Mod',
 'APPLY_ACP_APPTEMPLATELINES'  => 'Template lines', 
@@ -101,7 +102,6 @@ To help us with your application please answer the questions below. Enter your c
 'APPLY_ACP_SELECTBOX' 		=> 'Selectbox',
 'APPLY_ACP_RADIOBOX' 		=> 'Radiobuttons',
 'APPLY_ACP_CHECKBOX' 		=> 'Checkboxes',
-
 
 //warnings
 'APPLY_ACP_RETURN' 			=> '<h3>Return to Application config.</h3>',

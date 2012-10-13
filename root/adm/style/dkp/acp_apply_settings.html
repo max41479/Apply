@@ -21,56 +21,69 @@ function check_addtemplate()
 
 <p>{L_ACP_DKP_APPLY_EXPLAIN}</p>
 
-<form method="post" action="{F_ADD_CONFIG}" id="acp_apply">
+<form method="post" action="{F_ADD_CONFIG}" id="acp_applytemplates">
 
 <fieldset>
 <legend>{L_APPLY_ACP_APPTEMPLATELIST}</legend>
 
 <dl>
-	<dt style= "width: 100%"><label>{L_TEMPLATE_ID}:</label>{L_APPLY_ACP_APPTEMPLATELIST_EXPLAIN}</dt>
+	<dt style= "width: 100%">{L_APPLY_ACP_APPTEMPLATELIST_EXPLAIN}</dt>
 </dl>
 
-<dl>
-	<dt style= "width: 100%"><label>{L_FORUM}:</label>{L_APPLY_ACP_FORUM_PREF_EXPLAIN}</dt>
-</dl>
-
-
-<dl>
-	<dt style= "width: 100%"><label>{L_GUILD}:</label>{L_ACP_APPLY_WHATGUILD_EXPLAIN}</dt>
-</dl>
-
+	<!-- IF .apptemplatelist -->
 	<table cellspacing="1" style="width:60%">
 	<thead>
 	  <tr>
+	    <th style="text-align:left; width: 5%; white-space: nowrap;">{L_TEMPLATE_ID}</th>
+	    <th style="text-align:left; width: 30%; white-space: nowrap;">{L_NAME}</th>
+	    <th style="text-align:left; width: 30%; white-space: nowrap;">{L_FORUM}</th>
+	    <th style="text-align:left; width: 30%; white-space: nowrap;">{L_GUILD}</th>
 	    <th style="text-align:left; width: 5%; white-space: nowrap;">{L_ACTION}</th>
-	    <th style="text-align:left; width: 5%; white-space: nowrap; color:#FF3333">{L_TEMPLATE_ID}</th>
-	    <th style="text-align:left; width: 19%; white-space: nowrap;">{L_NAME}</th>
-	    <th style="text-align:left; width: 70%; white-space: nowrap;">{L_FORUM}</th>
-	    <th>{L_GUILD}</th>
 	  </tr>
-	  </thead>
+	</thead>
 	<tbody>
 	  <!-- BEGIN apptemplatelist -->
 	  <!-- IF apptemplatelist.S_ROW_COUNT is even --> <tr class="row1"><!-- ELSE --> <tr class="row2"><!-- ENDIF -->
-	    <td>
-			<a href="{apptemplatelist.U_DELETE_TEMPLATE}">{ICON_DELETE}</a>
-		</td>
-	    <td><strong>{apptemplatelist.ID}</strong></td>
-	    <td><strong>{apptemplatelist.TEMPLATE_NAME}</strong></td>
+	    <td style="text-align:center; color:#FF3333"> <strong>{apptemplatelist.ID}</strong></td>
+	    <td>{apptemplatelist.TEMPLATE_NAME}</td>
 	    <td>
     		{apptemplatelist.FORUMID}
     	</td>
     	<td>
        		{apptemplatelist.GUILDNAME}
     	</td>
+	    <td>
+			<a href="{apptemplatelist.U_DELETE_TEMPLATE}">{ICON_DELETE}</a>
+			<a href="{apptemplatelist.U_EDIT_TEMPLATE}">{ICON_EDIT}</a>
+		</td>
 	  </tr>
 	  <!-- END apptemplatelist -->
-
+	  </tbody>
+	  </table>
+	
+	
+	<br />
+	<!-- ENDIF -->
+	
+	
+<dl>
+	<dt style= "width: 100%"><label>{L_FORUM}:</label>{L_APPLY_ACP_FORUM_PREF_EXPLAIN}</dt>
+	<dt style= "width: 100%"><label>{L_GUILD}:</label>{L_ACP_APPLY_WHATGUILD_EXPLAIN}</dt>
+</dl>
+	
+	<table cellspacing="1" style="width:60%">
+	<thead>
+	  <tr>
+	    <th style="text-align:left; width: 5%; white-space: nowrap;">{L_ACTION}</th>
+	    <th style="text-align:left; width: 19%; white-space: nowrap;">{L_NAME}</th>
+	    <th style="text-align:left; width: 70%; white-space: nowrap;">{L_FORUM}</th>
+	    <th>{L_GUILD}</th>
+	  </tr>
+	</thead>
+	<tbody>
 	  <tr class="row3">
 	    <td>
 			<input type="submit" name="apptemplateadd" id="apptemplateadd" value="{L_ADD}" class="button1" onclick="return check_addtemplate();"/>
-		</td>
-		<td>
 		</td>
 	    <td><input type="text" name="template_name" id="template_name" size="50" maxlength="50" class="input" /></td>
 	    <td>
@@ -96,7 +109,7 @@ function check_addtemplate()
 </form>
 
 <!-- IF .apptemplatelist -->
-<form method="post" action="{F_ADD_CONFIG}" id="acp_apply">
+<form method="post" action="{F_ADD_CONFIG}" id="acp_applylines">
 
 <fieldset>
 	
@@ -210,8 +223,13 @@ function check_addtemplate()
 <p class="quick">
 	<input type="submit" name="appformquestionadd" id="appformquestionadd" value="{L_ADD}" class="button1" />
 </p>
-<!-- ENDIF -->
+<span>{S_FORM_TOKEN}</span>
+</form>
 </fieldset>
+
+<!-- ENDIF -->
+
+<form method="post" action="{F_ADD_CONFIG}" id="acp_applysettings">
 
 <fieldset>
 <legend>{L_APPLY_ACP_TEMPLATESETTING}</legend>

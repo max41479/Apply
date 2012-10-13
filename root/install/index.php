@@ -319,6 +319,14 @@ $versions = array(
 
 	'1.3.8' => array(
 		'custom' => array( 'applyupdater', 'bbdkp_caches'),
+		'module_add' => array(
+				array('acp', 'ACP_DKP_MEMBER', array(
+					'module_basename'	=> 'dkp_apply',
+					'modes'				=> array('apply_edittemplate')),
+					)
+			),
+				
+			
 		),		
 		
 );
@@ -437,7 +445,7 @@ function tableupd136($action, $version)
 		case 'update' :
 			switch ($version)
 			{
-				case '1.3.8':
+				case '1.3.6':
 					//insert values in new columns
 					$db->sql_query('UPDATE ' . $table_prefix . 'bbdkp_apptemplate SET template_id = 1, lineid = id');
 					// make new unique composite key 
@@ -448,7 +456,7 @@ function tableupd136($action, $version)
 		case 'uninstall':
 			switch ($version)
 			{
-				case '1.3.8':
+				case '1.3.6':
 					$db->sql_query('TRUNCATE TABLE ' . $table_prefix . "bbdkp_apptemplate ");
 			}
 			break;
