@@ -307,7 +307,7 @@ $versions = array(
 				array('bbdkp_apply_forumchoice', ),
 			),
 			
-		'custom' => array('tableupd136' ),
+		'custom' => array('tableupd' ),
 		),
 		
 	'1.3.7' => array(
@@ -318,15 +318,17 @@ $versions = array(
 	),		
 
 	'1.3.8' => array(
-		'custom' => array( 'applyupdater', 'bbdkp_caches'),
 		'module_add' => array(
 				array('acp', 'ACP_DKP_MEMBER', array(
 					'module_basename'	=> 'dkp_apply',
 					'modes'				=> array('apply_edittemplate')),
 					)
 			),
-				
+		'table_column_add' => array(
+				array($table_prefix . 'bbdkp_apphdr', 'template_id' , array('UINT', 0)),
+		),
 			
+		'custom' => array( 'tableupd', 'applyupdater', 'bbdkp_caches'),
 		),		
 		
 );
@@ -432,15 +434,15 @@ function check_oldversion()
 }
 
 /**
- * version 1.3.8 : adds a new double pk to template table
+ * version 1.3.6 : adds a new double pk to template table
+ * version 1.3.8 : install one header per template
  */
-function tableupd136($action, $version)
+function tableupd($action, $version)
 {
 	global $user, $umil, $config, $db, $table_prefix;
 	
 	switch ($action)
 	{
-	
 		case 'install' :
 		case 'update' :
 			switch ($version)
@@ -448,11 +450,35 @@ function tableupd136($action, $version)
 				case '1.3.6':
 					//insert values in new columns
 					$db->sql_query('UPDATE ' . $table_prefix . 'bbdkp_apptemplate SET template_id = 1, lineid = id');
-					// make new unique composite key 
+					// make new unique composite key
 					$db->sql_query('CREATE UNIQUE INDEX template ON ' . $table_prefix . 'bbdkp_apptemplate (template_id, lineid) ');
 					break;
+				case '1.3.8':
+					
+					$sql='SELECT * FROM ' . $table_prefix . 'bbdkp_apphdr'; 
+					$result = $db->sql_query($sql);
+					$titleinfo = $db->sql_fetchrowset($result);
+					$db->sql_freeresult($result);
+					
+					$sql='DELETE FROM ' . $table_prefix . 'bbdkp_apphdr';
+					$db->sql_query($sql);
+					
+					$sql='SELECT template_id FROM ' . $table_prefix . 'bbdkp_apptemplatelist';
+					$result = $db->sql_query($sql);
+					$templatelist = $db->sql_fetchrowset($result);
+					$db->sql_freeresult($result);
+					
+					foreach ( $templatelist as $key => $thistemplate )
+					{
+						$bbdkp_apphdr[$thistemplate['template_id']] = $titleinfo[0];
+						$bbdkp_apphdr[$thistemplate['template_id']]['template_id'] = $thistemplate['template_id'];
+
+						$sql = 'INSERT INTO ' . $table_prefix . 'bbdkp_apphdr' . ' ' . $db->sql_build_array('INSERT', $bbdkp_apphdr[$thistemplate['template_id']]);
+						$db->sql_query($sql);
+					}
+					
+					break;
 			}
-			break;
 		case 'uninstall':
 			switch ($version)
 			{
