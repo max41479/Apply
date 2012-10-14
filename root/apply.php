@@ -23,10 +23,17 @@ include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 
 // set apply template id from $_GET: 
-$template_id = request_var('template_id', 1);
-
-///@todo check $template_id
-
+$template_id = request_var('template_id', 0);
+if($template_id == 0)
+{
+	//no parameters passed... go find the nearest template
+	$result = $db->sql_query_limit ( 'SELECT * FROM ' . APPTEMPLATELIST_TABLE . ' ORDER BY template_id ASC', 1, 0);
+	while ( $row = $db->sql_fetchrow ( $result ) )
+	{
+		$template_id = $row ['template_id']; 
+	}
+	$db->sql_freeresult ($result) ;
+}
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);

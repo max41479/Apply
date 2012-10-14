@@ -146,8 +146,11 @@ function check_addtemplate()
 	  <tr class="row2">
 	  <!-- ENDIF -->
 	  	<td style="width:10%; text-align:left">{apptemplate.TEMPLATE}</td>
-	    <td style="width:5%; text-align:center">
-	    <!-- IF apptemplate.QORDER <= 1 and not PREVIOUS_PAGE -->{ICON_MOVE_UP_DISABLED}<!-- ELSE --><a href="{apptemplate.U_APPQUESTIONMOVE_UP}">{ICON_MOVE_UP}</a><!-- ENDIF -->
+	    <td style="width:5%; text-align:center">{apptemplate.QORDER}
+	    
+	    <!-- IF apptemplate.QORDER == 0 and not PREVIOUS_PAGE -->{ICON_MOVE_UP_DISABLED}
+	    <!-- ELSE --><a href="{apptemplate.U_APPQUESTIONMOVE_UP}">{ICON_MOVE_UP}</a><!-- ENDIF -->
+	    
 		<!-- IF apptemplate.S_LAST_ROW and not NEXT_PAGE --> {ICON_MOVE_DOWN_DISABLED}
 		<!-- ELSE --><a href="{apptemplate.U_APPQUESTIONMOVE_DOWN}">{ICON_MOVE_DOWN}</a>
 		<!-- ENDIF --><a href="{apptemplate.U_APPQUESTIONDELETE}">{ICON_DELETE}</a>

@@ -79,6 +79,7 @@
 				<changelog lang="en">
 					<change><![CDATA[[fix] fix issue with multiple templates]]></change>
 					<change><![CDATA[[fix] fix issue with blank installer german]]></change>
+					<change><![CDATA[[new] posting redirection to apply]]></change>					
 				</changelog>
 			</entry>	
 			<entry>
@@ -353,6 +354,28 @@
 define('APPHEADER_TABLE',			$table_prefix . 'bbdkp_apphdr');
 define('APPTEMPLATELIST_TABLE',			$table_prefix . 'bbdkp_apptemplatelist');
 	]]></action>
+			</edit>
+		</open>
+
+		<open src="posting.php">
+			<edit>
+				<comment lang="en"><![CDATA[add redirect to apply]]></comment>
+				<comment lang="fr"><![CDATA[ajout redirection vers application]]></comment>
+				<comment lang="de"><![CDATA[weiterleitung zum fragebogen]]></comment>
+				<find><![CDATA[$lastclick	= request_var('lastclick', 0);]]></find>
+				<action type="after-add"><![CDATA[
+				
+//apply
+$result = $db->sql_query ( 'SELECT * FROM ' . APPTEMPLATELIST_TABLE . ' ORDER BY template_id');
+while ( $row = $db->sql_fetchrow ( $result ) )
+{
+	if((int) $row ['forum_id'] === $forum_id)
+	{
+		redirect(append_sid ( "{$phpbb_root_path}apply.$phpEx", 'template_id='. $row ['template_id'] ));
+	}
+}
+$db->sql_freeresult ( $result) ;
+//end apply]]></action>
 			</edit>
 		</open>
 

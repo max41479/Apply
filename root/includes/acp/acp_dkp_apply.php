@@ -44,9 +44,6 @@ class acp_dkp_apply extends bbDkp_Admin {
 		$this->link = '<br /><a href="' . append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings" ) . '"><h3>' . $user->lang ['APPLY_ACP_RETURN'] . '</h3></a>';
 
 
-
-
-
 		// getting guilds
 		$sql_array = array (
 				'SELECT' => 'a.id, a.name, a.realm, a.region ',
@@ -207,12 +204,12 @@ class acp_dkp_apply extends bbDkp_Admin {
 				// user pressed question order arrows
 				if(isset($_GET ['appquestionmove_up'] ))
 				{
-					$this->movequestion(1);
+					$this->movequestion(1, $applytemplate_id);
 				}
 
 				if(isset($_GET ['appquestionmove_down'] ))
 				{
-					$this->movequestion(-1);
+					$this->movequestion(-1, $applytemplate_id);
 				}
 
 				if (isset ( $_GET ['appquestiondelete'] ))
@@ -222,7 +219,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 
 				if (isset ( $_POST ['appformquestionupdate'] ))
 				{
-					$this->appformquestionupdate();
+					$this->appformquestionupdate($applytemplate_id);
 				}
 
 				if (isset ( $_POST ['updatecolor'] ))
@@ -307,7 +304,8 @@ class acp_dkp_apply extends bbDkp_Admin {
 				while ( $row = $db->sql_fetchrow ( $result ) )
 				{
 					$checked = '';
-					if ($row ['mandatory'] == 'True') {
+					if ($row ['mandatory'] == 'True') 
+					{
 						$checked = ' checked="checked"';
 					}
 
@@ -320,9 +318,9 @@ class acp_dkp_apply extends bbDkp_Admin {
 							'OPTIONS' => $row ['options'],
 							'CHECKED' => $checked,
 							'ID' => $row ['id'],
-							'U_APPQUESTIONMOVE_UP' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;appquestionmove_up=1&amp;id={$row['id']}" ),
-							'U_APPQUESTIONMOVE_DOWN' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;appquestionmove_down=1&amp;id={$row['id']}" ),
-							'U_APPQUESTIONDELETE' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;appquestiondelete=1&amp;id={$row['id']}" )
+							'U_APPQUESTIONMOVE_UP' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;appquestionmove_up=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id ),
+							'U_APPQUESTIONMOVE_DOWN' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;appquestionmove_down=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id ),
+							'U_APPQUESTIONDELETE' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;appquestiondelete=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id )
 					) );
 
 					foreach ( $type as $key => $value )
@@ -335,20 +333,58 @@ class acp_dkp_apply extends bbDkp_Admin {
 					}
 				}
 				$db->sql_freeresult ( $result );
-
+				
+				
+				$regions = array(
+					'US' => 'America',
+					'EU' => 'Europe',
+					'CN' => 'China', 
+					'KR' => 'Korea', 
+					'TW' => 'Taiwan', 
+					'SEA' => 'Southeast Asia');
+				
 				// region
 				$template->assign_block_vars ( 'region', array (
 						'VALUE' => 'EU',
 						'SELECTED' => ('EU' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-						'OPTION' => 'EU'
-				) );
+						'OPTION' => $regions['EU']
+				));
 
-				$template->assign_block_vars ( 'region', array (
+				$template->assign_block_vars ( 'region', 
+						array (
 						'VALUE' => 'US',
 						'SELECTED' => ('US' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-						'OPTION' => 'US'
-				) );
-
+						'OPTION' => $regions['US']
+				));
+				
+				$template->assign_block_vars ( 'region',
+						array (
+								'VALUE' => 'CN',
+								'SELECTED' => ('CN' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
+								'OPTION' => $regions['CN']
+						));	
+				$template->assign_block_vars ( 'region',
+						array (
+								'VALUE' => 'KR',
+								'SELECTED' => ('KR' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
+								'OPTION' => $regions['KR']
+						));
+				
+				$template->assign_block_vars ( 'region',
+						array (
+								'VALUE' => 'TW',
+								'SELECTED' => ('TW' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
+								'OPTION' => $regions['TW']
+						));
+				
+				$template->assign_block_vars ( 'region',
+						array (
+								'VALUE' => 'SEA',
+								'SELECTED' => ('SEA' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
+								'OPTION' => $regions['SEA']
+						));
+				
+							
 				// guests
 				$template->assign_block_vars ( 'guests', array (
 						'VALUE' => 'True',
@@ -382,11 +418,12 @@ class acp_dkp_apply extends bbDkp_Admin {
 
 	/**
 	 * updates current question
-	 *
+	 * 
+	 * @param unknown_type $applytemplate_id
 	 */
-	public function appformquestionupdate()
+	public function appformquestionupdate($applytemplate_id)
 	{
-		global $user; $db;
+		global $user, $db, $phpbb_admin_path, $phpEx;
 
 		if (! check_form_key ( $this->form_key ))
 		{
@@ -418,7 +455,11 @@ class acp_dkp_apply extends bbDkp_Admin {
 			$sql = 'UPDATE ' . APPTEMPLATE_TABLE . ' set ' . $db->sql_build_array ( 'UPDATE', $data ) . ' WHERE id = ' . $key;
 			$db->sql_query ( $sql );
 		}
-		meta_refresh ( 1, $this->u_action );
+		
+		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
+		$this->link = '<br /><a href="' . $link . '"><h3>' . $user->lang ['APPLY_ACP_RETURN'] . '</h3></a>';
+		meta_refresh ( 1, $link );
+		
 		trigger_error ( $user->lang ['APPLY_ACP_QUESTUPD'] . $this->link );
 	}
 
@@ -443,28 +484,30 @@ class acp_dkp_apply extends bbDkp_Admin {
 	 *
 	 * @param int $direction +1 or -1
 	 */
-	public function movequestion($direction)
+	public function movequestion($direction, $applytemplate_id )
 	{
-		global $db;
+		global $phpbb_admin_path, $phpEx, $db;
 		$qid = request_var ( 'id', 0 );
+		
 		// find order of clicked line
-		$sql = 'SELECT qorder FROM ' . APPTEMPLATE_TABLE . ' where id =  ' . $qid;
+		$sql = 'SELECT qorder FROM ' . APPTEMPLATE_TABLE . ' WHERE id =  ' . $qid ;
 		$result = $db->sql_query ( $sql );
 		$current_order = ( int ) $db->sql_fetchfield ( 'qorder', 0, $result );
 		$db->sql_freeresult ( $result );
 
-		$new_order = $current_order + $direction;
+		$new_order = $current_order + (int) $direction;
 
-		// find current id with new order and move that one notch,
-		// if any
-		$sql = 'UPDATE  ' . APPTEMPLATE_TABLE . ' SET qorder = ' . $current_order . ' WHERE qorder = ' . $new_order;
+		// find current id with new order and move that one notch, if any
+		$sql = 'UPDATE  ' . APPTEMPLATE_TABLE . ' SET qorder = ' . $current_order . ' WHERE qorder = ' . $new_order . ' AND template_id = ' . $applytemplate_id;
 		$db->sql_query ( $sql );
 
 		// now increase old order
-		$sql = 'UPDATE  ' . APPTEMPLATE_TABLE . ' set qorder = ' . $new_order . ' where id = ' . $qid;
+		$sql = 'UPDATE  ' . APPTEMPLATE_TABLE . ' set qorder = ' . $new_order . ' where id = ' . $qid . ' AND template_id = ' . $applytemplate_id;
 		$db->sql_query ( $sql );
 
-		meta_refresh ( 1, $this->u_action );
+		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
+		meta_refresh ( 1, $link );
+		
 	}
 
 
@@ -476,6 +519,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 	public function appformquestion_add($applytemplate_id)
 	{
 
+		global $db, $phpbb_admin_path, $phpEx, $user;
 		if (! check_form_key ( $this->form_key ))
 		{
 			trigger_error ( $user->lang ['FORM_INVALID'] . adm_back_link ( $this->u_action ), E_USER_WARNING );
@@ -503,8 +547,11 @@ class acp_dkp_apply extends bbDkp_Admin {
 		// insert new question
 		$sql = 'INSERT INTO ' . APPTEMPLATE_TABLE . ' ' . $db->sql_build_array ( 'INSERT', $sql_ary );
 		$db->sql_query ( $sql );
-
-		meta_refresh ( 1, $this->u_action );
+		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
+		$this->link = '<br /><a href="' . $link . '"><h3>' . $user->lang ['APPLY_ACP_RETURN'] . '</h3></a>';
+		
+		meta_refresh ( 1, $link );
+		
 		trigger_error ( $user->lang ['APPLY_ACP_QUESTNADD'] . $this->link, E_USER_NOTICE );
 
 	}
@@ -516,7 +563,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 	 */
 	public function apptemplatedelete($applytemplate_id)
 	{
-		global $user,$db;
+		global $template,$user,$db;
 
 		if (confirm_box ( true ))
 		{
