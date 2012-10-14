@@ -62,11 +62,13 @@ To help us with your application please answer the questions below. Enter your c
 'TEMPLATE'	=> 'Template', 
 'CONFIRM_DELETE_TEMPLATE'	=> 'Please confirm deletion of template %s. ', 
 'ALERT_TEMPLATENAME_EMPTY'	=> 'Template name can’t be empty',
+'ALERT_NOTEMPLATE'	=> 'No Apply template found',
+'ALERT_NOQUESTIONS'	=> 'No questions found for template %s',
 
 /***** ACP Armory settings *****/
 'APPLY_ACP_TEMPLATESETTING'	=> 'Template Settings',
 'APPLY_WELCOME'				=> 'Welcome message',
-'APPLY_WELCOME_EXPLAIN'		=> 'Message shown on top of Apply. supports bbcodes. ',
+'APPLY_WELCOME_EXPLAIN'		=> 'Message shown on top of this template. supports bbcodes. ',
 'APPLY_ACP_CHARNAME' 		=> 'Character name',
 'APPLY_ACP_REALM' 			=> 'Realm',
 'APPLY_ACP_REGION' 			=> 'Region',
@@ -87,6 +89,7 @@ To help us with your application please answer the questions below. Enter your c
 'ACP_APPLY_WHATGUILD_EXPLAIN' 	 => 'Select the Guild to which a candidate will be added.',
 'ACP_APPLY_GNONE'  			 => 'add to None',
 'ACP_APPLY_GSEL'  			 => 'add to selected guild',
+'ACP_APPLY_QORDER'			=> 'Order', 
 
 'ACP_APPLY_TEMPLATEEDIT_SUCCESS'  	=> 'Template %s edited successfully',
 
@@ -127,7 +130,8 @@ To help us with your application please answer the questions below. Enter your c
 'APPLY_POST_QUESTIONCOLOR' 	=> 'Posting Questions color',
 'APPLY_FORMCOLOR'			=> 'Form Questions Color',
 'APPLY_POSTCOLOR'			=> 'Apply Posting and Application Form Colors',
-'APPLY_POSTCOLOR_EXPLAIN' 	=> 'Color of texts used in the Form and Recruitment post. If you use a dark Style, you can vary the text color to be used here.',
+'APPLY_POSTQUESTIONCOLOR_EXPLAIN' 	=> 'Color of texts used in the questions of the posted Apply Form.',
+'APPLY_POSTANSWERCOLOR_EXPLAIN' 	=> 'Color of texts used in the answers of the posted Apply Form.',
 
 /** posting template **/
 'APPLY_CHAR_OVERVIEW' 		=> 'Character',

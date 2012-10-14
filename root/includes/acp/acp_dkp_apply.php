@@ -83,6 +83,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 
 				$appformsupdate = (isset ( $_POST ['update'] )) ? true : false;
 
+				
 				if($appformsupdate)
 				{
 					//do update and return
@@ -97,11 +98,29 @@ class acp_dkp_apply extends bbDkp_Admin {
 							'template_name' => utf8_normalize_nfc ( request_var ( 'apptemplate_name', ' ', true ) ),
 							'guild_id' => request_var ( 'candidate_guild_id', 0),
 							'forum_id' => request_var ( 'applyforum_id', 0),
+							'question_color'	=> request_var ( 'postqcolor', '#1961a9'),
+							'answer_color'	=> request_var ( 'postacolor', '#4880b1'),
 					);
 
 					$sql = 'UPDATE ' . APPTEMPLATELIST_TABLE . ' SET ' . $db->sql_build_array ( 'UPDATE', $sql_ary ) . ' WHERE template_id = ' . $applytemplate_id;
 					$db->sql_query ( $sql );
 
+					
+					// welcome text
+					$welcometext = utf8_normalize_nfc ( request_var ( 'welcome_message', '', true ) );
+					$uid = $bitfield = $options = ''; // will be modified by
+					$allow_bbcode = $allow_urls = $allow_smilies = true;
+					generate_text_for_storage ( $welcometext, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies );
+					$sql = 'UPDATE ' . APPHEADER_TABLE . " SET
+							announcement_msg = '" . ( string ) $db->sql_escape ( $welcometext ) . "' ,
+							announcement_timestamp = " . ( int ) time () . " ,
+							bbcode_bitfield = 	'" . ( string ) $bitfield . "' ,
+							bbcode_uid = 		'" . ( string ) $uid . "'
+							WHERE template_id = " . $applytemplate_id;
+					$db->sql_query ( $sql );
+					
+					//colors
+					
 					meta_refresh ( 1, append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings") );
 					trigger_error ( sprintf ( $user->lang ['ACP_APPLY_TEMPLATEEDIT_SUCCESS'], $applytemplate_id ) . $this->link, E_USER_NOTICE );
 
@@ -110,29 +129,49 @@ class acp_dkp_apply extends bbDkp_Admin {
 				{
 					//display form
 					$applytemplate_id = request_var ( 'template_id', 0 );
-					$result = $db->sql_query ( 'SELECT * FROM ' . APPTEMPLATELIST_TABLE );
-					while ( $row = $db->sql_fetchrow ( $result ) )
+					
+					//general template parameters
+					$result = $db->sql_query ( 'SELECT * FROM ' . APPTEMPLATELIST_TABLE . ' WHERE template_id = ' . $applytemplate_id);
+					$template_info = $db->sql_fetchrowset ( $result);
+					$template_info=$template_info[0];
+					foreach ( $guilds as $key => $guild )
 					{
-						foreach ( $guilds as $key => $guild )
+						if ($template_info ['guild_id'] == $guild ['id'])
 						{
-							if ($row ['guild_id'] == $guild ['id'])
-							{
-								$guildname = $guild ['name'];
-							}
+							$guildname = $guild ['name'];
 						}
-
-						$foruminfo = $this->apply_get_forum_info($row ['forum_id']);
-
-
-						$template->assign_vars ( array (
-							'TEMPLATE_ID' => $applytemplate_id,
-							'FORUMNAME' => $foruminfo ['forum_name'],
-							'GUILDNAME' => $guildname,
-							'TEMPLATEFORUM_OPTIONS' => make_forum_select ( $row ['forum_id'], false, false, true ),
-							'TEMPLATE_NAME' => $row ['template_name'],
-						));
-
 					}
+
+					$foruminfo = $this->apply_get_forum_info($template_info['forum_id']);
+					
+					// get welcome msg
+					$sql = 'SELECT announcement_msg, bbcode_bitfield, bbcode_uid FROM ' . APPHEADER_TABLE . ' WHERE template_id = ' . $applytemplate_id;
+					$result = $db->sql_query ( $sql );
+					$text = "";
+					$bitfield = "";
+					$uid = "";
+					while ( $row = $db->sql_fetchrow ( $result ) ) 
+					{
+						$text = $row ['announcement_msg'];
+						$bitfield = $row ['bbcode_bitfield'];
+						$uid = $row ['bbcode_uid'];
+					}
+					$db->sql_freeresult ( $result );
+					
+					$textarr = generate_text_for_edit ( $text, $uid, $bitfield, 7 );
+					
+					$template->assign_vars ( array (
+						'WELCOME_MESSAGE'	=> $textarr ['text'], 
+						'TEMPLATE_ID' => $applytemplate_id,
+						'FORUMNAME' => $foruminfo ['forum_name'],
+						'GUILDNAME' => $guildname,
+						'TEMPLATEFORUM_OPTIONS' => make_forum_select ( $template_info ['forum_id'], false, false, true ),
+						'TEMPLATE_NAME' => $template_info ['template_name'],
+						'POSTQCOLOR' => $template_info['question_color'], 
+						'POSTACOLOR' => $template_info['answer_color'] 
+					));
+					
+						
 				}
 
 				$this->page_title = $user->lang ['ACP_DKP_APPLY_TEMPLATE_EDIT'];
@@ -222,26 +261,10 @@ class acp_dkp_apply extends bbDkp_Admin {
 					$this->appformquestionupdate($applytemplate_id);
 				}
 
-				if (isset ( $_POST ['updatecolor'] ))
-				{
-					$this->colorsettings();
-				}
-
 				/*
 				 * loading config
 				*/
 
-				// get welcome msg
-				$sql = 'SELECT announcement_msg, bbcode_bitfield, bbcode_uid FROM ' . APPHEADER_TABLE;
-				$result = $db->sql_query ( $sql );
-				while ( $row = $db->sql_fetchrow ( $result ) ) {
-					$text = $row ['announcement_msg'];
-					$bitfield = $row ['bbcode_bitfield'];
-					$uid = $row ['bbcode_uid'];
-				}
-				$db->sql_freeresult ( $result );
-
-				$textarr = generate_text_for_edit ( $text, $uid, $bitfield, 7 );
 
 				/**
 				 * loading template types
@@ -401,13 +424,9 @@ class acp_dkp_apply extends bbDkp_Admin {
 				$template->assign_vars ( array (
 						'TEMPLATE_ID' => $applytemplate_id,
 						'ADDTEMPLATEFORUM_OPTIONS' => make_forum_select ( 0, false, false, true ),
-						'WELCOME_MESSAGE' => $textarr ['text'],
 						'REALM' => str_replace ( "+", " ", $config ['bbdkp_apply_realm'] ),
 						'APPLY_VERS' => $config ['bbdkp_apply_version'],
-						'POSTQCOLOR' => $config ['bbdkp_apply_pqcolor'],
-						'POSTACOLOR' => $config ['bbdkp_apply_pacolor'],
-						'FORMQCOLOR' => $config ['bbdkp_apply_fqcolor']
-				) );
+				));
 
 
 				$this->page_title = $user->lang ['ACP_DKP_APPLY'];
@@ -572,6 +591,8 @@ class acp_dkp_apply extends bbDkp_Admin {
 			// delete template
 			$db->sql_query ( "DELETE FROM " . APPTEMPLATELIST_TABLE . " WHERE template_id = '" . $hiddentemplateid . "'" );
 			$db->sql_query ( "DELETE FROM " . APPTEMPLATE_TABLE . " WHERE template_id = '" . $hiddentemplateid . "'" );
+			$db->sql_query ( "DELETE FROM " . APPHEADER_TABLE . " WHERE template_id = '" . $hiddentemplateid . "'" );
+			
 			meta_refresh ( 1, $this->u_action );
 			trigger_error ( "Template " . $hiddentemplateid . " deleted", E_USER_WARNING );
 		}
@@ -601,85 +622,37 @@ class acp_dkp_apply extends bbDkp_Admin {
 		$sql_ary = array (
 			'status' => 1,
 			'template_name' => utf8_normalize_nfc ( request_var ( 'template_name', ' ', true ) ),
-			'forum_id' => request_var ( 'new_applyforum_id', 0 )
+			'forum_id' => request_var ( 'new_applyforum_id', 0 ), 
+			'question_color'	=> '#1961a9',
+			'answer_color'	=> '#4880b1',				
 		);
 
 		// insert new question
 		$sql = 'INSERT INTO ' . APPTEMPLATELIST_TABLE . ' ' . $db->sql_build_array ( 'INSERT', $sql_ary );
 		$db->sql_query ( $sql );
 
-		meta_refresh ( 1, $this->u_action );
-		trigger_error ( $user->lang ['APPLY_ACP_TEMPLATEADD'] . $this->link, E_USER_NOTICE );
-	}
-
-	/**
-	 * updates mod settings
-	 *
-	 */
-	public function appformsettings()
-	{
-		global  $user, $db, $cache;
-
-		if (! check_form_key ( $this->form_key ))
-		{
-			trigger_error ( $user->lang ['FORM_INVALID'] . adm_back_link ( $this->u_action ), E_USER_WARNING );
-		}
-
-		if (! isset ( $_POST ['realm'] ) or request_var ( 'realm', '' ) == '')
-		{
-			trigger_error ( $user->lang ['APPLY_ACP_REALMBLANKWARN'] . adm_back_link ( $this->u_action ), E_USER_WARNING );
-		}
-
-		$welcometext = utf8_normalize_nfc ( request_var ( 'welcome_message', '', true ) );
-
+		$template_id = $db->sql_nextid();
+		
+		// insert standard welcome text
+		$welcometext =$user->lang('APPLY_INFO');
 		$uid = $bitfield = $options = ''; // will be modified by
-		// generate_text_for_storage
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
 		generate_text_for_storage ( $welcometext, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies );
-		$sql = 'UPDATE ' . APPHEADER_TABLE . " SET
-			announcement_msg = '" . ( string ) $db->sql_escape ( $welcometext ) . "' ,
-			announcement_timestamp = " . ( int ) time () . " ,
-			bbcode_bitfield = 	'" . ( string ) $bitfield . "' ,
-			bbcode_uid = 		'" . ( string ) $uid . "'
-			WHERE announcement_id = 1";
-		$db->sql_query ( $sql );
-
-		set_config ( 'bbdkp_apply_guests', request_var ( 'guests', '' ), true );
-		set_config ( 'bbdkp_apply_realm', utf8_normalize_nfc ( str_replace ( " ", "+", request_var ( 'realm', '', true ) ) ), true );
-		set_config ( 'bbdkp_apply_region', request_var ( 'region', '' ), true );
-		$cache->destroy ( 'config' );
-
+		
+		$data = array(
+			'announcement_msg'     => $welcometext,
+			'announcement_timestamp'  => (int) time (), 
+			'bbcode_bitfield'	=> (string) $bitfield,
+			'bbcode_uid'	=> (string) $uid, 
+			'template_id'	=> $template_id, 
+				
+		);
+		
+		$sql = 'INSERT INTO ' . APPHEADER_TABLE . ' ' . $db->sql_build_array('INSERT', $data);
+		$db->sql_query($sql);
+		
 		meta_refresh ( 1, $this->u_action );
-		trigger_error ( $user->lang ['APPLY_ACP_SETTINGSAVED'] . $this->link );
-
-	}
-
-	/**
-	 * Updates mod color settings
-	 *
-	 */
-	public function colorsettings()
-	{
-		global $cache;
-		if (! check_form_key ( $this->form_key ))
-		{
-			trigger_error ( $user->lang ['FORM_INVALID'] . adm_back_link ( $this->u_action ), E_USER_WARNING );
-		}
-		$colorid = request_var ( 'app_textcolors', '' );
-		$newcolor = request_var ( 'applyquestioncolor', '' );
-		switch ($colorid) {
-			case 'postqcolor' :
-				set_config ( 'bbdkp_apply_pqcolor', $newcolor, true );
-				break;
-			case 'postacolor' :
-				set_config ( 'bbdkp_apply_pacolor', $newcolor, true );
-				break;
-			case 'formqcolor' :
-				set_config ( 'bbdkp_apply_fqcolor', $newcolor, true );
-				break;
-		}
-		$cache->destroy ( 'config' );
-
+		trigger_error ( $user->lang ['APPLY_ACP_TEMPLATEADD'] . $this->link, E_USER_NOTICE );
 	}
 
 	/**

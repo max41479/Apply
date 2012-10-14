@@ -21,6 +21,13 @@ include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+// Start session management
+$user->session_begin();
+$auth->acl($user->data);
+
+$error = array();
+$current_time = $user->time_now; 
+$user->setup(array('posting', 'mcp', 'viewtopic', 'mods/apply', 'mods/dkp_common', 'mods/dkp_admin'), false);
 
 // set apply template id from $_GET: 
 $template_id = request_var('template_id', 0);
@@ -32,18 +39,16 @@ if($template_id == 0)
 	{
 		$template_id = $row ['template_id']; 
 	}
-	$db->sql_freeresult ($result) ;
+	$affected_rows = $db->sql_affectedrows();
+	if($affected_rows == 0)
+	{
+		trigger_error($user->lang['ALERT_NOTEMPLATE'], E_USER_WARNING);
+	}
+	$db->sql_freeresult ($result);
+	
 }
-// Start session management
-$user->session_begin();
-$auth->acl($user->data);
 
-$error = array();
-$current_time = $user->time_now; 
-
-$user->setup(array('posting', 'mcp', 'viewtopic', 'mods/apply', 'mods/dkp_common', 'mods/dkp_admin'), false);
-
-$form_key = 'make_apply';
+$form_key = '2LK3aStYs8hu1V2PQ';
 
 // declare captcha class
 if (!class_exists('phpbb_captcha_factory'))
@@ -496,8 +501,22 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha,
 	
 	$page_title = $user->lang['APPLY_MENU'];
 
+	//check if there are questions
+	$result = $db->sql_query_limit ( 'SELECT * FROM ' . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id, 1, 0);
+	while ( $row = $db->sql_fetchrow ($result) )
+	{
+		$template_id = $row ['template_id'];
+	}
+
+	$affected_rows = $db->sql_affectedrows();
+	if($affected_rows == 0)
+	{
+		trigger_error(sprintf($user->lang['ALERT_NOQUESTIONS'], $template_id), E_USER_WARNING); 
+	}
+	$db->sql_freeresult ($result);
+	
 	// get WELCOME_MSG
-	$sql = 'SELECT announcement_msg, bbcode_uid, bbcode_bitfield, bbcode_options FROM ' . APPHEADER_TABLE;
+	$sql = 'SELECT announcement_msg, bbcode_uid, bbcode_bitfield, bbcode_options FROM ' . APPHEADER_TABLE . ' WHERE template_id = ' . $template_id ;
 	$db->sql_query($sql);
 	$result = $db->sql_query($sql);
 	while ( $row = $db->sql_fetchrow($result) )
@@ -621,7 +640,7 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha,
              	
 	// Start assigning vars for main posting page ...
 	// main questionnaire 
-	$sql = "SELECT a.id, a.qorder, a.header, a.question, a.type, a.mandatory, a.options, a.template_id, a.lineid, b.template_name, b.forum_id 
+	$sql = "SELECT a.id, a.qorder, a.header, a.question, a.type, a.mandatory, a.options, a.template_id, a.lineid, b.template_name, b.forum_id  
 		FROM " . APPTEMPLATE_TABLE . ' a, ' . 
 			APPTEMPLATELIST_TABLE . ' b 
 			WHERE a.template_id = b.template_id 
@@ -691,7 +710,6 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha,
 		'S_POST_ACTION'     	=> $s_action,
 		'S_HIDDEN_FIELDS'   	=> $s_hidden_fields,
 		'APPLY_REALM'			=> str_replace("+", " ", $config['bbdkp_apply_realm']), 
-		'FORMQCOLOR'			=> $config['bbdkp_apply_fqcolor'], 
 		'S_FORM_ENCTYPE'		=> $form_enctype,
 		// javascript
 		'LA_ALERT_AJAX'		  => $user->lang['ALERT_AJAX'],

@@ -326,10 +326,19 @@ $versions = array(
 			),
 		'table_column_add' => array(
 				array($table_prefix . 'bbdkp_apphdr', 'template_id' , array('UINT', 0)),
+				array($table_prefix . 'bbdkp_apptemplatelist', 'question_color' , array('VCHAR:8', '')),
+				array($table_prefix . 'bbdkp_apptemplatelist', 'answer_color' , array('VCHAR:8', '')),
+		),
+
+		'config_remove' => array(
+				array('bbdkp_apply_pacolor'),
+				array('bbdkp_apply_pqcolor'), 
+				array('bbdkp_apply_fqcolor')
 		),
 			
 		'custom' => array( 'tableupd', 'applyupdater', 'bbdkp_caches'),
 		),		
+		
 		
 );
 

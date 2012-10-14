@@ -129,8 +129,8 @@ function check_addtemplate()
 <table cellspacing="1">
 	<thead>
 	<tr>
-	<th style="width:8%; text-align:left">{L_TEMPLATE}</th>
-	<th style="width:8%; text-align:left">{L_ACTION}</th>
+	<th style="width:3%; text-align:center">{L_ACP_APPLY_QORDER}</th>
+	<th style="width:8%; text-align:center">{L_ACTION}</th>
     <th style="width:17%; text-align:left">{L_TYPE}</th>
     <th style="width:20%; text-align:center">{L_ACP_APPLY_HEADER}</th>
     <th style="width:20%; text-align:center">{L_ACP_APPLY_QUESTION}</th>
@@ -145,9 +145,8 @@ function check_addtemplate()
 	  <!-- ELSE -->
 	  <tr class="row2">
 	  <!-- ENDIF -->
-	  	<td style="width:10%; text-align:left">{apptemplate.TEMPLATE}</td>
-	    <td style="width:5%; text-align:center">{apptemplate.QORDER}
-	    
+	  	<td style="width:3%; text-align:center">{apptemplate.QORDER}</td>
+	    <td style="width:8%; text-align:center">
 	    <!-- IF apptemplate.QORDER == 0 and not PREVIOUS_PAGE -->{ICON_MOVE_UP_DISABLED}
 	    <!-- ELSE --><a href="{apptemplate.U_APPQUESTIONMOVE_UP}">{ICON_MOVE_UP}</a><!-- ENDIF -->
 	    
@@ -231,86 +230,5 @@ function check_addtemplate()
 </fieldset>
 
 <!-- ENDIF -->
-
-<form method="post" action="{F_ADD_CONFIG}" id="acp_applysettings">
-
-<fieldset>
-<legend>{L_APPLY_ACP_TEMPLATESETTING}</legend>
-<br />  
-	<dl>
-		<dt><label>{L_APPLY_WELCOME}:</label><br />{L_APPLY_WELCOME_EXPLAIN}</dt>
-		<dd>
-		<textarea name="welcome_message" rows="3" cols="60" style=" font-size: 100%; width: 99%" class="input">{WELCOME_MESSAGE}</textarea>
-		</dd>
-	</dl>
-	<dl>
-	   <dt><label for="realm">{L_APPLY_REALM1}</label></dt>
-	   <dd><input type="text" name="realm" id="realm" size="20" maxlength="30" value="{REALM}" class="input" /></dd>
-	</dl>
-	
-	<dl>
-	 <dt><label>{L_APPLY_ACP_REGION}</label></dt>
-	 <dd>
-	 <select name="region" class="input" id="region">
-	    <!-- BEGIN region -->
-	   <option value="{region.VALUE}"{region.SELECTED}>{region.OPTION}</option>
-	   <!-- END region -->
-	   </select>
-	   </dd>
-	</dl>
-	  
-   <dl>
-    <dt><label>{L_APPLY_ACP_GUESTPOST}</label><br/>{L_APPLY_ACP_GUESTPOST_EXPLAIN}</dt>
-    <dd>
-    <select name="guests" class="input" id="guests">
-       <!-- BEGIN guests -->
-      <option value="{guests.VALUE}"{guests.SELECTED}>{guests.OPTION}</option>
-      <!-- END guests -->
-     </select>
-     </dd>
-  </dl>
-	   
-	<p class="quick">
-		<input type="submit" name="appformsettings" value="{L_UPDATE}" class="button1" />
-	</p>
-
-</fieldset>
-
-<script type="text/javascript" charset="utf-8">
- $(document).ready(function() {
-   $('#nojquery').hide();
-   $('#picker').farbtastic('#applyquestioncolor');
- });
-</script>
-
-<fieldset>
-<legend>{L_APPLY_COLORSETTINGS}</legend>
-<dl>
-	<dt><label>{L_APPLY_POSTCOLOR}</label><br /><br />{L_APPLY_POSTCOLOR_EXPLAIN}</dt>
-	<dd>
-		<table style=" border-width: 0px;"> 
-		<tr>
-			<td >
-			<span id="nojquery" style="color: red; font-size: 1.4em">{L_JQUERY_MISSING}</span>
-			  <span id="picker"></span>
-	       	</td>
-       		<td>
-			<span class="form-item"><input type="text" id="applyquestioncolor" name="applyquestioncolor" value="#123456" /></span>
-    	 	</td>
-	     </tr>
-		</table>
-	</dd>
-</dl>
-<p class="quick">
-    <select name="app_textcolors" class="input" id="app_textcolors">
-             <option value="postqcolor">{L_APPLY_POST_QUESTIONCOLOR}</option>
-             <option value="postacolor">{L_APPLY_POST_ANSWERCOLOR}</option>
-             <option value="formqcolor">{L_APPLY_FORMCOLOR}</option>
-    </select>
-    <input type="submit" name="updatecolor" value="{L_UPDATE}" class="button1" />
-</p>
-<span>{S_FORM_TOKEN}</span>
-</fieldset>
-</form>
 
 <!-- INCLUDE dkp/overall_footer.html -->

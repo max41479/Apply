@@ -2,7 +2,13 @@
 
 <script  type="text/javascript">
 //<![CDATA[
- function check_form()
+$(document).ready(function() {
+   $('#nojquery').hide();
+   $('#picker1').farbtastic('#postqcolor');
+   $('#picker2').farbtastic('#postacolor');
+ });
+
+function check_form()
 {
 	 if (document.getElementById('template_name').value.length < 1)
      {
@@ -49,11 +55,33 @@
     		</select>
     		
      	</dd>
-     </dl>	
+     </dl>
+     
+	<dl>
+		<dt><label>{L_APPLY_WELCOME}:</label><br />{L_APPLY_WELCOME_EXPLAIN}</dt>
+		<dd>
+		<textarea name="welcome_message" rows="3" cols="60" style=" font-size: 100%; width: 99%" class="input">{WELCOME_MESSAGE}</textarea>
+		</dd>
+	</dl>
+
 
 	<dl>
-
+		<dt><label>{L_APPLY_POST_QUESTIONCOLOR}</label><br />{L_APPLY_POSTQUESTIONCOLOR_EXPLAIN}</dt>
+		<dd>
+			<span id="nojquery" style="color: red; font-size: 1.4em">{L_JQUERY_MISSING}</span>
+			<span id="picker1"></span>
+			<span class="form-item"><input type="text" id="postqcolor" name="postqcolor" value="{POSTQCOLOR}" /></span>
+		</dd>
 	</dl>
+	
+	<dl>
+		<dt><label>{L_APPLY_POST_ANSWERCOLOR}</label><br />{L_APPLY_POSTANSWERCOLOR_EXPLAIN}</dt>
+		<dd>		
+			<span id="picker2"></span>
+			<span class="form-item"><input type="text" id="postacolor" name="postacolor" value="{POSTACOLOR}" /></span>
+		</dd>
+	</dl>
+
 
 </fieldset>
    
