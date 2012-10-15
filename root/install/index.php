@@ -328,12 +328,13 @@ $versions = array(
 				array($table_prefix . 'bbdkp_apphdr', 'template_id' , array('UINT', 0)),
 				array($table_prefix . 'bbdkp_apptemplatelist', 'question_color' , array('VCHAR:8', '')),
 				array($table_prefix . 'bbdkp_apptemplatelist', 'answer_color' , array('VCHAR:8', '')),
+				array($table_prefix . 'bbdkp_apptemplatelist', 'gchoice' , array('BOOL', 0)),
 		),
 
 		'config_remove' => array(
 				array('bbdkp_apply_pacolor'),
 				array('bbdkp_apply_pqcolor'), 
-				array('bbdkp_apply_fqcolor')
+				array('bbdkp_apply_fqcolor'), 
 		),
 			
 		'custom' => array( 'tableupd', 'applyupdater', 'bbdkp_caches'),
@@ -485,6 +486,9 @@ function tableupd($action, $version)
 						$sql = 'INSERT INTO ' . $table_prefix . 'bbdkp_apphdr' . ' ' . $db->sql_build_array('INSERT', $bbdkp_apphdr[$thistemplate['template_id']]);
 						$db->sql_query($sql);
 					}
+					
+					$sql="UPDATE " . $table_prefix . "bbdkp_apptemplatelist  SET gchoice=1, question_color = '#a9192d', answer_color = '#8492d7'";  
+					$db->sql_query($sql);
 					
 					break;
 			}

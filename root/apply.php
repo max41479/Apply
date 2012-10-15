@@ -145,22 +145,26 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	
 	$board_url = generate_board_url() . '/';
 	
-	switch ($config['bbdkp_apply_gchoice'])
+	$sql = "SELECT * from " . APPTEMPLATELIST_TABLE . " WHERE template_id  = " . $template_id;
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+	if(isset($row))
+	{
+		$questioncolor = $row['question_color'];
+		$answercolor = $row['answer_color'];
+		$gchoice = $row['gchoice'];
+		$candidate_guild_id = $row['guild_id'];
+	}
+	
+	switch ($gchoice)
 	{
 		case '1':
-			// add to template defined guild
-			$sql = "SELECT guild_id from " . APPTEMPLATELIST_TABLE . " WHERE template_id  = " . $template_id;
-			$result = $db->sql_query($sql);	
-			$candidate_guild_id = $db->sql_fetchfield('guild_id');
-			$db->sql_freeresult($result);
 			
 			$sql = "SELECT max(rank_id) as rank_id from " . MEMBER_RANKS_TABLE . " WHERE rank_id < 90 and guild_id = " . $candidate_guild_id;
 			$result = $db->sql_query($sql);	
 			$candidate_rank_id = max((int) $db->sql_fetchfield('rank_id'), 0);
 			$db->sql_freeresult($result);
 			break;
-		case '0':
-			// do not add to guild
 		default:
 			$candidate_guild_id = 0;
 			$candidate_rank_id = 99;
@@ -250,7 +254,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	$apply_post .= '<br /><br />';
 	
 	// name
-	$apply_post .= '[color='. $config['bbdkp_apply_pqcolor'] .']' . $user->lang['APPLY_NAME'] . '[/color]';
+	$apply_post .= '[color='. $questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]';
 	if($class_color_exists)
 	{
 		$apply_post .= '[b][color='. $class_color .']' . $candidate_name . '[/color][/b]' ;
@@ -262,15 +266,15 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	$apply_post .= '<br />'; 
 
 	//Realm
-	$apply_post .= '[color='. $config['bbdkp_apply_pqcolor'] .']' . $user->lang['APPLY_REALM1'] . '[/color]' . '[color='. $config['bbdkp_apply_pacolor'] .']' . $candidate_realm . '[/color]' ;
+	$apply_post .= '[color='. $questioncolor .']' . $user->lang['APPLY_REALM1'] . '[/color]' . '[color='. $answercolor .']' . $candidate_realm . '[/color]' ;
 	$apply_post .= '<br />'; 
 
 	// level
-	$apply_post .= '[color='. $config['bbdkp_apply_pqcolor'] .']' . $user->lang['APPLY_LEVEL'] . '[/color]' . '[color='. $config['bbdkp_apply_pacolor'] .']' . $candidate_level. '[/color]' ;
+	$apply_post .= '[color='. $questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]' . '[color='. $answercolor .']' . $candidate_level. '[/color]' ;
 	$apply_post .= '<br />'; 
 	
 	// class
-	$apply_post .= '[color='. $config['bbdkp_apply_pqcolor'] .']' . $user->lang['APPLY_CLASS'] . '[/color] ';
+	$apply_post .= '[color='. $questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color] ';
 	if($class_image_exists )
 	{
 		$apply_post .= '[img]' .$class_image . '[/img] ';
@@ -286,7 +290,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	$apply_post .= '<br />'; 
 
 	//race
-	$apply_post .= '[color='. $config['bbdkp_apply_pqcolor'] .']' . $user->lang['APPLY_RACE'] . '[/color] ';
+	$apply_post .= '[color='. $questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color] ';
 	if($race_image_exists )
 	{
 		$apply_post .= '[img]' .$race_image . '[/img] ';
@@ -321,7 +325,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 					 $cb_countis = count( request_var('templatefield_' . $row['qorder'], array(0 => 0)) );  
                      $cb_count = 0;
 						                                           
-                        $apply_post .= '[size=120][color='. $config['bbdkp_apply_pqcolor'] .'][b]' . $row['question'] . ': [/b][/color][/size]';
+                        $apply_post .= '[size=120][color='. $questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
 						$apply_post .= '<br />';
                         
                         $checkboxes = utf8_normalize_nfc( request_var('templatefield_' . $row['qorder'], array(0 => '') , true));
@@ -344,7 +348,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 				case 'Radiobuttons':			
 					$fieldcontents = utf8_normalize_nfc(request_var('templatefield_' . $row['qorder'], ' ', true));	
 						
-					$apply_post .= '[size=120][color='. $config['bbdkp_apply_pqcolor'] .'][b]' . $row['question'] . ': [/b][/color][/size]';
+					$apply_post .= '[size=120][color='. $questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
 					$apply_post .= '<br />';
 					 
 					$apply_post .=	$fieldcontents;

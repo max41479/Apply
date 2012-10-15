@@ -86,10 +86,8 @@ To help us with your application please answer the questions below. Enter your c
 'ACP_APPLY_HEADER'  		 => 'Title',
 'ACP_APPLY_QUESTION'  		 => 'Question',
 'ACP_APPLY_CONTENTS'  		 => 'Select Options',
-'ACP_APPLY_WHATGUILD_EXPLAIN' 	 => 'Select the Guild to which a candidate will be added.',
-'ACP_APPLY_GNONE'  			 => 'add to None',
-'ACP_APPLY_GSEL'  			 => 'add to selected guild',
-'ACP_APPLY_QORDER'			=> 'Order', 
+'ACP_APPLY_GSEL'  			 => 'Check to add to selected guild',
+'ACP_APPLY_QORDER'			 => 'Order', 
 
 'ACP_APPLY_TEMPLATEEDIT_SUCCESS'  	=> 'Template %s edited successfully',
 

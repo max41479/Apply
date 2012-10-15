@@ -100,6 +100,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 							'forum_id' => request_var ( 'applyforum_id', 0),
 							'question_color'	=> request_var ( 'postqcolor', '#1961a9'),
 							'answer_color'	=> request_var ( 'postacolor', '#4880b1'),
+							'gchoice'	=> request_var ( 'gchoice', 0),
 					);
 
 					$sql = 'UPDATE ' . APPTEMPLATELIST_TABLE . ' SET ' . $db->sql_build_array ( 'UPDATE', $sql_ary ) . ' WHERE template_id = ' . $applytemplate_id;
@@ -168,7 +169,8 @@ class acp_dkp_apply extends bbDkp_Admin {
 						'TEMPLATEFORUM_OPTIONS' => make_forum_select ( $template_info ['forum_id'], false, false, true ),
 						'TEMPLATE_NAME' => $template_info ['template_name'],
 						'POSTQCOLOR' => $template_info['question_color'], 
-						'POSTACOLOR' => $template_info['answer_color'] 
+						'POSTACOLOR' => $template_info['answer_color'] ,
+						'F_GCHOICE'	=> $template_info['gchoice'] ,
 					));
 					
 						
