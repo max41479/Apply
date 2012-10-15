@@ -88,7 +88,7 @@ To help us with your application please answer the questions below. Enter your c
 'ACP_APPLY_CONTENTS'  		 => 'Select Options',
 'ACP_APPLY_GSEL'  			 => 'Check to add to selected guild',
 'ACP_APPLY_QORDER'			 => 'Order', 
-
+'ACP_APPLY_WHATGUILD_EXPLAIN'  => 'Adds character to indicated guild', 
 'ACP_APPLY_TEMPLATEEDIT_SUCCESS'  	=> 'Template %s edited successfully',
 
 'ACP_DKP_APPLY_EXPLAIN'  	=> 'Here you can set all preferences of the Recruitment Mod',

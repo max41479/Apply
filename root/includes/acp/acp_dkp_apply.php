@@ -626,7 +626,8 @@ class acp_dkp_apply extends bbDkp_Admin {
 			'template_name' => utf8_normalize_nfc ( request_var ( 'template_name', ' ', true ) ),
 			'forum_id' => request_var ( 'new_applyforum_id', 0 ), 
 			'question_color'	=> '#1961a9',
-			'answer_color'	=> '#4880b1',				
+			'answer_color'	=> '#4880b1',	
+			'gchoice'	=> 1,
 		);
 
 		// insert new question
