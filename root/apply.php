@@ -135,180 +135,201 @@ if ($submit)
 
 fill_application_form($form_key, $post_data, $submit, $error, $captcha, $template_id);
 
+
+/**
+ * makes a candidate object
+ * 
+ * @param dkp_character $candidate
+ */
+function build_candidate(dkp_character &$candidate, apply_post &$apply_post )
+{
+	global $config, $db, $user;
+	
+	$board_url = generate_board_url() . '/';
+	
+	switch ($apply_post->gchoice)
+	{
+		case '1':
+			//get the lowest rank (in WoW rank 8 is lowest)
+			$sql = "SELECT max(rank_id) as rank_id from " . MEMBER_RANKS_TABLE . " WHERE rank_id < 90 and guild_id = " . $apply_post->candidate_guild_id;
+			$result = $db->sql_query($sql);
+			$candidate->guildrank = max((int) $db->sql_fetchfield('rank_id'), 0);
+			$candidate->guild_id = $apply_post->candidate_guild_id;
+			$db->sql_freeresult($result);
+			break;
+		default:
+			// don't add char to guild roster but insert anyways
+			$candidate->guild_id = 0;
+			$candidate->guildrank = 99;
+			break;
+	}
+	
+	$candidate->realm = trim(utf8_normalize_nfc(request_var('candidate_realm', $config['bbdkp_apply_realm'], true)));
+	$candidate->level = utf8_normalize_nfc(request_var('candidate_level', ' ', true));
+	$candidate->game = request_var('game_id', '');
+	$candidate->genderid = request_var('candidate_gender', 0);
+	$candidate->raceid = request_var('candidate_race_id', 0);
+	
+	//character class
+	$sql_array = array(
+			'SELECT'	=>	' r.race_id, r.image_female, r.image_male, l.name as race_name ',
+			'FROM'		=> array(
+					RACE_TABLE		=> 'r',
+					BB_LANGUAGE		=> 'l',
+			),
+			'WHERE'		=> " l.game_id = r.game_id 
+							AND r.race_id = '". $candidate->raceid ."' 
+							AND r.game_id = '" . $candidate->game . "'
+							AND l.attribute_id = r.race_id  
+							AND l.language= '" . $config['bbdkp_lang'] . "' 
+							AND l.attribute = 'race' ",
+	);
+	
+	$sql = $db->sql_build_query('SELECT', $sql_array);
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+	if(isset($row))
+	{
+		$candidate->race = $row['race_name'];
+		$candidate->race_image = (string) (($candidate->genderid == 0) ? $row['image_male'] : $row['image_female']);
+		$candidate->race_image = (strlen($candidate->race_image) > 1) ? $board_url . "images/race_images/" . $candidate->race_image . ".png" : '';
+		$candidate->race_image_exists = (strlen($candidate->race_image) > 1) ? true : false;
+	}
+	unset($row);
+	$db->sql_freeresult($result);
+	
+	$candidate->classid = request_var('candidate_class_id', 0);
+	
+	//character class
+	$sql_array = array(
+			'SELECT'	=>	' c.class_armor_type AS armor_type , c.colorcode, c.imagename,  c.class_id, l.name as class_name ',
+			'FROM'		=> array(
+					CLASS_TABLE		=> 'c',
+					BB_LANGUAGE		=> 'l',
+			),
+			'WHERE'		=> " l.game_id = c.game_id 
+							AND c.class_id = '". $candidate->classid ."' 
+							AND c.game_id = '" . $candidate->game . "'
+							AND l.attribute_id = c.class_id  
+							AND l.language= '" . $config['bbdkp_lang'] . "' 
+							AND l.attribute = 'class' ",
+	);
+	
+	$sql = $db->sql_build_query('SELECT', $sql_array);
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+	if(isset($row))
+	{
+		$candidate->class =	$row['class_name'];
+		$candidate->class_color =  (strlen($row['colorcode']) > 1) ? $row['colorcode'] : '';
+		$candidate->class_color_exists =  (strlen($row['colorcode']) > 1) ?  true : false;
+		$candidate->class_image = 	strlen($row['imagename']) > 1 ? $board_url . "images/class_images/" . $row['imagename'] . ".png" : '';
+		$candidate->class_image_exists =    (strlen($row['imagename']) > 1) ? true : false;
+	}
+	
+	unset($row);
+	$db->sql_freeresult($result);
+	
+}
+
 /**
  * post application on forum
  *
  */
 function make_apply_posting($post_data, $current_time, $candidate_name, $template_id)
 {
-	global $auth, $config, $db, $user, $phpbb_root_path, $phpEx;
+	global $auth, $config, $db, $user, $phpbb_root_path, $phpEx, $captcha;
 	
-	$board_url = generate_board_url() . '/';
+	if(!class_exists('apply_post'))
+	{
+		include($phpbb_root_path . 'includes/bbdkp/apply/dkp_character.' . $phpEx);
+	}
+	$apply_post = new apply_post();
+	$candidate = new dkp_character();
+	$candidate->name =  $candidate_name; 
 	
 	$sql = "SELECT * from " . APPTEMPLATELIST_TABLE . " WHERE template_id  = " . $template_id;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	if(isset($row))
 	{
-		$questioncolor = $row['question_color'];
-		$answercolor = $row['answer_color'];
-		$gchoice = $row['gchoice'];
-		$candidate_guild_id = $row['guild_id'];
+		$apply_post->questioncolor = $row['question_color'];
+		$apply_post->answercolor = $row['answer_color'];
+		$apply_post->gchoice = $row['gchoice'];
+		$apply_post->candidate_guild_id = $row['guild_id'];
 	}
 	
-	switch ($gchoice)
-	{
-		case '1':
-			
-			$sql = "SELECT max(rank_id) as rank_id from " . MEMBER_RANKS_TABLE . " WHERE rank_id < 90 and guild_id = " . $candidate_guild_id;
-			$result = $db->sql_query($sql);	
-			$candidate_rank_id = max((int) $db->sql_fetchfield('rank_id'), 0);
-			$db->sql_freeresult($result);
-			break;
-		default:
-			$candidate_guild_id = 0;
-			$candidate_rank_id = 99;
-			break;
-	}
-	
-    $candidate_realm = trim(utf8_normalize_nfc(request_var('candidate_realm', $config['bbdkp_apply_realm'], true))); 
-	$candidate_level = utf8_normalize_nfc(request_var('candidate_level', ' ', true));
-	$candidate_game = request_var('game_id', '');
-	$candidate_genderid = request_var('candidate_gender', 0);
-	$candidate_raceid = request_var('candidate_race_id', 0);
-	
-	//character class
-	$sql_array = array(
-		'SELECT'	=>	' r.race_id, r.image_female, r.image_male, l.name as race_name ', 	 
-		'FROM'		=> array(
-				RACE_TABLE		=> 'r',
-				BB_LANGUAGE		=> 'l', 
-				),
-		'WHERE'		=> " l.game_id = r.game_id AND r.race_id = '". $candidate_raceid ."' AND r.game_id = '" . $candidate_game . "' 
-		AND l.attribute_id = r.race_id  AND l.language= '" . $config['bbdkp_lang'] . "' AND l.attribute = 'race' ",					 
-		);
-	$sql = $db->sql_build_query('SELECT', $sql_array);		
-	$result = $db->sql_query($sql);	
-	$row = $db->sql_fetchrow($result);
-	if(isset($row))
-	{
-		$race_name = $row['race_name']; 
-		$race_image = (string) (($candidate_genderid == 0) ? $row['image_male'] : $row['image_female']); 
-		$race_image = (strlen($race_image) > 1) ? $board_url . "images/race_images/" . $race_image . ".png" : ''; 
-		$race_image_exists = (strlen($race_image) > 1) ? true : false;
-	}
-	unset($row);
-	$db->sql_freeresult($result);
-	
-	$candidate_classid = request_var('candidate_class_id', 0);
-	
-	//character class
-	$sql_array = array(
-		'SELECT'	=>	' c.class_armor_type AS armor_type , c.colorcode, c.imagename,  c.class_id, l.name as class_name ', 	 
-		'FROM'		=> array(
-				CLASS_TABLE		=> 'c',
-				BB_LANGUAGE		=> 'l', 
-				),
-		'WHERE'		=> " l.game_id = c.game_id AND c.class_id = '". $candidate_classid ."' AND c.game_id = '" . $candidate_game . "' 
-		AND l.attribute_id = c.class_id  AND l.language= '" . $config['bbdkp_lang'] . "' AND l.attribute = 'class' ",					 
-		);
-	$sql = $db->sql_build_query('SELECT', $sql_array);		
-	$result = $db->sql_query($sql);	
-	$row = $db->sql_fetchrow($result);
-	if(isset($row))
-	{
-		$class_name =	$row['class_name']; 
-		$class_color =  (strlen($row['colorcode']) > 1) ? $row['colorcode'] : '';
-		$class_color_exists =  (strlen($row['colorcode']) > 1) ?  true : false;
-		$class_image = 	strlen($row['imagename']) > 1 ? $board_url . "images/class_images/" . $row['imagename'] . ".png" : '';
-		$class_image_exists =    (strlen($row['imagename']) > 1) ? true : false;
-	}
-	unset($row);
-	$db->sql_freeresult($result);
+	build_candidate($candidate, $apply_post);
 	
 	// if user belongs to group that can add a character then attempt to register a dkp character
 	// guests should never be able to register characters (i.e user anonymous)
 	if($auth->acl_get('u_dkp_charadd') )
 	{
-		if(!class_exists('dkp_character'))
-		{
-			include($phpbb_root_path . 'includes/bbdkp/apply/dkp_character.' . $phpEx);
-		}
-		$candidate = new dkp_character();
-		$candidate->guild = $candidate_guild_id;
-		$candidate->guildrank = $candidate_rank_id;
-		$candidate->name = $candidate_name;
-		$candidate->level = $candidate_level;
-		$candidate->realm = $candidate_realm;
-		$candidate->game = $candidate_game;
-		$candidate->genderid = $candidate_genderid;
-		$candidate->raceid = $candidate_raceid;
-		$candidate->classid = $candidate_classid;
 		register_bbdkp($candidate);
 	}
 		
 	// build post
-	$apply_post = '';
+	$apply_post->message = '';
 	
-	$apply_post .= '[size=150][b]' .$user->lang['APPLY_CHAR_OVERVIEW'] . '[/b][/size]'; 
-	$apply_post .= '<br /><br />';
+	$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_OVERVIEW'] . '[/b][/size]'; 
+	$apply_post->message .= '<br /><br />';
 	
 	// name
-	$apply_post .= '[color='. $questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]';
-	if($class_color_exists)
+	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]';
+	if($candidate->class_color_exists)
 	{
-		$apply_post .= '[b][color='. $class_color .']' . $candidate_name . '[/color][/b]' ;
+		$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
 	}
 	else
 	{
-		$apply_post .= '[b]' . $candidate_name . '[/b]' ;
+		$apply_post->message .= '[b]' . $candidate->name  . '[/b]' ;
 	}
-	$apply_post .= '<br />'; 
+	$apply_post->message .= '<br />'; 
 
 	//Realm
-	$apply_post .= '[color='. $questioncolor .']' . $user->lang['APPLY_REALM1'] . '[/color]' . '[color='. $answercolor .']' . $candidate_realm . '[/color]' ;
-	$apply_post .= '<br />'; 
+	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_REALM1'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
+	$apply_post->message .= '<br />'; 
 
 	// level
-	$apply_post .= '[color='. $questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]' . '[color='. $answercolor .']' . $candidate_level. '[/color]' ;
-	$apply_post .= '<br />'; 
+	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
+	$apply_post->message .= '<br />'; 
 	
 	// class
-	$apply_post .= '[color='. $questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color] ';
-	if($class_image_exists )
+	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color] ';
+	if($candidate->class_image_exists )
 	{
-		$apply_post .= '[img]' .$class_image . '[/img] ';
+		$apply_post->message .= '[img]' .$candidate->class_image  . '[/img] ';
 	}
-	if($class_color_exists)
+	if($candidate->class_color_exists)
 	{
-		$apply_post .= ' [color='. $class_color .']' . $class_name . '[/color]' ;
+		$apply_post->message .= ' [color='. $candidate->class_color .']' . $candidate->class . '[/color]' ;
 	}
 	else
 	{
-		$apply_post .= $class_name;
+		$apply_post->message .= $candidate->class;
 	}
-	$apply_post .= '<br />'; 
+	$apply_post->message .= '<br />'; 
 
 	//race
-	$apply_post .= '[color='. $questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color] ';
-	if($race_image_exists )
+	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color] ';
+	if($candidate->race_image_exists )
 	{
-		$apply_post .= '[img]' .$race_image . '[/img] ';
+		$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
 	}
-	if($class_color_exists)
+	if($candidate->class_color_exists)
 	{
-		$apply_post .= ' [color='. $class_color .']' . $race_name . '[/color]' ;
+		$apply_post->message .= ' [color='. $apply_post->questioncolor .']' . $candidate->race . '[/color]' ;
 	}
 	else
 	{
-		$apply_post .= $race_name;
+		$apply_post->message .= $candidate->race;
 	}
-	$apply_post .= '<br /><br />';
+	$apply_post->message .= '<br /><br />';
 
 	
 	// Motivation	
-	$apply_post .= '[size=150][b]' .$user->lang['APPLY_CHAR_MOTIVATION'] . '[/b][/size]';
-	$apply_post .= '<br /><br />';
+	$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_MOTIVATION'] . '[/b][/size]';
+	$apply_post->message .= '<br /><br />';
 	
 	// complete with formatted questions and answers
 	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id .'  ORDER BY qorder' ;
@@ -325,8 +346,8 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 					 $cb_countis = count( request_var('templatefield_' . $row['qorder'], array(0 => 0)) );  
                      $cb_count = 0;
 						                                           
-                        $apply_post .= '[size=120][color='. $questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
-						$apply_post .= '<br />';
+                        $apply_post->message .= '[size=120][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
+						$apply_post->message .= '<br />';
                         
                         $checkboxes = utf8_normalize_nfc( request_var('templatefield_' . $row['qorder'], array(0 => '') , true));
                         foreach($checkboxes as $value) 
@@ -334,11 +355,11 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
                             $apply_post .= $value;
                             if ($cb_count < $cb_countis-1)
                             {
-                                $apply_post .= ',  ';
+                                $apply_post->message .= ',  ';
                             }
                             $cb_count++;
                         }
-                        $apply_post .= '<br /><br />';                         
+                        $apply_post->message .= '<br /><br />';                         
 					
 					break;
 				case 'Inputbox':
@@ -348,12 +369,12 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 				case 'Radiobuttons':			
 					$fieldcontents = utf8_normalize_nfc(request_var('templatefield_' . $row['qorder'], ' ', true));	
 						
-					$apply_post .= '[size=120][color='. $questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
-					$apply_post .= '<br />';
+					$apply_post->message .= '[size=120][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
+					$apply_post->message .= '<br />';
 					 
-					$apply_post .=	$fieldcontents;
+					$apply_post->message .=	$fieldcontents;
 					
-					$apply_post .= '<br /><br />'; 
+					$apply_post->message .= '<br /><br />'; 
 					break;
 					
 					
@@ -365,15 +386,13 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	
 	// variables to hold the parameters for submit_post
 	$poll = $uid = $bitfield = $options = ''; 
-	
 	// parsed code
-	generate_text_for_storage($apply_post, $uid, $bitfield, $options, true, true, true);
+	generate_text_for_storage($apply_post->message, $uid, $bitfield, $options, true, true, true);
 
 	// subject & username
 
 	//$post_data['post_subject'] = utf8_normalize_nfc(request_var('headline', $user->data['username'], true));
-	$post_data['post_subject']	= $candidate_name . " - " . $candidate_level . " " . $race_name . " ". $class_name;
-	$post_data['username']	= $user->data['username'];
+	$post_subj	= (string) $candidate->name . " - " . $candidate->level . " " . $candidate->race . " ". $candidate->class;
 	
 	// Store message, sync counters
 	
@@ -387,12 +406,12 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 		'enable_smilies'	=> true,
 		'enable_urls'		=> true,
 		'enable_sig'		=> true,
-		'message'			=> $apply_post,
-		'message_md5'		=> md5($apply_post),
+		'message'			=> $apply_post->message,
+		'message_md5'		=> md5($apply_post->message),
 		'bbcode_bitfield'	=> $bitfield,
 		'bbcode_uid'		=> $uid,
 		'post_edit_locked'	=> 0,
-		'topic_title'		=> $post_data['post_subject'],
+		'topic_title'		=> $post_subj,
 		'notify_set'		=> false,
 		'notify'			=> false,
 		'post_time' 		=> $current_time,
@@ -405,7 +424,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 		
 		
 		//submit post
-		$post_url = submit_post('post', $post_data['post_subject'], $post_data['username'], POST_NORMAL, $poll, $data);
+		$post_url = submit_post('post', $post_subj, $user->data['username'], POST_NORMAL, $poll, $data);
 		
 		$redirect_url = $post_url;
 			
@@ -423,6 +442,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 		trigger_error($message);
 
 }
+
 
 /**
  * registers a bbDKP character 
@@ -732,7 +752,6 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha,
 	
 	page_footer();
 	
-	
 }
 	
 /**
@@ -802,8 +821,6 @@ function check_apply_form_access($template_id)
 	}
 	
 	return $post_data;
-		
-	
 }
 
 /**

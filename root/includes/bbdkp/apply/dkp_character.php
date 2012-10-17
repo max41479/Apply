@@ -19,6 +19,17 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+class apply_post
+{
+	public $questioncolor = '';
+	public $answercolor = '';
+	public $gchoice = '';
+	public $candidate_guild_id=0;
+	public $message= ''; 
+}
+
+
+
 /**
  * This class describes an applicant
  */
@@ -32,10 +43,16 @@ class dkp_character
 	public $feedurl; 
 	public $level ='';
 	public $class = '';
+	public $class_color = '';
+	public $class_color_exists = '';
 	public $classid = 0;
+	public $class_image = '';
+	public $class_image_exists = '';
 	public $talents ='';
 	public $race ='';
 	public $raceid = 0;
+	public $race_image ='';
+	public $race_image_exists = '';
 	public $game ='';
 	
 	public $talent1name ='';
@@ -45,7 +62,8 @@ class dkp_character
 	public $professions ='';
 	public $genderid = 0;
 	public $faction = 0;
-	public $guild = ''; 
+	public $guild = '';
+	public $guild_id = 0;
 	public $guildrank = 0;
 	 
 	public $spellpower = 0; 
