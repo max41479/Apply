@@ -362,20 +362,23 @@ define('APPTEMPLATELIST_TABLE',			$table_prefix . 'bbdkp_apptemplatelist');
 				<comment lang="en"><![CDATA[add redirect to apply]]></comment>
 				<comment lang="fr"><![CDATA[ajout redirection vers application]]></comment>
 				<comment lang="de"><![CDATA[weiterleitung zum fragebogen]]></comment>
-				<find><![CDATA[$lastclick	= request_var('lastclick', 0);]]></find>
-				<action type="after-add"><![CDATA[
-				
-//apply
-$result = $db->sql_query ( 'SELECT * FROM ' . APPTEMPLATELIST_TABLE . ' ORDER BY template_id');
-while ( $row = $db->sql_fetchrow ( $result ) )
+				<find><![CDATA[$error = $post_data = array();]]></find>
+				<action type="before-add"><![CDATA[//apply
+if($submit==true && $mode !='edit')
 {
-	if((int) $row ['forum_id'] === $forum_id)
+	$result = $db->sql_query ( 'SELECT * FROM ' . APPTEMPLATELIST_TABLE . ' ORDER BY template_id');
+	while ( $row = $db->sql_fetchrow ( $result ) )
 	{
-		redirect(append_sid ( "{$phpbb_root_path}apply.$phpEx", 'template_id='. $row ['template_id'] ));
+		if((int) $row ['forum_id'] === $forum_id)
+		{
+			redirect(append_sid ( "{$phpbb_root_path}apply.$phpEx", 'template_id='. $row ['template_id'] ));
+		}
 	}
+	$db->sql_freeresult ( $result) ;
 }
-$db->sql_freeresult ( $result) ;
-//end apply]]></action>
+//end apply
+
+]]></action>
 			</edit>
 		</open>
 
