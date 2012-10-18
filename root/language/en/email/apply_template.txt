@@ -1,0 +1,18 @@
+[size=150][b]{L_APPLY_CHAR_OVERVIEW}[/b][/size]
+
+
+[color={QCOLOR}]{L_APPLY_NAME}[/color]
+
+<!-- IF S_CLASS_COLOR_EXISTS --> 
+[b][color={CLASSCOLOR}]{CANDIDATE_NAME}[/color][/b]
+<!-- ELSE -->
+[b]{CANDIDATE_NAME}[/b]
+
+[color={QCOLOR}]{L_APPLY_REALM1[/color][color={ACOLOR}]{CANDIDATE_REALM}[/color]
+[color={QCOLOR}]{L_APPLY_LEVEL[/color][color={ACOLOR}]{CANDIDATE_LEVEL}[/color]
+[color={QCOLOR}]{L_APPLY_CLASS[/color]<!-- IF S_CLASS_IMAGE_EXISTS --> [img]{CLASSIMG}[/img]<!-- ENDIF --><!-- IF S_CLASS_COLOR_EXISTS -->[b][color={CLASSCOLOR}]{CANDIDATE_CLASS}[/color][/b]<!-- ELSE -->[b]{CANDIDATE_CLASS}[/b]<!-- ENDIF -->
+[color={QCOLOR}]{L_APPLY_RACE[/color]<!-- IF S_RACE_IMAGE_EXISTS --> [img]{RACEIMG}[/img]<!-- ENDIF --><!-- IF S_CLASS_COLOR_EXISTS -->[b][color={CLASSCOLOR}]{CANDIDATE_RACE}[/color][/b]<!-- ELSE -->[b]{CANDIDATE_RACE}[/b]<!-- ENDIF -->
+
+[size=150][b]{L_APPLY_CHAR_MOTIVATION}[/b][/size]
+
+{QUESTIONS}
