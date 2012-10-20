@@ -145,8 +145,8 @@ function check_addtemplate()
 	  <!-- ELSE -->
 	  <tr class="row2">
 	  <!-- ENDIF -->
-	  	<td style="width:3%; text-align:center">{apptemplate.QORDER}</td>
-	    <td style="width:8%; text-align:center">
+	  	<td style="width:5%; text-align:center">{apptemplate.QORDER}</td>
+	    <td style="width:10%; text-align:center">
 	    <!-- IF apptemplate.QORDER == 0 and not PREVIOUS_PAGE -->{ICON_MOVE_UP_DISABLED}
 	    <!-- ELSE --><a href="{apptemplate.U_APPQUESTIONMOVE_UP}">{ICON_MOVE_UP}</a><!-- ENDIF -->
 	    
@@ -154,24 +154,28 @@ function check_addtemplate()
 		<!-- ELSE --><a href="{apptemplate.U_APPQUESTIONMOVE_DOWN}">{ICON_MOVE_DOWN}</a>
 		<!-- ENDIF --><a href="{apptemplate.U_APPQUESTIONDELETE}">{ICON_DELETE}</a>
 		</td>
-	    <td style="width:20%; text-align:left">
-	    <input type="checkbox" name="q_mandatory[{apptemplate.ID}]" value="True" {apptemplate.DISABLED} {apptemplate.CHECKED} />&nbsp;
+	    
+	    <td style="width:19%; text-align:left">
+	    <input type="checkbox" name="q_mandatory[{apptemplate.ID}]" {apptemplate.DISABLED} {apptemplate.CHECKED} />&nbsp;
 	    	<select name="q_type[{apptemplate.ID}]" class="input" {apptemplate.DISABLED}>
 				<!-- BEGIN template_type -->
 				<option value="{template_type.TYPE}"{template_type.SELECTED}>{template_type.VALUE}</option>
 				<!-- END template_type -->
 			</select>
 		</td>
-	    <td style="width:20%; text-align:center; overflow:ellipsis">
-	    <textarea style="width:100%; resize:none;" rows="2" cols="10"  
+		
+	    <td style="width:22%; text-align:center; overflow:ellipsis">
+	    <textarea style="width:97%; resize:none;" rows="2" cols="10"  
 	    class="text" name="q_header[{apptemplate.ID}]">{apptemplate.HEADER}</textarea></td>
 	    
-	    <td style="width:20%; text-align:center; overflow:ellipsis">
-	    <textarea style="width:100%; resize:none;" rows="2" cols="10"
-	    class="text" name="q_question[{apptemplate.ID}]" >{apptemplate.QUESTION}</textarea></td>
+	    <td style="width:22%; text-align:center; overflow:ellipsis">
+	    <textarea style="width:85%; resize:none;" rows="2" cols="10"
+	    class="text" name="q_question[{apptemplate.ID}]" >{apptemplate.QUESTION}</textarea>
+	    <input type="checkbox" name="q_question_mandatory[{apptemplate.ID}]" {apptemplate.DISABLED} {apptemplate.CHECKED} />
+	    </td>
 	    
-	    <td style="width:20%; text-align:center; overflow:ellipsis">
-	    <textarea style="width:95%; resize:none;" rows="2" cols="10"
+	    <td style="width:22%; text-align:center; overflow:ellipsis">
+	    <textarea style="width:97%; resize:none;" rows="2" cols="10"
 	    class="text" name="q_options[{apptemplate.ID}]" >{apptemplate.OPTIONS}</textarea></td>
 	  </tr>
 	  <!-- END apptemplate -->
@@ -185,19 +189,16 @@ function check_addtemplate()
 <table cellspacing="1">
 	<thead>
 	<tr>
-    <th style="width:5%; text-align:left">{L_REQUIRED}</th>
-    <th style="width:25%; text-align:left">{L_TYPE}</th>
-    <th style="width:20%; text-align:left">{L_ACP_APPLY_HEADER}</th>
-    <th style="width:20%; text-align:left">{L_ACP_APPLY_QUESTION}</th>
-    <th style="width:20%; text-align:left">{L_ACP_APPLY_CONTENTS}</th>
+    <th style="width:34%; text-align:left">{L_TYPE}</th>
+    <th style="width:22%; text-align:left">{L_ACP_APPLY_HEADER}</th>
+    <th style="width:22%; text-align:left">{L_ACP_APPLY_QUESTION}</th>
+    <th style="width:22%; text-align:left">{L_ACP_APPLY_CONTENTS}</th>
   </tr>
   </thead>
   <tbody>
 	  <tr class="row3">
-	  	<td>
-         	<input type="checkbox" name="app_add_mandatory" value="True" />&nbsp;
-	  	</td>
 	    <td>
+         	<input type="checkbox" name="app_add_mandatory" value="True" />&nbsp;
          	<select name="app_add_type" class="input" id="app_add_type">
 				<!-- BEGIN template_type -->
 				<option value="{template_type.TYPE}"{template_type.SELECTED}>{template_type.VALUE}</option>
@@ -206,15 +207,16 @@ function check_addtemplate()
 	    </td>
 	    
 	    <td>
-	      <textarea style="width:100%; resize:none;" rows="2" cols="10"
+	      <textarea style="width:97%; resize:none;" rows="2" cols="10"
 	    	class="text" name="app_add_title" onclick="this.value ='';" onblur="if(this.value == '') { this.value = '{L_ACP_APPLY_HEADER}' };" >{L_ACP_APPLY_HEADER}</textarea>
 	    </td>
 	    <td>
-	      <textarea style="width:100%; resize:none;" rows="2" cols="10"
+	      <textarea style="width:85%; resize:none;" rows="2" cols="10"
 	    	class="text" name="app_add_question" onclick="this.value ='';" onblur="if(this.value == '') { this.value = '{L_ACP_APPLY_QUESTION}' };" >{L_ACP_APPLY_QUESTION}</textarea>
+	      <input type="checkbox" name="app_add_question_mandatory" id="app_add_question_mandatory"/>	
 	    </td>
 	    <td>
-	   	      <textarea style="width:100%; resize:none;" rows="2" cols="10"
+	   	      <textarea style="width:97%; resize:none;" rows="2" cols="10"
 	    	class="text" name="app_add_options" ></textarea>
 	    </td>
 	    
@@ -226,8 +228,8 @@ function check_addtemplate()
 	<input type="submit" name="appformquestionadd" id="appformquestionadd" value="{L_ADD}" class="button1" />
 </p>
 <span>{S_FORM_TOKEN}</span>
-</form>
 </fieldset>
+</form>
 
 <!-- ENDIF -->
 
