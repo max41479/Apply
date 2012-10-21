@@ -27,11 +27,14 @@ if (! defined ( 'EMED_BBDKP' ))
 	trigger_error ( $user->lang ['BBDKPDISABLED'], E_USER_WARNING );
 }
 
-class acp_dkp_apply extends bbDkp_Admin {
+class acp_dkp_apply extends bbDkp_Admin 
+{
 	public $u_action;
 	private $link;
 	private $form_key;
-
+	private $type = array();
+	private $regions = array();
+	
 	function main($id, $mode)
 	{
 		global $db, $user, $template, $cache;
@@ -43,7 +46,24 @@ class acp_dkp_apply extends bbDkp_Admin {
 		$user->add_lang ( array ('mods/apply'));
 		$this->link = '<br /><a href="' . append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings" ) . '"><h3>' . $user->lang ['APPLY_ACP_RETURN'] . '</h3></a>';
 
+		$this->type = array (
+				'title' => $user->lang ['APPLY_ACP_TITLE'],
+				'Inputbox' => $user->lang ['APPLY_ACP_INPUTBOX'],
+				'Textbox' => $user->lang ['APPLY_ACP_TXTBOX'],
+				'Textboxbbcode' => $user->lang ['APPLY_ACP_TXTBOXBBCODE'],
+				'Selectbox' => $user->lang ['APPLY_ACP_SELECTBOX'],
+				'Radiobuttons' => $user->lang ['APPLY_ACP_RADIOBOX'],
+				'Checkboxes' => $user->lang ['APPLY_ACP_CHECKBOX'],
+		);
 
+		$this->regions = array(
+				'US' => 'America',
+				'EU' => 'Europe',
+				'CN' => 'China',
+				'KR' => 'Korea',
+				'TW' => 'Taiwan',
+				'SEA' => 'Southeast Asia');
+		
 		// getting guilds
 		$sql_array = array (
 				'SELECT' => 'a.id, a.name, a.realm, a.region ',
@@ -311,17 +331,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 				 * 7 question types supported
 				*/
 
-				$type = array (
-						'title' => $user->lang ['APPLY_ACP_TITLE'],
-						'Inputbox' => $user->lang ['APPLY_ACP_INPUTBOX'],
-						'Textbox' => $user->lang ['APPLY_ACP_TXTBOX'],
-						'Textboxbbcode' => $user->lang ['APPLY_ACP_TXTBOXBBCODE'],
-						'Selectbox' => $user->lang ['APPLY_ACP_SELECTBOX'],
-						'Radiobuttons' => $user->lang ['APPLY_ACP_RADIOBOX'],
-						'Checkboxes' => $user->lang ['APPLY_ACP_CHECKBOX'], 
-				);
-
-				foreach ( $type as $key => $value ) {
+				foreach ( $this->type as $key => $value ) {
 					$template->assign_block_vars ( 'template_type', array (
 							'TYPE' => $key,
 							'VALUE' => $value,
@@ -376,7 +386,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 							'U_APPQUESTIONDELETE' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;appquestiondelete=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id )
 					) );
 
-					foreach ( $type as $key => $value )
+					foreach ( $this->type as $key => $value )
 					{
 						$template->assign_block_vars ( 'apptemplate.template_type', array (
 								'TYPE' => $key,
@@ -388,53 +398,45 @@ class acp_dkp_apply extends bbDkp_Admin {
 				$db->sql_freeresult ( $result );
 				
 				
-				$regions = array(
-					'US' => 'America',
-					'EU' => 'Europe',
-					'CN' => 'China', 
-					'KR' => 'Korea', 
-					'TW' => 'Taiwan', 
-					'SEA' => 'Southeast Asia');
-				
 				// region
 				$template->assign_block_vars ( 'region', array (
 						'VALUE' => 'EU',
 						'SELECTED' => ('EU' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-						'OPTION' => $regions['EU']
+						'OPTION' => $this->regions['EU']
 				));
 
 				$template->assign_block_vars ( 'region', 
 						array (
 						'VALUE' => 'US',
 						'SELECTED' => ('US' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-						'OPTION' => $regions['US']
+						'OPTION' => $this->regions['US']
 				));
 				
 				$template->assign_block_vars ( 'region',
 						array (
 								'VALUE' => 'CN',
 								'SELECTED' => ('CN' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-								'OPTION' => $regions['CN']
+								'OPTION' => $this->regions['CN']
 						));	
 				$template->assign_block_vars ( 'region',
 						array (
 								'VALUE' => 'KR',
 								'SELECTED' => ('KR' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-								'OPTION' => $regions['KR']
+								'OPTION' => $this->regions['KR']
 						));
 				
 				$template->assign_block_vars ( 'region',
 						array (
 								'VALUE' => 'TW',
 								'SELECTED' => ('TW' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-								'OPTION' => $regions['TW']
+								'OPTION' => $this->regions['TW']
 						));
 				
 				$template->assign_block_vars ( 'region',
 						array (
 								'VALUE' => 'SEA',
 								'SELECTED' => ('SEA' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-								'OPTION' => $regions['SEA']
+								'OPTION' => $this->regions['SEA']
 						));
 				
 							
