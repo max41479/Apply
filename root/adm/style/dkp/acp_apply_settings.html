@@ -23,8 +23,8 @@ function check_addtemplate()
 
 <form method="post" action="{F_ADD_CONFIG}" id="acp_applytemplates">
 
+<h2>{L_APPLY_ACP_APPTEMPLATELIST}</h2>
 <fieldset>
-<legend>{L_APPLY_ACP_APPTEMPLATELIST}</legend>
 
 <dl>
 	<dt style= "width: 100%">{L_APPLY_ACP_APPTEMPLATELIST_EXPLAIN}</dt>
@@ -108,19 +108,97 @@ function check_addtemplate()
 </fieldset>
 </form>
 
+
 <!-- IF .apptemplatelist -->
 <form method="post" action="{F_ADD_CONFIG}" id="acp_applylines">
 
+<h2>{L_APPLY_ACP_TEMPLATELINES}</h2>
 <fieldset>
 	
-<legend>{L_APPLY_ACP_APPTEMPLATELINES}</legend>
+<input type="hidden" name="chartemplate_id_hidden" value="{TEMPLATE_ID}" />
 
-<input type="hidden" name="template_id_hidden" value="{TEMPLATE_ID}" />
+<select name="applytemplate_id" id="applytemplate_id" class="input" onchange="javascript:form.submit();" >
+<!-- BEGIN apptemplatelist -->
+	<option value="{apptemplatelist.ID}" {apptemplatelist.SELECTED} >{apptemplatelist.TEMPLATE_NAME}</option><!-- END apptemplatelist -->
+</select>
 
-    <select name="applytemplate_id" id="applytemplate_id" class="input" onchange="javascript:form.submit();" >
-	<!-- BEGIN apptemplatelist -->
-   		 <option value="{apptemplatelist.ID}" {apptemplatelist.SELECTED} >{apptemplatelist.TEMPLATE_NAME}</option><!-- END apptemplatelist -->
-  	</select>
+<dl>
+	<dt style= "width: 100%"><label>{L_APPLY_CHGCHAR}</label><br/>{L_APPLY_CHGCHAR_EXPLAIN}</dt>
+</dl>
+
+<!-- IF .chartemplate -->
+<table cellspacing="1" style="width:99%">
+  <thead>
+	<tr>
+	<th style="width:3%; text-align:center">{L_ACP_APPLY_QORDER}</th>
+	<th style="width:8%; text-align:center">{L_ACTION}</th>
+    <th style="width:17%; text-align:left">{L_TYPE}</th>
+  </tr>
+  </thead>
+  
+  <tbody>
+   <!-- BEGIN chartemplate -->
+	  <!-- IF chartemplate.S_ROW_COUNT is even -->
+	  <tr class="row1">
+	  <!-- ELSE -->
+	  <tr class="row2">
+	  <!-- ENDIF -->
+	  	<td style="width:5%; text-align:center">{chartemplate.QORDER}</td>
+	    <td style="width:10%; text-align:center">
+	    <!-- IF chartemplate.QORDER == 0 and not PREVIOUS_PAGE -->{ICON_MOVE_UP_DISABLED}
+	    <!-- ELSE --><a href="{chartemplate.U_CHARQUESTIONMOVE_UP}">{ICON_MOVE_UP}</a><!-- ENDIF -->
+	    
+		<!-- IF chartemplate.S_LAST_ROW and not NEXT_PAGE --> {ICON_MOVE_DOWN_DISABLED}
+		<!-- ELSE --><a href="{chartemplate.U_CHARQUESTIONMOVE_DOWN}">{ICON_MOVE_DOWN}</a>
+		<!-- ENDIF --><a href="{chartemplate.U_CHARQUESTIONDELETE}">{ICON_DELETE}</a>
+		</td>
+	    
+	    <td style="width:85%; text-align:left">
+	    <input  type="checkbox" name="charq_mandatory[{chartemplate.ID}]" {chartemplate.DISABLED} {chartemplate.CHECKED} />&nbsp;
+	    	<select style="width:30%;" name="charq_type[{chartemplate.ID}]" class="input" {chartemplate.DISABLED}>
+				<!-- BEGIN chartemplate_type -->
+				<option value="{chartemplate_type.TYPE}"{chartemplate_type.SELECTED}>{chartemplate_type.VALUE}</option>
+				<!-- END chartemplate_type -->
+			</select>
+		</td>
+	  </tr>
+	  <!-- END chartemplate -->
+	  </tbody>
+</table>
+	<p class="quick">
+		<input type="submit" name="charquestionupdate" value="{L_UPDATE}" class="button1" />
+	</p>
+<!-- ENDIF -->
+	
+<table cellspacing="1" style="width:99%">
+	<thead>
+	<tr>
+    <th style="width:34%; text-align:left">{L_TYPE}</th>
+  </tr>
+  </thead>
+  <tbody>
+	  <tr class="row3">
+	    <td>
+         	<input type="checkbox" name="char_add_mandatory" value="True" />&nbsp;
+         	<select name="char_add_type" class="input" id="char_add_type">
+				<!-- BEGIN chartemplatelist -->
+				<option value="{chartemplatelist.TYPE}"{chartemplatelist.SELECTED}>{chartemplatelist.VALUE}</option>
+				<!-- END chartemplatelist -->
+			</select>
+	    </td>
+	  </tr>
+	  </tbody>
+</table>
+
+<p class="quick">
+	<input type="submit" name="charquestionadd" id="charquestionadd" value="{L_ADD}" class="button1" />
+</p>
+<span>{S_FORM_TOKEN}</span>
+
+
+
+<input type="hidden" name="apptemplate_id_hidden" value="{TEMPLATE_ID}" />
+
 <dl>
 	<dt style= "width: 100%"><label>{L_APPLY_CHGMAND}</label><br/>{L_APPLY_CHGMAND_EXPLAIN}</dt>
 </dl>

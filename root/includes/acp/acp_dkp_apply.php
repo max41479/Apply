@@ -32,7 +32,8 @@ class acp_dkp_apply extends bbDkp_Admin
 	public $u_action;
 	private $link;
 	private $form_key;
-	private $type = array();
+	private $apptype = array();
+	private $chartype = array();
 	private $regions = array();
 	
 	function main($id, $mode)
@@ -46,7 +47,7 @@ class acp_dkp_apply extends bbDkp_Admin
 		$user->add_lang ( array ('mods/apply'));
 		$this->link = '<br /><a href="' . append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings" ) . '"><h3>' . $user->lang ['APPLY_ACP_RETURN'] . '</h3></a>';
 
-		$this->type = array (
+		$this->apptype = array (
 				'title' => $user->lang ['APPLY_ACP_TITLE'],
 				'Inputbox' => $user->lang ['APPLY_ACP_INPUTBOX'],
 				'Textbox' => $user->lang ['APPLY_ACP_TXTBOX'],
@@ -56,13 +57,21 @@ class acp_dkp_apply extends bbDkp_Admin
 				'Checkboxes' => $user->lang ['APPLY_ACP_CHECKBOX'],
 		);
 
+		$this->chartype = array (
+				'charname' => $user->lang ['APPLY_ACP_CHARNAME'],
+				'gameraceclass' => $user->lang ['APPLY_GAME'],
+				'regionrealm' => $user->lang ['APPLY_REGION'],
+				'level' => $user->lang ['APPLY_LEVEL'],
+				'gender' => $user->lang ['APPLY_GENDER'],
+		);
+
 		$this->regions = array(
-				'US' => 'America',
-				'EU' => 'Europe',
-				'CN' => 'China',
-				'KR' => 'Korea',
-				'TW' => 'Taiwan',
-				'SEA' => 'Southeast Asia');
+				'US' => $user->lang ['US'],
+				'EU' => $user->lang ['EU'],
+				'CN' => $user->lang ['CN'],
+				'KR' => $user->lang ['KR'],
+				'TW' => $user->lang ['TW'],
+				'SEA' => $user->lang ['SEA']);
 		
 		// getting guilds
 		$sql_array = array (
@@ -75,6 +84,7 @@ class acp_dkp_apply extends bbDkp_Admin
 				'GROUP_BY' => 'a.id, a.name, a.realm, a.region',
 				'ORDER_BY' => 'a.id ASC'
 		);
+		
 		$sql = $db->sql_build_query ( 'SELECT', $sql_array );
 		$result = $db->sql_query ( $sql );
 		while ( $row = $db->sql_fetchrow ( $result ) )
@@ -201,15 +211,15 @@ class acp_dkp_apply extends bbDkp_Admin
 
 
 				break;
-
+						
 			case 'apply_settings' :
 
 				$this->form_key = '2uE88d0k5Jy0ZWLQV53WKO2';
 				add_form_key ( $this->form_key );
 
 				// getting template definitions
-				$applytemplate_id = request_var ( 'applytemplate_id', request_var ( 'template_id_hidden', 0 ));
-
+				$applytemplate_id = request_var ( 'applytemplate_id', request_var ( 'apptemplate_id_hidden', 0 ));
+				
 				if ($applytemplate_id == 0)
 				{
 					$i=0;
@@ -226,6 +236,7 @@ class acp_dkp_apply extends bbDkp_Admin
 					$db->sql_freeresult ( $result );
 				}
 
+				
 				/**
 				 * handlers
 				 */
@@ -254,6 +265,14 @@ class acp_dkp_apply extends bbDkp_Admin
 					$this->apptemplate_add();
 				}
 
+				/**
+				 * adds a char template
+				 */
+				if (isset ( $_POST ['charquestionadd'] ))
+				{
+					$this->charformquestion_add($applytemplate_id);
+				}
+				
 				/**
 				 * adds a template question
 				 */
@@ -327,11 +346,61 @@ class acp_dkp_apply extends bbDkp_Admin
 				$db->sql_freeresult ( $result );
 
 				/*
-				 * loading questions
+				 * loading char questions
+				*/
+				
+				foreach ( $this->chartype as $key => $value ) 
+				{
+					$template->assign_block_vars ( 'chartemplatelist', array (
+							'TYPE' => $key,
+							'VALUE' => $value,
+							'SELECTED' => ($key == $applytemplate_id) ? ' selected="selected"' : ''
+					) );
+				}
+				
+				$sql = 'SELECT * FROM ' . CHARTEMPLATE_TABLE . ' a
+                		INNER JOIN ' . APPTEMPLATELIST_TABLE . ' b
+		                ON b.template_id = a.template_id
+		                WHERE a.template_id = ' . $applytemplate_id . '
+		                ORDER BY a.qorder ';
+				$result = $db->sql_query ( $sql );
+				while ( $row = $db->sql_fetchrow ( $result ) )
+				{
+					$checked = '';
+					if ($row ['mandatory'] == 'True')
+					{
+						$checked = ' checked="checked"';
+					}
+					$questionshow = '';
+					$template->assign_block_vars ( 'chartemplate', array (
+							'QORDER' => $row ['qorder'],
+							'MANDATORY' => $row ['mandatory'],
+							'CHECKED' => $checked,
+							'ID' => $row ['id'],
+							'U_CHARQUESTIONMOVE_UP' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;charquestionmove_up=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id ),
+							'U_CHARQUESTIONMOVE_DOWN' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;charquestionmove_down=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id ),
+							'U_CHARQUESTIONDELETE' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;charquestiondelete=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id )
+					) );
+				
+					foreach ( $this->chartype as $key => $value )
+					{
+						$template->assign_block_vars ( 'chartemplate.chartemplate_type', array (
+								'TYPE' => $key,
+								'VALUE' => $value,
+								'SELECTED' => ($key == $row ['type']) ? ' selected="selected"' : ''
+						) );
+					}
+				}
+				$db->sql_freeresult ( $result );
+				
+				
+				/*
+				 * loading app questions
 				 * 7 question types supported
 				*/
 
-				foreach ( $this->type as $key => $value ) {
+				foreach ( $this->apptype as $key => $value ) 
+				{
 					$template->assign_block_vars ( 'template_type', array (
 							'TYPE' => $key,
 							'VALUE' => $value,
@@ -386,7 +455,7 @@ class acp_dkp_apply extends bbDkp_Admin
 							'U_APPQUESTIONDELETE' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;appquestiondelete=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id )
 					) );
 
-					foreach ( $this->type as $key => $value )
+					foreach ( $this->apptype as $key => $value )
 					{
 						$template->assign_block_vars ( 'apptemplate.template_type', array (
 								'TYPE' => $key,
@@ -397,62 +466,6 @@ class acp_dkp_apply extends bbDkp_Admin
 				}
 				$db->sql_freeresult ( $result );
 				
-				
-				// region
-				$template->assign_block_vars ( 'region', array (
-						'VALUE' => 'EU',
-						'SELECTED' => ('EU' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-						'OPTION' => $this->regions['EU']
-				));
-
-				$template->assign_block_vars ( 'region', 
-						array (
-						'VALUE' => 'US',
-						'SELECTED' => ('US' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-						'OPTION' => $this->regions['US']
-				));
-				
-				$template->assign_block_vars ( 'region',
-						array (
-								'VALUE' => 'CN',
-								'SELECTED' => ('CN' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-								'OPTION' => $this->regions['CN']
-						));	
-				$template->assign_block_vars ( 'region',
-						array (
-								'VALUE' => 'KR',
-								'SELECTED' => ('KR' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-								'OPTION' => $this->regions['KR']
-						));
-				
-				$template->assign_block_vars ( 'region',
-						array (
-								'VALUE' => 'TW',
-								'SELECTED' => ('TW' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-								'OPTION' => $this->regions['TW']
-						));
-				
-				$template->assign_block_vars ( 'region',
-						array (
-								'VALUE' => 'SEA',
-								'SELECTED' => ('SEA' == $config ['bbdkp_apply_region']) ? ' selected="selected"' : '',
-								'OPTION' => $this->regions['SEA']
-						));
-				
-							
-				// guests
-				$template->assign_block_vars ( 'guests', array (
-						'VALUE' => 'True',
-						'SELECTED' => ('True' == $config ['bbdkp_apply_guests']) ? ' selected="selected"' : '',
-						'OPTION' => 'True'
-				) );
-
-				$template->assign_block_vars ( 'guests', array (
-						'VALUE' => 'False',
-						'SELECTED' => ('False' == $config ['bbdkp_apply_guests']) ? ' selected="selected"' : '',
-						'OPTION' => 'False'
-				) );
-
 				$template->assign_vars ( array (
 						'TEMPLATE_ID' => $applytemplate_id,
 						'ADDTEMPLATEFORUM_OPTIONS' => make_forum_select ( 0, false, false, true ),
@@ -469,7 +482,7 @@ class acp_dkp_apply extends bbDkp_Admin
 	
 	
 	/**
-	 * adds a new template
+	 * adds a new app template
 	 *
 	 */
 	public function apptemplate_add()
@@ -513,7 +526,7 @@ class acp_dkp_apply extends bbDkp_Admin
 		trigger_error ( $user->lang ['APPLY_ACP_TEMPLATEADD'] . $this->link, E_USER_NOTICE );
 	}
 	
-	
+
 	/**
 	 * deletes an entire template
 	 *
@@ -551,6 +564,46 @@ class acp_dkp_apply extends bbDkp_Admin
 	}
 	
 
+	/**
+	 * adds a new char question
+	 *
+	 * @param int $applytemplate_id
+	 */
+	public function charformquestion_add($applytemplate_id)
+	{
+	
+		global $db, $phpbb_admin_path, $phpEx, $user;
+		if (! check_form_key ( $this->form_key ))
+		{
+			trigger_error ( $user->lang ['FORM_INVALID'] . adm_back_link ( $this->u_action ), E_USER_WARNING );
+		}
+	
+		$sql = 'SELECT max(qorder) + 1 as maxorder FROM ' . CHARTEMPLATE_TABLE . ' WHERE template_id= ' . $applytemplate_id;
+		$result = $db->sql_query ($sql);
+		$max_order = ( int ) $db->sql_fetchfield ( 'maxorder', 0, $result );
+	
+		$db->sql_freeresult ( $result );
+	
+		$sql_ary = array (
+				'template_id' => request_var ( 'applytemplate_id', 0 ),
+				'qorder' => $max_order,
+				'mandatory' => (isset ( $_POST ['char_add_mandatory'] ) ? 'True' : 'False'),
+				'type' => utf8_normalize_nfc ( request_var ( 'char_add_type', ' ', true ) ),
+		);
+	
+		// insert new question
+		$sql = 'INSERT INTO ' . CHARTEMPLATE_TABLE . ' ' . $db->sql_build_array ( 'INSERT', $sql_ary );
+		$db->sql_query ($sql);
+		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
+		$this->link = '<br /><a href="' . $link . '"><h3>' . $user->lang ['APPLY_ACP_RETURN'] . '</h3></a>';
+	
+		meta_refresh ( 1, $link );
+	
+		trigger_error ( $user->lang ['APPLY_ACP_QUESTNADD'] . $this->link, E_USER_NOTICE );
+	
+	}
+	
+	
 	/**
 	 * adds a new question
 	 *
