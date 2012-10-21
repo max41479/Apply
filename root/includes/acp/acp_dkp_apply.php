@@ -345,6 +345,12 @@ class acp_dkp_apply extends bbDkp_Admin {
 					{
 						$questionshow = ' checked="checked"';
 					}
+					$optionenabled = ''; $optioninvisible = '';
+					if ($row ['type'] != 'Selectbox' and $row ['type'] != 'Radiobuttons' and $row ['type'] != 'Checkboxes')
+					{
+						$optionenabled = ' disabled="disabled"';
+						$optioninvisible = ' visibility:hidden;';
+					}
 					$template->assign_block_vars ( 'apptemplate', array (
 							'QORDER' => $row ['qorder'],
 							'TEMPLATE' => $row ['template_name'],
@@ -353,6 +359,8 @@ class acp_dkp_apply extends bbDkp_Admin {
 							'MANDATORY' => $row ['mandatory'],
 							'OPTIONS' => $row ['options'],
 							'QMANDATORY_CHECKED' => $questionshow, 
+							'OPTIONDISABLED' => $optionenabled,
+							'OPTIONINVISIBLE' => $optioninvisible,
 							'CHECKED' => $checked,
 							'ID' => $row ['id'],
 							'U_APPQUESTIONMOVE_UP' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;appquestionmove_up=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id ),

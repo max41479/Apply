@@ -329,6 +329,7 @@ $versions = array(
 				array($table_prefix . 'bbdkp_apptemplatelist', 'question_color' , array('VCHAR:8', '')),
 				array($table_prefix . 'bbdkp_apptemplatelist', 'answer_color' , array('VCHAR:8', '')),
 				array($table_prefix . 'bbdkp_apptemplatelist', 'gchoice' , array('BOOL', 0)),
+				array($table_prefix . 'bbdkp_apptemplate', 'showquestion' , array('BOOL', 0)),
 		),
 
 		'config_remove' => array(
