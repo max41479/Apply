@@ -135,7 +135,6 @@ if ($submit)
 
 fill_application_form($form_key, $post_data, $submit, $error, $captcha, $template_id);
 
-
 /**
  * makes a candidate object
  * 
@@ -664,7 +663,8 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha,
              	
 	// Start assigning vars for main posting page ...
 	// main questionnaire 
-	$sql = "SELECT a.id, a.qorder, a.header, a.question, a.type, a.mandatory, a.options, a.template_id, a.lineid, b.template_name, b.forum_id  
+	$sql = "SELECT a.id, a.qorder, a.header, a.question, a.type, a.mandatory, a.options, a.template_id, a.lineid, a.showquestion,  
+			b.template_name, b.forum_id  
 		FROM " . APPTEMPLATE_TABLE . ' a, ' . 
 			APPTEMPLATELIST_TABLE . ' b 
 			WHERE a.template_id = b.template_id 
@@ -677,10 +677,11 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha,
 		$template->assign_block_vars('apptemplate', array(
 				'QORDER'			=> $row['qorder'],
 				'S_MANDATORY'		=> ($row['mandatory'] =='True') ? true:false ,
-				'TITLE'				=> $row['header'],
-				'QUESTION'			=> $row['question'],
-				'TYPE'   			=> $row['type'],
 				'FORUM_ID'			=> $row['forum_id'], 
+				'TITLE'				=> $row['header'],
+				'TYPE'   			=> $row['type'],
+				'QUESTION'			=> ((int) $row['showquestion'] == 1) ? $row['question']:'',
+				'S_SHOWQUESTION'	=> ((int) $row['showquestion'] == 1) ? true:false,
 				'DOMNAME'			=> 'templatefield_' . $row['qorder'],
 				'TABINDEX'			=> $row['qorder'],
 				)

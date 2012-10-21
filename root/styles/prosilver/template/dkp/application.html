@@ -437,10 +437,7 @@ function classracestateChanged()
 <!-- BEGIN apptemplate -->
 <dl>
 	<dt><strong>{apptemplate.TITLE}</strong></dt>
-	<dd>{apptemplate.QUESTION}
-	<!-- IF apptemplate.S_MANDATORY -->
-		&nbsp;<span style="color:red">{L_MANDATORY}</span>
-	<!-- ENDIF --><br />
+	<dd><!-- IF apptemplate.S_SHOWQUESTION -->{apptemplate.QUESTION}<br /><!-- ENDIF -->
 	<!-- IF apptemplate.TYPE == $TYPE_INPUTBOX -->
 		<input class="text" style="width:300px;" type="text" name="{apptemplate.DOMNAME}" size="40" maxlength="60" tabindex="{apptemplate.TABINDEX}" />	
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_TEXTBOX -->
@@ -517,6 +514,10 @@ function classracestateChanged()
 			<!-- BEGIN checkboxoptions -->
 			<input type="checkbox" name="{apptemplate.DOMNAME}[]" tabindex="{apptemplate.TABINDEX}" value="{apptemplate.checkboxoptions.KEY}"/>&nbsp;{apptemplate.checkboxoptions.VALUE}&nbsp;&nbsp;<!-- END checkboxoptions -->	
 	<!-- ENDIF -->
+	<!-- IF apptemplate.S_MANDATORY -->
+		&nbsp;<span style="color:red">{L_MANDATORY}</span>
+	<!-- ENDIF -->
+	
 	</dd>
 </dl>
 <!-- END apptemplate -->

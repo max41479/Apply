@@ -235,13 +235,29 @@ class acp_dkp_apply extends bbDkp_Admin {
 				}
 
 				/**
-				 * adding a template question
+				 * adds a template question
 				 */
 				if (isset ( $_POST ['appformquestionadd'] ))
 				{
 					$this->appformquestion_add($applytemplate_id);
 				}
 
+				/**
+				 * deletes a template question
+				 */
+				if (isset ( $_GET ['appquestiondelete'] ))
+				{
+					$this->question_delete();
+				}
+
+				/**
+				 * updates template question
+				 */
+				if (isset ( $_POST ['appformquestionupdate'] ))
+				{
+					$this->appformquestionupdate($applytemplate_id);
+				}
+				
 				// user pressed question order arrows
 				if(isset($_GET ['appquestionmove_up'] ))
 				{
@@ -253,15 +269,6 @@ class acp_dkp_apply extends bbDkp_Admin {
 					$this->movequestion(-1, $applytemplate_id);
 				}
 
-				if (isset ( $_GET ['appquestiondelete'] ))
-				{
-					$this->question_delete();
-				}
-
-				if (isset ( $_POST ['appformquestionupdate'] ))
-				{
-					$this->appformquestionupdate($applytemplate_id);
-				}
 
 				/*
 				 * loading config
@@ -333,7 +340,11 @@ class acp_dkp_apply extends bbDkp_Admin {
 					{
 						$checked = ' checked="checked"';
 					}
-
+					$questionshow = ''; 
+					if ((int) $row ['showquestion'] == 1)
+					{
+						$questionshow = ' checked="checked"';
+					}
 					$template->assign_block_vars ( 'apptemplate', array (
 							'QORDER' => $row ['qorder'],
 							'TEMPLATE' => $row ['template_name'],
@@ -341,6 +352,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 							'QUESTION' => $row ['question'],
 							'MANDATORY' => $row ['mandatory'],
 							'OPTIONS' => $row ['options'],
+							'QMANDATORY_CHECKED' => $questionshow, 
 							'CHECKED' => $checked,
 							'ID' => $row ['id'],
 							'U_APPQUESTIONMOVE_UP' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;appquestionmove_up=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id ),
@@ -437,6 +449,53 @@ class acp_dkp_apply extends bbDkp_Admin {
 		}
 	}
 
+
+	/**
+	 * adds a new question
+	 *
+	 * @param int $applytemplate_id
+	 */
+	public function appformquestion_add($applytemplate_id)
+	{
+	
+		global $db, $phpbb_admin_path, $phpEx, $user;
+		if (! check_form_key ( $this->form_key ))
+		{
+			trigger_error ( $user->lang ['FORM_INVALID'] . adm_back_link ( $this->u_action ), E_USER_WARNING );
+		}
+	
+		$sql = 'SELECT max(qorder) + 1 as maxorder, max(lineid) + 1 as maxline_id
+                     	FROM ' . APPTEMPLATE_TABLE . ' WHERE template_id= ' . $applytemplate_id;
+		$result = $db->sql_query ( $sql );
+		$max_order = ( int ) $db->sql_fetchfield ( 'maxorder', 0, $result );
+		$maxline_id = ( int ) $db->sql_fetchfield ( 'maxline_id', 0, $result );
+	
+		$db->sql_freeresult ( $result );
+	
+		$sql_ary = array (
+				'template_id' => request_var ( 'applytemplate_id', 0 ),
+				'qorder' => $max_order,
+				'mandatory' => (isset ( $_POST ['app_add_mandatory'] ) ? 'True' : 'False'),
+				'type' => utf8_normalize_nfc ( request_var ( 'app_add_type', ' ', true ) ),
+				'header' => utf8_normalize_nfc ( request_var ( 'app_add_title', ' ', true ) ),
+				'question' => utf8_normalize_nfc ( request_var ( 'app_add_question', ' ', true ) ),
+				'showquestion' => (isset ( $_POST ['app_add_question_mandatory'] ) ? 1 : 0),
+				'options' => utf8_normalize_nfc ( request_var ( 'app_add_options', ' ', true ) ),
+				'lineid' => $maxline_id
+		);
+	
+		// insert new question
+		$sql = 'INSERT INTO ' . APPTEMPLATE_TABLE . ' ' . $db->sql_build_array ( 'INSERT', $sql_ary );
+		$db->sql_query ( $sql );
+		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
+		$this->link = '<br /><a href="' . $link . '"><h3>' . $user->lang ['APPLY_ACP_RETURN'] . '</h3></a>';
+	
+		meta_refresh ( 1, $link );
+	
+		trigger_error ( $user->lang ['APPLY_ACP_QUESTNADD'] . $this->link, E_USER_NOTICE );
+	
+	}
+	
 	/**
 	 * updates current question
 	 * 
@@ -459,17 +518,13 @@ class acp_dkp_apply extends bbDkp_Admin {
 		foreach ( $q_questions as $key => $arrvalues )
 		{
 
-			$data = array (
-					'mandatory' => isset ( $_POST ['q_mandatory'] [$key] ) ? 'True' : 'False'
-			);
-			$sql = 'UPDATE ' . APPTEMPLATE_TABLE . ' SET ' . $db->sql_build_array ( 'UPDATE', $data ) . ' WHERE id = ' . $key;
-			$db->sql_query ( $sql );
-
 			/* updating questions */
 			$data = array (
+					'mandatory' => isset ( $_POST ['q_mandatory'] [$key] ) ? 'True' : 'False', 
 					'type' => $q_types [$key],
 					'header' => $q_headers [$key],
 					'question' => $q_questions [$key],
+					'showquestion' => (isset ( $_POST ['q_question_mandatory'][$key] ) ? 1 : 0),
 					'options' => $q_options [$key]
 			);
 
@@ -533,52 +588,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 
 
 	/**
-	 * adds a new question
-	 *
-	 * @param int $applytemplate_id
-	 */
-	public function appformquestion_add($applytemplate_id)
-	{
-
-		global $db, $phpbb_admin_path, $phpEx, $user;
-		if (! check_form_key ( $this->form_key ))
-		{
-			trigger_error ( $user->lang ['FORM_INVALID'] . adm_back_link ( $this->u_action ), E_USER_WARNING );
-		}
-
-		$sql = 'SELECT max(qorder) + 1 as maxorder, max(lineid) + 1 as maxline_id
-                     	FROM ' . APPTEMPLATE_TABLE . ' WHERE template_id= ' . $applytemplate_id;
-		$result = $db->sql_query ( $sql );
-		$max_order = ( int ) $db->sql_fetchfield ( 'maxorder', 0, $result );
-		$maxline_id = ( int ) $db->sql_fetchfield ( 'maxline_id', 0, $result );
-
-		$db->sql_freeresult ( $result );
-
-		$sql_ary = array (
-				'qorder' => $max_order,
-				'header' => utf8_normalize_nfc ( request_var ( 'app_add_title', ' ', true ) ),
-				'question' => utf8_normalize_nfc ( request_var ( 'app_add_question', ' ', true ) ),
-				'type' => utf8_normalize_nfc ( request_var ( 'app_add_type', ' ', true ) ),
-				'mandatory' => (isset ( $_POST ['app_add_mandatory'] ) ? 'True' : 'False'),
-				'options' => utf8_normalize_nfc ( request_var ( 'app_add_options', ' ', true ) ),
-				'template_id' => request_var ( 'applytemplate_id', 0 ),
-				'lineid' => $maxline_id
-		);
-
-		// insert new question
-		$sql = 'INSERT INTO ' . APPTEMPLATE_TABLE . ' ' . $db->sql_build_array ( 'INSERT', $sql_ary );
-		$db->sql_query ( $sql );
-		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
-		$this->link = '<br /><a href="' . $link . '"><h3>' . $user->lang ['APPLY_ACP_RETURN'] . '</h3></a>';
-		
-		meta_refresh ( 1, $link );
-		
-		trigger_error ( $user->lang ['APPLY_ACP_QUESTNADD'] . $this->link, E_USER_NOTICE );
-
-	}
-
-	/**
-	 * deletes a template question
+	 * deletes an entire template
 	 *
 	 * @param int $applytemplate_id
 	 */
