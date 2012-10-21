@@ -104,6 +104,7 @@ To help us with your application please answer the questions below. Enter your c
 'APPLY_ACP_SELECTBOX' 		=> 'Selectbox',
 'APPLY_ACP_RADIOBOX' 		=> 'Radiobuttons',
 'APPLY_ACP_CHECKBOX' 		=> 'Checkboxes',
+'APPLY_ACP_TITLE'			=> 'Title', 
 
 //warnings
 'APPLY_ACP_RETURN' 			=> '<h3>Return to Application config.</h3>',

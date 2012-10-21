@@ -11,6 +11,7 @@ apply plugin for bbDKP
 <!-- DEFINE $TYPE_SELECTBOX = 'Selectbox' -->
 <!-- DEFINE $TYPE_RADIOBUTTON = 'Radiobuttons' -->
 <!-- DEFINE $TYPE_CHECKBOX = 'Checkboxes' -->
+<!-- DEFINE $TYPE_TITLE = 'title' -->
 <script type="text/javascript">
 // <![CDATA[
             
@@ -435,8 +436,14 @@ function classracestateChanged()
 <fieldset class="fields2">	
 
 <!-- BEGIN apptemplate -->
+
+<!-- IF apptemplate.TYPE == $TYPE_TITLE -->
+<h3>{apptemplate.TITLE}</h3>	
+<!-- ELSE -->
 <dl>
-	<dt><strong>{apptemplate.TITLE}</strong></dt>
+	<!-- IF apptemplate.TYPE != $TYPE_TITLE -->
+		<dt><strong>{apptemplate.TITLE}</strong></dt>
+	<!-- ENDIF -->
 	<dd><!-- IF apptemplate.S_SHOWQUESTION -->{apptemplate.QUESTION}<br /><!-- ENDIF -->
 	<!-- IF apptemplate.TYPE == $TYPE_INPUTBOX -->
 		<input class="text" style="width:300px;" type="text" name="{apptemplate.DOMNAME}" size="40" maxlength="60" tabindex="{apptemplate.TABINDEX}" />	
@@ -520,6 +527,8 @@ function classracestateChanged()
 	
 	</dd>
 </dl>
+<!-- ENDIF -->
+
 <!-- END apptemplate -->
 </fieldset>
 

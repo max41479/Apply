@@ -78,7 +78,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 
 			case 'apply_edittemplate' :
 
-				$this->form_key = 'TR2DN9L5';
+				$this->form_key = '554k6Qmm5clM3dUhq67jX0M';
 				add_form_key ( $this->form_key );
 
 				$appformsupdate = (isset ( $_POST ['update'] )) ? true : false;
@@ -184,7 +184,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 
 			case 'apply_settings' :
 
-				$this->form_key = 'V98M5TGT';
+				$this->form_key = '2uE88d0k5Jy0ZWLQV53WKO2';
 				add_form_key ( $this->form_key );
 
 				// getting template definitions
@@ -261,12 +261,12 @@ class acp_dkp_apply extends bbDkp_Admin {
 				// user pressed question order arrows
 				if(isset($_GET ['appquestionmove_up'] ))
 				{
-					$this->movequestion(1, $applytemplate_id);
+					$this->movequestion(-1, $applytemplate_id);
 				}
 
 				if(isset($_GET ['appquestionmove_down'] ))
 				{
-					$this->movequestion(-1, $applytemplate_id);
+					$this->movequestion(1, $applytemplate_id);
 				}
 
 
@@ -308,15 +308,17 @@ class acp_dkp_apply extends bbDkp_Admin {
 
 				/*
 				 * loading questions
+				 * 7 question types supported
 				*/
 
 				$type = array (
+						'title' => $user->lang ['APPLY_ACP_TITLE'],
 						'Inputbox' => $user->lang ['APPLY_ACP_INPUTBOX'],
 						'Textbox' => $user->lang ['APPLY_ACP_TXTBOX'],
 						'Textboxbbcode' => $user->lang ['APPLY_ACP_TXTBOXBBCODE'],
 						'Selectbox' => $user->lang ['APPLY_ACP_SELECTBOX'],
 						'Radiobuttons' => $user->lang ['APPLY_ACP_RADIOBOX'],
-						'Checkboxes' => $user->lang ['APPLY_ACP_CHECKBOX']
+						'Checkboxes' => $user->lang ['APPLY_ACP_CHECKBOX'], 
 				);
 
 				foreach ( $type as $key => $value ) {
@@ -345,8 +347,13 @@ class acp_dkp_apply extends bbDkp_Admin {
 					{
 						$questionshow = ' checked="checked"';
 					}
+					$questioninvisible = ''; 
+					if ($row ['type'] == 'title')
+					{
+						$questioninvisible = ' visibility:hidden;';
+					}					
 					$optionenabled = ''; $optioninvisible = '';
-					if ($row ['type'] != 'Selectbox' and $row ['type'] != 'Radiobuttons' and $row ['type'] != 'Checkboxes')
+					if ($row ['type'] != 'Selectbox' and $row ['type'] != 'Radiobuttons' and $row ['type'] != 'Checkboxes' and $row ['type'] != 'title')
 					{
 						$optionenabled = ' disabled="disabled"';
 						$optioninvisible = ' visibility:hidden;';
@@ -356,6 +363,7 @@ class acp_dkp_apply extends bbDkp_Admin {
 							'TEMPLATE' => $row ['template_name'],
 							'HEADER' => $row ['header'],
 							'QUESTION' => $row ['question'],
+							'QUESTIONINVISIBLE' => $questioninvisible,
 							'MANDATORY' => $row ['mandatory'],
 							'OPTIONS' => $row ['options'],
 							'QMANDATORY_CHECKED' => $questionshow, 
@@ -456,7 +464,90 @@ class acp_dkp_apply extends bbDkp_Admin {
 				break;
 		}
 	}
-
+	
+	
+	/**
+	 * adds a new template
+	 *
+	 */
+	public function apptemplate_add()
+	{
+		global  $user, $db;
+	
+		$sql_ary = array (
+				'status' => 1,
+				'template_name' => utf8_normalize_nfc ( request_var ( 'template_name', ' ', true ) ),
+				'forum_id' => request_var ( 'new_applyforum_id', 0 ),
+				'question_color'	=> '#1961a9',
+				'answer_color'	=> '#4880b1',
+				'gchoice'	=> 1,
+		);
+	
+		// insert new question
+		$sql = 'INSERT INTO ' . APPTEMPLATELIST_TABLE . ' ' . $db->sql_build_array ( 'INSERT', $sql_ary );
+		$db->sql_query ( $sql );
+	
+		$template_id = $db->sql_nextid();
+	
+		// insert standard welcome text
+		$welcometext =$user->lang('APPLY_INFO');
+		$uid = $bitfield = $options = ''; // will be modified by
+		$allow_bbcode = $allow_urls = $allow_smilies = true;
+		generate_text_for_storage ( $welcometext, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies );
+	
+		$data = array(
+				'announcement_msg'     => $welcometext,
+				'announcement_timestamp'  => (int) time (),
+				'bbcode_bitfield'	=> (string) $bitfield,
+				'bbcode_uid'	=> (string) $uid,
+				'template_id'	=> $template_id,
+	
+		);
+	
+		$sql = 'INSERT INTO ' . APPHEADER_TABLE . ' ' . $db->sql_build_array('INSERT', $data);
+		$db->sql_query($sql);
+	
+		meta_refresh ( 1, $this->u_action );
+		trigger_error ( $user->lang ['APPLY_ACP_TEMPLATEADD'] . $this->link, E_USER_NOTICE );
+	}
+	
+	
+	/**
+	 * deletes an entire template
+	 *
+	 * @param int $applytemplate_id
+	 */
+	public function apptemplatedelete($applytemplate_id)
+	{
+		global $template,$user,$db;
+	
+		if (confirm_box ( true ))
+		{
+			$hiddentemplateid = request_var ( 'hidden_template_id', 0 );
+	
+			// delete template
+			$db->sql_query ( "DELETE FROM " . APPTEMPLATELIST_TABLE . " WHERE template_id = '" . $hiddentemplateid . "'" );
+			$db->sql_query ( "DELETE FROM " . APPTEMPLATE_TABLE . " WHERE template_id = '" . $hiddentemplateid . "'" );
+			$db->sql_query ( "DELETE FROM " . APPHEADER_TABLE . " WHERE template_id = '" . $hiddentemplateid . "'" );
+				
+			meta_refresh ( 1, $this->u_action );
+			trigger_error ( "Template " . $hiddentemplateid . " deleted", E_USER_WARNING );
+		}
+		else
+	
+		{
+			$s_hidden_fields = build_hidden_fields ( array (
+					'apptemplatedelete' => true,
+					'hidden_template_id' => $applytemplate_id
+			) );
+	
+			$template->assign_vars ( array (
+					'S_HIDDEN_FIELDS' => $s_hidden_fields
+			) );
+			confirm_box ( false, sprintf ( $user->lang ['CONFIRM_DELETE_TEMPLATE'], $applytemplate_id ), $s_hidden_fields );
+		}
+	}
+	
 
 	/**
 	 * adds a new question
@@ -521,7 +612,8 @@ class acp_dkp_apply extends bbDkp_Admin {
 		$q_types = utf8_normalize_nfc ( request_var ( 'q_type', array (0 => '' ), true ) );
 		$q_headers = utf8_normalize_nfc ( request_var ( 'q_header', array (0 => '' ), true ) );
 		$q_questions = utf8_normalize_nfc ( request_var ( 'q_question', array (0 => '' ), true ) );
-		$q_options = utf8_normalize_nfc ( request_var ( 'q_options', array (0 => '' ), true ) );
+		$q_options = (isset ( $_POST ['q_options'] ) ? 
+					utf8_normalize_nfc ( request_var ( 'q_options', array (0 => '' ), true ) ) : '')  ;
 
 		foreach ( $q_questions as $key => $arrvalues )
 		{
@@ -531,9 +623,9 @@ class acp_dkp_apply extends bbDkp_Admin {
 					'mandatory' => isset ( $_POST ['q_mandatory'] [$key] ) ? 'True' : 'False', 
 					'type' => $q_types [$key],
 					'header' => $q_headers [$key],
-					'question' => $q_questions [$key],
+					'question' => $q_questions [$key] ,
 					'showquestion' => (isset ( $_POST ['q_question_mandatory'][$key] ) ? 1 : 0),
-					'options' => $q_options [$key]
+					'options' =>  (isset ( $_POST ['q_options'][$key] ) ? $q_options [$key] : ''), 
 			);
 
 			$sql = 'UPDATE ' . APPTEMPLATE_TABLE . ' set ' . $db->sql_build_array ( 'UPDATE', $data ) . ' WHERE id = ' . $key;
@@ -595,87 +687,8 @@ class acp_dkp_apply extends bbDkp_Admin {
 	}
 
 
-	/**
-	 * deletes an entire template
-	 *
-	 * @param int $applytemplate_id
-	 */
-	public function apptemplatedelete($applytemplate_id)
-	{
-		global $template,$user,$db;
 
-		if (confirm_box ( true ))
-		{
-			$hiddentemplateid = request_var ( 'hidden_template_id', 0 );
-
-			// delete template
-			$db->sql_query ( "DELETE FROM " . APPTEMPLATELIST_TABLE . " WHERE template_id = '" . $hiddentemplateid . "'" );
-			$db->sql_query ( "DELETE FROM " . APPTEMPLATE_TABLE . " WHERE template_id = '" . $hiddentemplateid . "'" );
-			$db->sql_query ( "DELETE FROM " . APPHEADER_TABLE . " WHERE template_id = '" . $hiddentemplateid . "'" );
-			
-			meta_refresh ( 1, $this->u_action );
-			trigger_error ( "Template " . $hiddentemplateid . " deleted", E_USER_WARNING );
-		}
-		else
-
-		{
-			$s_hidden_fields = build_hidden_fields ( array (
-					'apptemplatedelete' => true,
-					'hidden_template_id' => $applytemplate_id
-			) );
-
-			$template->assign_vars ( array (
-					'S_HIDDEN_FIELDS' => $s_hidden_fields
-			) );
-			confirm_box ( false, sprintf ( $user->lang ['CONFIRM_DELETE_TEMPLATE'], $applytemplate_id ), $s_hidden_fields );
-		}
-	}
-
-	/**
-	 * adds a new template
-	 *
-	 */
-	public function apptemplate_add()
-	{
-		global  $user, $db;
-
-		$sql_ary = array (
-			'status' => 1,
-			'template_name' => utf8_normalize_nfc ( request_var ( 'template_name', ' ', true ) ),
-			'forum_id' => request_var ( 'new_applyforum_id', 0 ), 
-			'question_color'	=> '#1961a9',
-			'answer_color'	=> '#4880b1',	
-			'gchoice'	=> 1,
-		);
-
-		// insert new question
-		$sql = 'INSERT INTO ' . APPTEMPLATELIST_TABLE . ' ' . $db->sql_build_array ( 'INSERT', $sql_ary );
-		$db->sql_query ( $sql );
-
-		$template_id = $db->sql_nextid();
-		
-		// insert standard welcome text
-		$welcometext =$user->lang('APPLY_INFO');
-		$uid = $bitfield = $options = ''; // will be modified by
-		$allow_bbcode = $allow_urls = $allow_smilies = true;
-		generate_text_for_storage ( $welcometext, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies );
-		
-		$data = array(
-			'announcement_msg'     => $welcometext,
-			'announcement_timestamp'  => (int) time (), 
-			'bbcode_bitfield'	=> (string) $bitfield,
-			'bbcode_uid'	=> (string) $uid, 
-			'template_id'	=> $template_id, 
-				
-		);
-		
-		$sql = 'INSERT INTO ' . APPHEADER_TABLE . ' ' . $db->sql_build_array('INSERT', $data);
-		$db->sql_query($sql);
-		
-		meta_refresh ( 1, $this->u_action );
-		trigger_error ( $user->lang ['APPLY_ACP_TEMPLATEADD'] . $this->link, E_USER_NOTICE );
-	}
-
+	
 	/**
 	 * fetches array with forum info
 	 *

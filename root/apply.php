@@ -270,83 +270,88 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	// build post
 	$apply_post->message = '';
 	
-	$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_OVERVIEW'] . '[/b][/size]'; 
-	$apply_post->message .= '<br /><br />';
+// 	$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_OVERVIEW'] . '[/b][/size]'; 
+// 	$apply_post->message .= '<br /><br />';
 	
-	// name
-	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]';
-	if($candidate->class_color_exists)
-	{
-		$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
-	}
-	else
-	{
-		$apply_post->message .= '[b]' . $candidate->name  . '[/b]' ;
-	}
-	$apply_post->message .= '<br />'; 
+// 	// name
+// 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]';
+// 	if($candidate->class_color_exists)
+// 	{
+// 		$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
+// 	}
+// 	else
+// 	{
+// 		$apply_post->message .= '[b]' . $candidate->name  . '[/b]' ;
+// 	}
+// 	$apply_post->message .= '<br />'; 
 
-	//Realm
-	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_REALM1'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
-	$apply_post->message .= '<br />'; 
+// 	//Realm
+// 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_REALM1'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
+// 	$apply_post->message .= '<br />'; 
 
-	// level
-	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
-	$apply_post->message .= '<br />'; 
+// 	// level
+// 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
+// 	$apply_post->message .= '<br />'; 
 	
-	// class
-	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color] ';
-	if($candidate->class_image_exists )
-	{
-		$apply_post->message .= '[img]' .$candidate->class_image  . '[/img] ';
-	}
-	if($candidate->class_color_exists)
-	{
-		$apply_post->message .= ' [color='. $candidate->class_color .']' . $candidate->class . '[/color]' ;
-	}
-	else
-	{
-		$apply_post->message .= $candidate->class;
-	}
-	$apply_post->message .= '<br />'; 
+// 	// class
+// 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color] ';
+// 	if($candidate->class_image_exists )
+// 	{
+// 		$apply_post->message .= '[img]' .$candidate->class_image  . '[/img] ';
+// 	}
+// 	if($candidate->class_color_exists)
+// 	{
+// 		$apply_post->message .= ' [color='. $candidate->class_color .']' . $candidate->class . '[/color]' ;
+// 	}
+// 	else
+// 	{
+// 		$apply_post->message .= $candidate->class;
+// 	}
+// 	$apply_post->message .= '<br />'; 
 
-	//race
-	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color] ';
-	if($candidate->race_image_exists )
-	{
-		$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
-	}
-	if($candidate->class_color_exists)
-	{
-		$apply_post->message .= ' [color='. $apply_post->questioncolor .']' . $candidate->race . '[/color]' ;
-	}
-	else
-	{
-		$apply_post->message .= $candidate->race;
-	}
-	$apply_post->message .= '<br /><br />';
+// 	//race
+// 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color] ';
+// 	if($candidate->race_image_exists )
+// 	{
+// 		$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
+// 	}
+// 	if($candidate->class_color_exists)
+// 	{
+// 		$apply_post->message .= ' [color='. $apply_post->questioncolor .']' . $candidate->race . '[/color]' ;
+// 	}
+// 	else
+// 	{
+// 		$apply_post->message .= $candidate->race;
+// 	}
+// 	$apply_post->message .= '<br /><br />';
 
 	
-	// Motivation	
-	$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_MOTIVATION'] . '[/b][/size]';
-	$apply_post->message .= '<br /><br />';
+// Motivation	
+//$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_MOTIVATION'] . '[/b][/size]';
+//$apply_post->message .= '<br /><br />';
 	
-	// complete with formatted questions and answers
+// load formatted questions and answers
 	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id .'  ORDER BY qorder' ;
 	$result = $db->sql_query_limit($sql, 100, 0);
 	while ( $row = $db->sql_fetchrow($result) )
 	{
 		if ( isset($_POST['templatefield_' . $row['qorder']]) )
 		{
-			
 			switch ($row['type'])
 			{
 					
+				case 'title':
+					$apply_post->message .= '[size=150][b]' . $row['question'] . ': [/b][/size]';
+					break;
 				case 'Checkboxes':
 					 $cb_countis = count( request_var('templatefield_' . $row['qorder'], array(0 => 0)) );  
                      $cb_count = 0;
-						                                           
+
+                     if((int) $row['showquestion'] == 1)
+                     {
                         $apply_post->message .= '[size=120][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
 						$apply_post->message .= '<br />';
+                     }
                         
                         $checkboxes = utf8_normalize_nfc( request_var('templatefield_' . $row['qorder'], array(0 => '') , true));
                         foreach($checkboxes as $value) 
@@ -368,8 +373,11 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 				case 'Radiobuttons':			
 					$fieldcontents = utf8_normalize_nfc(request_var('templatefield_' . $row['qorder'], ' ', true));	
 						
-					$apply_post->message .= '[size=120][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
-					$apply_post->message .= '<br />';
+					if((int) $row['showquestion'] == 1)
+					{
+						$apply_post->message .= '[size=120][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
+						$apply_post->message .= '<br />';
+					}
 					 
 					$apply_post->message .=	$fieldcontents;
 					
@@ -442,6 +450,10 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 
 }
 
+function make_title()
+{
+	
+}
 
 /**
  * registers a bbDKP character 

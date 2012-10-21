@@ -169,13 +169,13 @@ function check_addtemplate()
 	    class="text" name="q_header[{apptemplate.ID}]">{apptemplate.HEADER}</textarea></td>
 	    
 	    <td style="width:22%; text-align:center; overflow:ellipsis">
-	    <textarea style="width:80%; resize:none;" rows="2" cols="10"
+	    <textarea style="width:80%; resize:none; {apptemplate.QUESTIONINVISIBLE}" rows="2" cols="10"
 	    class="text" name="q_question[{apptemplate.ID}]" >{apptemplate.QUESTION}</textarea>
-	    <input type="checkbox" name="q_question_mandatory[{apptemplate.ID}]" {apptemplate.DISABLED} {apptemplate.QMANDATORY_CHECKED} />
+	    <input style="{apptemplate.QUESTIONINVISIBLE}" type="checkbox" name="q_question_mandatory[{apptemplate.ID}]" {apptemplate.DISABLED} {apptemplate.QMANDATORY_CHECKED} />
 	    </td>
 	    
 	    <td style="width:22%; text-align:center; overflow:ellipsis">
-	    <textarea style="width:97%; resize:none; {apptemplate.OPTIONINVISIBLE}" rows="2" cols="10" {apptemplate.OPTIONDISABLED} 
+	    <textarea style="width:97%; resize:none; {apptemplate.OPTIONINVISIBLE} {apptemplate.QUESTIONINVISIBLE}" rows="2" cols="10" {apptemplate.OPTIONDISABLED} 
 	    class="text" name="q_options[{apptemplate.ID}]" >{apptemplate.OPTIONS}</textarea></td>
 	  </tr>
 	  <!-- END apptemplate -->
