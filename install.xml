@@ -353,6 +353,7 @@
 				<action type="after-add"><![CDATA[define('APPTEMPLATE_TABLE',			$table_prefix . 'bbdkp_apptemplate');
 define('APPHEADER_TABLE',			$table_prefix . 'bbdkp_apphdr');
 define('APPTEMPLATELIST_TABLE',			$table_prefix . 'bbdkp_apptemplatelist');
+define('CHARTEMPLATE_TABLE',			$table_prefix . 'bbdkp_chartemplate');
 	]]></action>
 			</edit>
 		</open>
