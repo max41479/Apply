@@ -290,6 +290,13 @@ class acp_dkp_apply extends bbDkp_Admin
 				}
 
 				/**
+				 * deletes a template question
+				 */
+				if (isset ( $_GET ['charquestiondelete'] ))
+				{
+					$this->charquestion_delete();
+				}
+				/**
 				 * updates template question
 				 */
 				if (isset ( $_POST ['appformquestionupdate'] ))
@@ -297,15 +304,34 @@ class acp_dkp_apply extends bbDkp_Admin
 					$this->appformquestionupdate($applytemplate_id);
 				}
 				
+				/**
+				 * updates char template question
+				 */
+				if (isset ( $_POST ['charquestionupdate'] ))
+				{
+					$this->charquestionupdate($applytemplate_id);
+				}				
+				
 				// user pressed question order arrows
 				if(isset($_GET ['appquestionmove_up'] ))
 				{
 					$this->movequestion(-1, $applytemplate_id);
 				}
-
+				
 				if(isset($_GET ['appquestionmove_down'] ))
 				{
 					$this->movequestion(1, $applytemplate_id);
+				}
+				
+				// user pressed char question order arrows
+				if(isset($_GET ['charquestionmove_up'] ))
+				{
+					$this->charmovequestion(-1, $applytemplate_id);
+				}
+
+				if(isset($_GET ['charquestionmove_down'] ))
+				{
+					$this->charmovequestion(1, $applytemplate_id);
 				}
 
 
@@ -693,10 +719,45 @@ class acp_dkp_apply extends bbDkp_Admin
 		
 		trigger_error ( $user->lang ['APPLY_ACP_QUESTUPD'] . $this->link );
 	}
+	
+	/**
+	 * updates current char question
+	 *
+	 * @param unknown_type $applytemplate_id
+	 */	
+	public function charquestionupdate($applytemplate_id)
+	{
+		global $user, $db, $phpbb_admin_path, $phpEx;
+		
+		if (! check_form_key ( $this->form_key ))
+		{
+			trigger_error ( $user->lang ['FORM_INVALID'] . adm_back_link ( $this->u_action ), E_USER_WARNING );
+		}
+		
+		$q_types = utf8_normalize_nfc ( request_var ( 'charq_type', array (0 => '' ), true ) );
+		
+		foreach ( $q_types as $key => $arrvalues )
+		{
+			/* updating questions */
+			$data = array (
+					'mandatory' => isset ( $_POST ['charq_mandatory'] [$key] ) ? 'True' : 'False',
+					'type' => $q_types [$key],
+			);
+		
+			$sql = 'UPDATE ' . CHARTEMPLATE_TABLE . ' set ' . $db->sql_build_array ( 'UPDATE', $data ) . ' WHERE id = ' . $key;
+			$db->sql_query ( $sql );
+		}
+		
+		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
+		$this->link = '<br /><a href="' . $link . '"><h3>' . $user->lang ['APPLY_ACP_RETURN'] . '</h3></a>';
+		meta_refresh ( 1, $link );
+		
+		trigger_error ( $user->lang ['APPLY_ACP_QUESTUPD'] . $this->link );		
+	}
 
 
 	/**
-	 * delete template question
+	 * delete app template question
 	 *
 	 */
 	public function question_delete()
@@ -709,7 +770,20 @@ class acp_dkp_apply extends bbDkp_Admin
 		trigger_error ( "Question " . $qid . " deleted" . $this->link, E_USER_WARNING );
 	}
 
-
+	/**
+	 * delete char template question
+	 *
+	 */
+	public function charquestion_delete()
+	{
+		global $db;
+		$qid = request_var ( 'id', 0 );
+		$sql = "DELETE FROM " . CHARTEMPLATE_TABLE . " WHERE id = '" . $qid . "'";
+		$db->sql_query ( $sql );
+		meta_refresh ( 1, $this->u_action );
+		trigger_error ( "Character Question " . $qid . " deleted" . $this->link, E_USER_WARNING );
+	}
+	
 	/**
 	 * movequestion: moves question up or down
 	 *
@@ -741,7 +815,37 @@ class acp_dkp_apply extends bbDkp_Admin
 		
 	}
 
-
+	/**
+	 * movequestion: moves char question up or down
+	 *
+	 * @param int $direction +1 or -1
+	 */
+	public function charmovequestion($direction, $applytemplate_id )
+	{
+		global $phpbb_admin_path, $phpEx, $db;
+		$qid = request_var ( 'id', 0 );
+	
+		// find order of clicked line
+		$sql = 'SELECT qorder FROM ' . CHARTEMPLATE_TABLE . ' WHERE id =  ' . $qid ;
+		$result = $db->sql_query ( $sql );
+		$current_order = ( int ) $db->sql_fetchfield ( 'qorder', 0, $result );
+		$db->sql_freeresult ( $result );
+	
+		$new_order = $current_order + (int) $direction;
+	
+		// find current id with new order and move that one notch, if any
+		$sql = 'UPDATE  ' . CHARTEMPLATE_TABLE . ' SET qorder = ' . $current_order . ' WHERE qorder = ' . $new_order . ' AND template_id = ' . $applytemplate_id;
+		$db->sql_query ( $sql );
+	
+		// now increase old order
+		$sql = 'UPDATE  ' . CHARTEMPLATE_TABLE . ' set qorder = ' . $new_order . ' where id = ' . $qid . ' AND template_id = ' . $applytemplate_id;
+		$db->sql_query ( $sql );
+	
+		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
+		meta_refresh ( 1, $link );
+	
+	}
+	
 
 	
 	/**
