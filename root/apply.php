@@ -270,69 +270,100 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	// build post
 	$apply_post->message = '';
 	
-// 	$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_OVERVIEW'] . '[/b][/size]'; 
-// 	$apply_post->message .= '<br /><br />';
+	// load char template	
+	$sql = "SELECT * FROM " . CHARTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id .'  ORDER BY qorder' ;	
+	$result = $db->sql_query_limit($sql, 100, 0);
 	
-// 	// name
-// 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]';
-// 	if($candidate->class_color_exists)
-// 	{
-// 		$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
-// 	}
-// 	else
-// 	{
-// 		$apply_post->message .= '[b]' . $candidate->name  . '[/b]' ;
-// 	}
-// 	$apply_post->message .= '<br />'; 
-
-// 	//Realm
-// 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_REALM1'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
-// 	$apply_post->message .= '<br />'; 
-
-// 	// level
-// 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
-// 	$apply_post->message .= '<br />'; 
+	if($row)
+	{
+		$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_OVERVIEW'] . '[/b][/size]';
+		$apply_post->message .= '<br /><br />';
+	}
 	
-// 	// class
-// 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color] ';
-// 	if($candidate->class_image_exists )
-// 	{
-// 		$apply_post->message .= '[img]' .$candidate->class_image  . '[/img] ';
-// 	}
-// 	if($candidate->class_color_exists)
-// 	{
-// 		$apply_post->message .= ' [color='. $candidate->class_color .']' . $candidate->class . '[/color]' ;
-// 	}
-// 	else
-// 	{
-// 		$apply_post->message .= $candidate->class;
-// 	}
-// 	$apply_post->message .= '<br />'; 
+	while ( $row = $db->sql_fetchrow($result) )
+	{
+		
+		if (isset($_POST['chartemplatefield_' . $row['qorder']]) )
+		{
+			switch ($row['type'])
+			{
+				case 'charname':
+				 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]';
+				 	if($candidate->class_color_exists)
+					{
+						$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
+					}
+					else
+					{
+						$apply_post->message .= '[b]' . $candidate->name  . '[/b]' ;
+					}
+					$apply_post->message .= '<br />';
+								
+					break;
+				case 'gameraceclass':
+			 	 	//race
+			 	 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color] ';
+			 	 	if($candidate->race_image_exists )
+		 		 	{
+		 		 		$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
+		 		 	}
+		 		 	if($candidate->class_color_exists)
+	 			 	{
+	 			 		$apply_post->message .= ' [color='. $apply_post->questioncolor .']' . $candidate->race . '[/color]' ;
+	 			 	}
+	 			 	else
+ 				 	{
+ 				 		$apply_post->message .= $candidate->race;
+ 				 	}
 
-// 	//race
-// 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color] ';
-// 	if($candidate->race_image_exists )
-// 	{
-// 		$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
-// 	}
-// 	if($candidate->class_color_exists)
-// 	{
-// 		$apply_post->message .= ' [color='. $apply_post->questioncolor .']' . $candidate->race . '[/color]' ;
-// 	}
-// 	else
-// 	{
-// 		$apply_post->message .= $candidate->race;
-// 	}
-// 	$apply_post->message .= '<br /><br />';
+ 				 	// class
+				 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color] ';
+				 	if($candidate->class_image_exists )
+				 	{
+				 		$apply_post->message .= '[img]' .$candidate->class_image  . '[/img] ';
+				 	}
+				 	
+				 	if($candidate->class_color_exists)
+				 	{
+				 		$apply_post->message .= ' [color='. $candidate->class_color .']' . $candidate->class . '[/color]' ;
+				 	}
+				 	else
+				 	{
+				 		$apply_post->message .= $candidate->class;
+				 	}
 
+ 				 	$apply_post->message .= '<br /><br />';				 	
+					break;
+					
+				case 'regionrealm':
+					//Realm
+					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_REALM1'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
+					$apply_post->message .= '<br />';
+					break;
+					
+				case 'level':
+				 	// level
+					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
+					$apply_post->message .= '<br />';					
+					break;
+					
+				case 'gender':
+					break;
+			}
+		}
+	}
 	
-// Motivation	
-//$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_MOTIVATION'] . '[/b][/size]';
-//$apply_post->message .= '<br /><br />';
-	
-// load formatted questions and answers
+// load formatted questions and answers, max 100 lol
 	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id .'  ORDER BY qorder' ;
 	$result = $db->sql_query_limit($sql, 100, 0);
+	
+	// Motivation
+	if($row)
+	{
+		$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_MOTIVATION'] . '[/b][/size]';
+		$apply_post->message .= '<br /><br />';
+	}
+	
 	while ( $row = $db->sql_fetchrow($result) )
 	{
 		if ( isset($_POST['templatefield_' . $row['qorder']]) )
