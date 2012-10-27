@@ -281,7 +281,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 				case 'charname':
 					if(isset($_POST['candidate_name']) )
 					{
-						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]';
+						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]: ';
 						if($candidate->class_color_exists)
 						{
 							$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
@@ -297,7 +297,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 					if(isset($_POST['game_id']))
 					{
 						//race
-						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color] ';
+						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color]: ';
 						if($candidate->race_image_exists )
 						{
 							$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
@@ -310,9 +310,9 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 						{
 							$apply_post->message .= $candidate->race;
 						}
-					
+						$apply_post->message .= '<br />';								
 						// class
-						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color] ';
+						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color]: ';
 						if($candidate->class_image_exists )
 						{
 							$apply_post->message .= '[img]' .$candidate->class_image  . '[/img] ';
@@ -327,7 +327,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 							$apply_post->message .= $candidate->class;
 						}
 					
-						$apply_post->message .= '<br /><br />';
+						$apply_post->message .= '<br />';
 					}
 					break;
 						
@@ -335,7 +335,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 					if(isset($_POST['candidate_realm']))
 					{
 						//Realm
-						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_ACP_REALM'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
+						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_ACP_REALM'] . '[/color]: ' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
 						$apply_post->message .= '<br />';
 					}					
 					break;
@@ -344,7 +344,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 					if(isset($_POST['candidate_level']))
 					{
 						// level
-						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
+						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]: ' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
 						$apply_post->message .= '<br />';
 					}
 					break;
@@ -352,16 +352,12 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 					
 					break;
 				case 'title':
-					$apply_post->message .= '
-							
-							[size=150][b]' . $row['header'] . ' [/b][/size]
-							
-							';
+					$apply_post->message .= '<br/>[size=150][b]' . $row['header'] . ' [/b][/size]<br/>';
 					break;
 				case 'Checkboxes':
 					if(isset($_POST['templatefield_' . $row['qorder']]) )
 					{
-						$apply_post->message .= '[size=100][b]' . $row['header'] . ': [/b][/size]';
+						$apply_post->message .= '[size=100][color='. $apply_post->questioncolor .'][b]' . $row['header'] . ': [/b][/color][/size]';
 						$cb_countis = count( request_var('templatefield_' . $row['qorder'], array(0 => 0)) );  
 						$cb_count = 0;
 						
