@@ -49,20 +49,17 @@ class acp_dkp_apply extends bbDkp_Admin
 
 		$this->apptype = array (
 				'title' => $user->lang ['APPLY_ACP_TITLE'],
+				'charname' => $user->lang ['APPLY_ACP_CHARNAME'],
+				'gameraceclass' => $user->lang ['APPLY_GAME'],
+				'regionrealm' => $user->lang ['APPLY_REGION'],
+				'level' => $user->lang ['APPLY_LEVEL'],
+				'gender' => $user->lang ['APPLY_GENDER'],
 				'Inputbox' => $user->lang ['APPLY_ACP_INPUTBOX'],
 				'Textbox' => $user->lang ['APPLY_ACP_TXTBOX'],
 				'Textboxbbcode' => $user->lang ['APPLY_ACP_TXTBOXBBCODE'],
 				'Selectbox' => $user->lang ['APPLY_ACP_SELECTBOX'],
 				'Radiobuttons' => $user->lang ['APPLY_ACP_RADIOBOX'],
 				'Checkboxes' => $user->lang ['APPLY_ACP_CHECKBOX'],
-		);
-
-		$this->chartype = array (
-				'charname' => $user->lang ['APPLY_ACP_CHARNAME'],
-				'gameraceclass' => $user->lang ['APPLY_GAME'],
-				'regionrealm' => $user->lang ['APPLY_REGION'],
-				'level' => $user->lang ['APPLY_LEVEL'],
-				'gender' => $user->lang ['APPLY_GENDER'],
 		);
 
 		$this->regions = array(
@@ -266,14 +263,6 @@ class acp_dkp_apply extends bbDkp_Admin
 				}
 
 				/**
-				 * adds a char template
-				 */
-				if (isset ( $_POST ['charquestionadd'] ))
-				{
-					$this->charformquestion_add($applytemplate_id);
-				}
-				
-				/**
 				 * adds a template question
 				 */
 				if (isset ( $_POST ['appformquestionadd'] ))
@@ -290,27 +279,12 @@ class acp_dkp_apply extends bbDkp_Admin
 				}
 
 				/**
-				 * deletes a template question
-				 */
-				if (isset ( $_GET ['charquestiondelete'] ))
-				{
-					$this->charquestion_delete();
-				}
-				/**
 				 * updates template question
 				 */
 				if (isset ( $_POST ['appformquestionupdate'] ))
 				{
 					$this->appformquestionupdate($applytemplate_id);
 				}
-				
-				/**
-				 * updates char template question
-				 */
-				if (isset ( $_POST ['charquestionupdate'] ))
-				{
-					$this->charquestionupdate($applytemplate_id);
-				}				
 				
 				// user pressed question order arrows
 				if(isset($_GET ['appquestionmove_up'] ))
@@ -322,23 +296,6 @@ class acp_dkp_apply extends bbDkp_Admin
 				{
 					$this->movequestion(1, $applytemplate_id);
 				}
-				
-				// user pressed char question order arrows
-				if(isset($_GET ['charquestionmove_up'] ))
-				{
-					$this->charmovequestion(-1, $applytemplate_id);
-				}
-
-				if(isset($_GET ['charquestionmove_down'] ))
-				{
-					$this->charmovequestion(1, $applytemplate_id);
-				}
-
-
-				/*
-				 * loading config
-				*/
-
 
 				/**
 				 * loading template types
@@ -371,58 +328,10 @@ class acp_dkp_apply extends bbDkp_Admin
 				}
 				$db->sql_freeresult ( $result );
 
-				/*
-				 * loading char questions
-				*/
-				
-				foreach ( $this->chartype as $key => $value ) 
-				{
-					$template->assign_block_vars ( 'chartemplatelist', array (
-							'TYPE' => $key,
-							'VALUE' => $value,
-							'SELECTED' => ($key == $applytemplate_id) ? ' selected="selected"' : ''
-					) );
-				}
-				
-				$sql = 'SELECT * FROM ' . CHARTEMPLATE_TABLE . ' a
-                		INNER JOIN ' . APPTEMPLATELIST_TABLE . ' b
-		                ON b.template_id = a.template_id
-		                WHERE a.template_id = ' . $applytemplate_id . '
-		                ORDER BY a.qorder ';
-				$result = $db->sql_query ( $sql );
-				while ( $row = $db->sql_fetchrow ( $result ) )
-				{
-					$checked = '';
-					if ($row ['mandatory'] == 'True')
-					{
-						$checked = ' checked="checked"';
-					}
-					$questionshow = '';
-					$template->assign_block_vars ( 'chartemplate', array (
-							'QORDER' => $row ['qorder'],
-							'MANDATORY' => $row ['mandatory'],
-							'CHECKED' => $checked,
-							'ID' => $row ['id'],
-							'U_CHARQUESTIONMOVE_UP' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;charquestionmove_up=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id ),
-							'U_CHARQUESTIONMOVE_DOWN' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;charquestionmove_down=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id ),
-							'U_CHARQUESTIONDELETE' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;charquestiondelete=1&amp;id={$row['id']}&amp;applytemplate_id=" . $applytemplate_id )
-					) );
-				
-					foreach ( $this->chartype as $key => $value )
-					{
-						$template->assign_block_vars ( 'chartemplate.chartemplate_type', array (
-								'TYPE' => $key,
-								'VALUE' => $value,
-								'SELECTED' => ($key == $row ['type']) ? ' selected="selected"' : ''
-						) );
-					}
-				}
-				$db->sql_freeresult ( $result );
-				
 				
 				/*
 				 * loading app questions
-				 * 7 question types supported
+				 * 12 question types supported
 				*/
 
 				foreach ( $this->apptype as $key => $value ) 
@@ -452,22 +361,47 @@ class acp_dkp_apply extends bbDkp_Admin
 					{
 						$questionshow = ' checked="checked"';
 					}
+					$titleinvisible= '';
+					$optioninvisible = '';
 					$questioninvisible = ''; 
-					if ($row ['type'] == 'title')
+					$optionenabled = '';
+					
+					switch ($row ['type'])
 					{
-						$questioninvisible = ' visibility:hidden;';
-					}					
-					$optionenabled = ''; $optioninvisible = '';
-					if ($row ['type'] != 'Selectbox' and $row ['type'] != 'Radiobuttons' and $row ['type'] != 'Checkboxes' and $row ['type'] != 'title')
-					{
-						$optionenabled = ' disabled="disabled"';
-						$optioninvisible = ' visibility:hidden;';
+						case 'title' :
+							$questioninvisible = ' visibility:hidden;';
+							$optionenabled = ' disabled="disabled"';
+							$optioninvisible = ' visibility:hidden;';
+							break;
+						case 'charname' :
+						case 'gameraceclass':
+						case 'regionrealm' :
+						case 'level' :
+						case 'gender' :
+							$titleinvisible = ' visibility:hidden;';
+							$questioninvisible = ' visibility:hidden;';
+							$optionenabled = ' disabled="disabled"';
+							$optioninvisible = ' visibility:hidden;';
+							break;
+						case 'Inputbox':
+						case 'Textbox':
+						case 'Textboxbbcode':
+							$optionenabled = ' disabled="disabled"';
+							$optioninvisible = ' visibility:hidden;';
+							break;
+						case 'Selectbox':
+						case 'Radiobuttons':
+						case 'Checkboxes':
+							break;
+						
 					}
+					
 					$template->assign_block_vars ( 'apptemplate', array (
 							'QORDER' => $row ['qorder'],
 							'TEMPLATE' => $row ['template_name'],
 							'HEADER' => $row ['header'],
 							'QUESTION' => $row ['question'],
+							'TITLEINVISIBLE' => $titleinvisible, 
 							'QUESTIONINVISIBLE' => $questioninvisible,
 							'MANDATORY' => $row ['mandatory'],
 							'OPTIONS' => $row ['options'],
@@ -589,47 +523,6 @@ class acp_dkp_apply extends bbDkp_Admin
 		}
 	}
 	
-
-	/**
-	 * adds a new char question
-	 *
-	 * @param int $applytemplate_id
-	 */
-	public function charformquestion_add($applytemplate_id)
-	{
-	
-		global $db, $phpbb_admin_path, $phpEx, $user;
-		if (! check_form_key ( $this->form_key ))
-		{
-			trigger_error ( $user->lang ['FORM_INVALID'] . adm_back_link ( $this->u_action ), E_USER_WARNING );
-		}
-	
-		$sql = 'SELECT max(qorder) + 1 as maxorder FROM ' . CHARTEMPLATE_TABLE . ' WHERE template_id= ' . $applytemplate_id;
-		$result = $db->sql_query ($sql);
-		$max_order = ( int ) $db->sql_fetchfield ( 'maxorder', 0, $result );
-	
-		$db->sql_freeresult ( $result );
-	
-		$sql_ary = array (
-				'template_id' => request_var ( 'applytemplate_id', 0 ),
-				'qorder' => $max_order,
-				'mandatory' => (isset ( $_POST ['char_add_mandatory'] ) ? 'True' : 'False'),
-				'type' => utf8_normalize_nfc ( request_var ( 'char_add_type', ' ', true ) ),
-		);
-	
-		// insert new question
-		$sql = 'INSERT INTO ' . CHARTEMPLATE_TABLE . ' ' . $db->sql_build_array ( 'INSERT', $sql_ary );
-		$db->sql_query ($sql);
-		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
-		$this->link = '<br /><a href="' . $link . '"><h3>' . $user->lang ['APPLY_ACP_RETURN'] . '</h3></a>';
-	
-		meta_refresh ( 1, $link );
-	
-		trigger_error ( $user->lang ['APPLY_ACP_QUESTNADD'] . $this->link, E_USER_NOTICE );
-	
-	}
-	
-	
 	/**
 	 * adds a new question
 	 *
@@ -653,7 +546,7 @@ class acp_dkp_apply extends bbDkp_Admin
 		$db->sql_freeresult ( $result );
 	
 		$sql_ary = array (
-				'template_id' => request_var ( 'applytemplate_id', 0 ),
+				'template_id' => $applytemplate_id,
 				'qorder' => $max_order,
 				'mandatory' => (isset ( $_POST ['app_add_mandatory'] ) ? 'True' : 'False'),
 				'type' => utf8_normalize_nfc ( request_var ( 'app_add_type', ' ', true ) ),
@@ -721,42 +614,6 @@ class acp_dkp_apply extends bbDkp_Admin
 	}
 	
 	/**
-	 * updates current char question
-	 *
-	 * @param unknown_type $applytemplate_id
-	 */	
-	public function charquestionupdate($applytemplate_id)
-	{
-		global $user, $db, $phpbb_admin_path, $phpEx;
-		
-		if (! check_form_key ( $this->form_key ))
-		{
-			trigger_error ( $user->lang ['FORM_INVALID'] . adm_back_link ( $this->u_action ), E_USER_WARNING );
-		}
-		
-		$q_types = utf8_normalize_nfc ( request_var ( 'charq_type', array (0 => '' ), true ) );
-		
-		foreach ( $q_types as $key => $arrvalues )
-		{
-			/* updating questions */
-			$data = array (
-					'mandatory' => isset ( $_POST ['charq_mandatory'] [$key] ) ? 'True' : 'False',
-					'type' => $q_types [$key],
-			);
-		
-			$sql = 'UPDATE ' . CHARTEMPLATE_TABLE . ' set ' . $db->sql_build_array ( 'UPDATE', $data ) . ' WHERE id = ' . $key;
-			$db->sql_query ( $sql );
-		}
-		
-		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
-		$this->link = '<br /><a href="' . $link . '"><h3>' . $user->lang ['APPLY_ACP_RETURN'] . '</h3></a>';
-		meta_refresh ( 1, $link );
-		
-		trigger_error ( $user->lang ['APPLY_ACP_QUESTUPD'] . $this->link );		
-	}
-
-
-	/**
 	 * delete app template question
 	 *
 	 */
@@ -770,20 +627,6 @@ class acp_dkp_apply extends bbDkp_Admin
 		trigger_error ( "Question " . $qid . " deleted" . $this->link, E_USER_WARNING );
 	}
 
-	/**
-	 * delete char template question
-	 *
-	 */
-	public function charquestion_delete()
-	{
-		global $db;
-		$qid = request_var ( 'id', 0 );
-		$sql = "DELETE FROM " . CHARTEMPLATE_TABLE . " WHERE id = '" . $qid . "'";
-		$db->sql_query ( $sql );
-		meta_refresh ( 1, $this->u_action );
-		trigger_error ( "Character Question " . $qid . " deleted" . $this->link, E_USER_WARNING );
-	}
-	
 	/**
 	 * movequestion: moves question up or down
 	 *
@@ -811,43 +654,10 @@ class acp_dkp_apply extends bbDkp_Admin
 		$db->sql_query ( $sql );
 
 		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
-		meta_refresh ( 1, $link );
+
 		
 	}
 
-	/**
-	 * movequestion: moves char question up or down
-	 *
-	 * @param int $direction +1 or -1
-	 */
-	public function charmovequestion($direction, $applytemplate_id )
-	{
-		global $phpbb_admin_path, $phpEx, $db;
-		$qid = request_var ( 'id', 0 );
-	
-		// find order of clicked line
-		$sql = 'SELECT qorder FROM ' . CHARTEMPLATE_TABLE . ' WHERE id =  ' . $qid ;
-		$result = $db->sql_query ( $sql );
-		$current_order = ( int ) $db->sql_fetchfield ( 'qorder', 0, $result );
-		$db->sql_freeresult ( $result );
-	
-		$new_order = $current_order + (int) $direction;
-	
-		// find current id with new order and move that one notch, if any
-		$sql = 'UPDATE  ' . CHARTEMPLATE_TABLE . ' SET qorder = ' . $current_order . ' WHERE qorder = ' . $new_order . ' AND template_id = ' . $applytemplate_id;
-		$db->sql_query ( $sql );
-	
-		// now increase old order
-		$sql = 'UPDATE  ' . CHARTEMPLATE_TABLE . ' set qorder = ' . $new_order . ' where id = ' . $qid . ' AND template_id = ' . $applytemplate_id;
-		$db->sql_query ( $sql );
-	
-		$link = append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=dkp_apply&amp;mode=apply_settings&amp;applytemplate_id=".$applytemplate_id );
-		meta_refresh ( 1, $link );
-	
-	}
-	
-
-	
 	/**
 	 * fetches array with forum info
 	 *

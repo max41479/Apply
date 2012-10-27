@@ -270,153 +270,138 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	// build post
 	$apply_post->message = '';
 	
-	// load char template	
-	$sql = "SELECT * FROM " . CHARTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id .'  ORDER BY qorder' ;	
-	$result = $db->sql_query_limit($sql, 100, 0);
-	
-	if($row)
-	{
-		$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_OVERVIEW'] . '[/b][/size]';
-		$apply_post->message .= '<br /><br />';
-	}
-	
-	while ( $row = $db->sql_fetchrow($result) )
-	{
-		
-		if (isset($_POST['chartemplatefield_' . $row['qorder']]) )
-		{
-			switch ($row['type'])
-			{
-				case 'charname':
-				 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]';
-				 	if($candidate->class_color_exists)
-					{
-						$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
-					}
-					else
-					{
-						$apply_post->message .= '[b]' . $candidate->name  . '[/b]' ;
-					}
-					$apply_post->message .= '<br />';
-								
-					break;
-				case 'gameraceclass':
-			 	 	//race
-			 	 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color] ';
-			 	 	if($candidate->race_image_exists )
-		 		 	{
-		 		 		$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
-		 		 	}
-		 		 	if($candidate->class_color_exists)
-	 			 	{
-	 			 		$apply_post->message .= ' [color='. $apply_post->questioncolor .']' . $candidate->race . '[/color]' ;
-	 			 	}
-	 			 	else
- 				 	{
- 				 		$apply_post->message .= $candidate->race;
- 				 	}
-
- 				 	// class
-				 	$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color] ';
-				 	if($candidate->class_image_exists )
-				 	{
-				 		$apply_post->message .= '[img]' .$candidate->class_image  . '[/img] ';
-				 	}
-				 	
-				 	if($candidate->class_color_exists)
-				 	{
-				 		$apply_post->message .= ' [color='. $candidate->class_color .']' . $candidate->class . '[/color]' ;
-				 	}
-				 	else
-				 	{
-				 		$apply_post->message .= $candidate->class;
-				 	}
-
- 				 	$apply_post->message .= '<br /><br />';				 	
-					break;
-					
-				case 'regionrealm':
-					//Realm
-					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_REALM1'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
-					$apply_post->message .= '<br />';
-					break;
-					
-				case 'level':
-				 	// level
-					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
-					$apply_post->message .= '<br />';					
-					break;
-					
-				case 'gender':
-					break;
-			}
-		}
-	}
-	
-// load formatted questions and answers, max 100 lol
+	// load formatted questions and answers, max 100 lol
 	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id .'  ORDER BY qorder' ;
 	$result = $db->sql_query_limit($sql, 100, 0);
 	
-	// Motivation
-	if($row)
-	{
-		$apply_post->message .= '[size=150][b]' .$user->lang['APPLY_CHAR_MOTIVATION'] . '[/b][/size]';
-		$apply_post->message .= '<br /><br />';
-	}
-	
 	while ( $row = $db->sql_fetchrow($result) )
 	{
-		if ( isset($_POST['templatefield_' . $row['qorder']]) )
-		{
 			switch ($row['type'])
 			{
+				case 'charname':
+					if(isset($_POST['candidate_name']) )
+					{
+						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]';
+						if($candidate->class_color_exists)
+						{
+							$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
+						}
+						else
+						{
+							$apply_post->message .= '[b]' . $candidate->name  . '[/b]' ;
+						}
+						$apply_post->message .= '<br />';
+					}
+					break;
+				case 'gameraceclass':
+					if(isset($_POST['game_id']))
+					{
+						//race
+						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color] ';
+						if($candidate->race_image_exists )
+						{
+							$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
+						}
+						if($candidate->class_color_exists)
+						{
+							$apply_post->message .= ' [color='. $apply_post->questioncolor .']' . $candidate->race . '[/color]' ;
+						}
+						else
+						{
+							$apply_post->message .= $candidate->race;
+						}
 					
+						// class
+						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color] ';
+						if($candidate->class_image_exists )
+						{
+							$apply_post->message .= '[img]' .$candidate->class_image  . '[/img] ';
+						}
+					
+						if($candidate->class_color_exists)
+						{
+							$apply_post->message .= ' [color='. $candidate->class_color .']' . $candidate->class . '[/color]' ;
+						}
+						else
+						{
+							$apply_post->message .= $candidate->class;
+						}
+					
+						$apply_post->message .= '<br /><br />';
+					}
+					break;
+						
+				case 'regionrealm':
+					if(isset($_POST['candidate_realm']))
+					{
+						//Realm
+						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_ACP_REALM'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
+						$apply_post->message .= '<br />';
+					}					
+					break;
+						
+				case 'level':
+					if(isset($_POST['candidate_level']))
+					{
+						// level
+						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
+						$apply_post->message .= '<br />';
+					}
+					break;
+				case 'gender':
+					
+					break;
 				case 'title':
-					$apply_post->message .= '[size=150][b]' . $row['question'] . ': [/b][/size]';
+					$apply_post->message .= '
+							
+							[size=150][b]' . $row['header'] . ' [/b][/size]
+							
+							';
 					break;
 				case 'Checkboxes':
-					 $cb_countis = count( request_var('templatefield_' . $row['qorder'], array(0 => 0)) );  
-                     $cb_count = 0;
-
-                     if((int) $row['showquestion'] == 1)
-                     {
-                        $apply_post->message .= '[size=120][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
-						$apply_post->message .= '<br />';
-                     }
-                        
-                        $checkboxes = utf8_normalize_nfc( request_var('templatefield_' . $row['qorder'], array(0 => '') , true));
-                        foreach($checkboxes as $value) 
-                        {
-                            $apply_post .= $value;
-                            if ($cb_count < $cb_countis-1)
-                            {
-                                $apply_post->message .= ',  ';
-                            }
-                            $cb_count++;
-                        }
-                        $apply_post->message .= '<br /><br />';                         
-					
+					if(isset($_POST['templatefield_' . $row['qorder']]) )
+					{
+						$apply_post->message .= '[size=100][b]' . $row['header'] . ': [/b][/size]';
+						$cb_countis = count( request_var('templatefield_' . $row['qorder'], array(0 => 0)) );  
+						$cb_count = 0;
+						
+						if((int) $row['showquestion'] == 1)
+						{
+							$apply_post->message .= '[size=100][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
+							$apply_post->message .= '<br />';
+						}
+						                        
+						$checkboxes = utf8_normalize_nfc( request_var('templatefield_' . $row['qorder'], array(0 => '') , true));
+						foreach($checkboxes as $value) 
+						{
+							$apply_post->message .= $value;
+							if ($cb_count < $cb_countis-1)
+							{
+								$apply_post->message .= ',  ';
+							}
+							$cb_count++;
+						}
+						$apply_post->message .= '<br /><br />';                         
+					}
 					break;
 				case 'Inputbox':
 				case 'Textbox':
 				case 'Textboxbbcode':					
 				case 'Selectbox':					
 				case 'Radiobuttons':			
-					$fieldcontents = utf8_normalize_nfc(request_var('templatefield_' . $row['qorder'], ' ', true));	
-						
-					if((int) $row['showquestion'] == 1)
+					if(isset($_POST['templatefield_' . $row['qorder']]) )
 					{
-						$apply_post->message .= '[size=120][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
-						$apply_post->message .= '<br />';
+						$fieldcontents = utf8_normalize_nfc(request_var('templatefield_' . $row['qorder'], ' ', true));	
+						if((int) $row['showquestion'] == 1)
+						{
+							$apply_post->message .= '[size=100][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
+							$apply_post->message .= '<br />';
+						}
+						$apply_post->message .=	$fieldcontents;
+						$apply_post->message .= '<br /><br />'; 
 					}
-					 
-					$apply_post->message .=	$fieldcontents;
-					
-					$apply_post->message .= '<br /><br />'; 
 					break;
-					
-					
-			}
+
 
 		}
 	}
@@ -617,96 +602,10 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha,
 		}
 	}
 	
-	// get list of possible games */ 
-	if (!class_exists('bbDKP_Admin'))
-	{
-		require("{$phpbb_root_path}includes/bbdkp/bbdkp.$phpEx");
-	}
-	$bbdkp = new bbDKP_Admin();
-	$installed_games = array();
-	$i=0;
-	foreach($bbdkp->games as $gameid => $gamename)
-	{
-		if ($config['bbdkp_games_' . $gameid] == 1)
-		{
-			$installed_games[$gameid] = $gamename;
-			
-			if($i==0) $gamepreset =  $gameid;	
-			$i+=1;
-			
-			$template->assign_block_vars('game_row', array(
-				'VALUE' => $gameid,
-				'SELECTED' => ((isset($member['game_id']) ? $member['game_id'] : '') == $gameid ) ? ' selected="selected"' : '',
-				'OPTION'   => $gamename, 
-			));
-		}
-			
-	}
-     
-	// Race dropdown
-	// reloading is done from ajax to prevent redraw
-	$sql_array = array(
-	'SELECT'	=>	'  r.race_id, l.name as race_name ', 
-	'FROM'		=> array(
-			RACE_TABLE		=> 'r',
-			BB_LANGUAGE		=> 'l',
-				),
-	'WHERE'		=> " r.race_id = l.attribute_id 
-					AND r.game_id = '" . $gamepreset . "' 
-					AND l.attribute='race' 
-					AND l.game_id = r.game_id 
-					AND l.language= '" . $config['bbdkp_lang'] ."'",
-	);
-	$sql = $db->sql_build_query('SELECT', $sql_array);
-	$result = $db->sql_query($sql);
-	while ( $row = $db->sql_fetchrow($result) )
-	{
-		$template->assign_block_vars('race_row', array(
-		'VALUE' => $row['race_id'],
-		'SELECTED' =>  '',
-		'OPTION'   => ( !empty($row['race_name']) ) ? $row['race_name'] : '(None)')
-		);
-	}
-
-	// Class dropdown
-	// reloading is done from ajax to prevent redraw
-	$sql_array = array(
-		'SELECT'	=>	' c.class_id, l.name as class_name, c.class_hide,
-						  c.class_min_level, class_max_level, c.class_armor_type , c.imagename ', 
-		'FROM'		=> array(
-			CLASS_TABLE		=> 'c',
-			BB_LANGUAGE		=> 'l', 
-			),
-		'WHERE'		=> " l.game_id = c.game_id  AND c.game_id = '" . $gamepreset . "' 
-		AND l.attribute_id = c.class_id  AND l.language= '" . $config['bbdkp_lang'] . "' AND l.attribute = 'class' ",					 
-	);
-	
-	$sql = $db->sql_build_query('SELECT', $sql_array);					
-	$result = $db->sql_query($sql);
-	while ( $row = $db->sql_fetchrow($result) )
-	{
-		if ( $row['class_min_level'] <= 1  ) 
-		{
-			 $option = ( !empty($row['class_name']) ) ? $row['class_name'] . " 
-			 Level (". $row['class_min_level'] . " - ".$row['class_max_level'].")" : '(None)';
-		}
-		else
-		{
-			 $option = ( !empty($row['class_name']) ) ? $row['class_name'] . " 
-			 Level ". $row['class_min_level'] . "+" : '(None)';
-		}
-		
-		$template->assign_block_vars('class_row', array(
-		'VALUE' => $row['class_id'],
-		'SELECTED' => '',
-		'OPTION'   => $option ));
-		
-	}
-	$db->sql_freeresult($result);
-             	
 	// Start assigning vars for main posting page ...
 	// main questionnaire 
-	$sql = "SELECT a.id, a.qorder, a.header, a.question, a.type, a.mandatory, a.options, a.template_id, a.lineid, a.showquestion,  
+	$sql = "SELECT a.id, a.qorder, a.header, a.question, a.type, a.mandatory, 
+			a.options, a.template_id, a.lineid, a.showquestion,  
 			b.template_name, b.forum_id  
 		FROM " . APPTEMPLATE_TABLE . ' a, ' . 
 			APPTEMPLATELIST_TABLE . ' b 
@@ -732,6 +631,96 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha,
 		
 		switch($row['type'])
 		{
+			case 'gameraceclass':
+				// get list of possible games */
+				if (!class_exists('bbDKP_Admin'))
+				{
+					require("{$phpbb_root_path}includes/bbdkp/bbdkp.$phpEx");
+				}
+				$bbdkp = new bbDKP_Admin();
+				$installed_games = array();
+				$i=0;
+				foreach($bbdkp->games as $gameid => $gamename)
+				{
+					if ($config['bbdkp_games_' . $gameid] == 1)
+					{
+						$installed_games[$gameid] = $gamename;
+							
+						if($i==0) $gamepreset =  $gameid;
+						$i+=1;
+							
+						$template->assign_block_vars('apptemplate.game_row', array(
+								'VALUE' => $gameid,
+								'SELECTED' => ((isset($member['game_id']) ? $member['game_id'] : '') == $gameid ) ? ' selected="selected"' : '',
+								'OPTION'   => $gamename,
+						));
+					}
+						
+				}
+				 
+				// Race dropdown
+				// reloading is done from ajax to prevent redraw
+				$sql_array = array(
+						'SELECT'	=>	'  r.race_id, l.name as race_name ',
+						'FROM'		=> array(
+								RACE_TABLE		=> 'r',
+								BB_LANGUAGE		=> 'l',
+						),
+						'WHERE'		=> " r.race_id = l.attribute_id
+					AND r.game_id = '" . $gamepreset . "'
+					AND l.attribute='race'
+					AND l.game_id = r.game_id
+					AND l.language= '" . $config['bbdkp_lang'] ."'",
+				);
+				$sql = $db->sql_build_query('SELECT', $sql_array);
+				$result1 = $db->sql_query($sql);
+				while ( $row1 = $db->sql_fetchrow($result1) )
+				{
+					$template->assign_block_vars('apptemplate.race_row', array(
+							'VALUE' => $row1['race_id'],
+							'SELECTED' =>  '',
+							'OPTION'   => ( !empty($row1['race_name']) ) ? $row1['race_name'] : '(None)')
+					);
+				}
+				
+				// Class dropdown
+				// reloading is done from ajax to prevent redraw
+				$sql_array = array(
+					'SELECT'	=>	' c.class_id, l.name as class_name, c.class_hide,
+					  c.class_min_level, class_max_level, c.class_armor_type , c.imagename ',
+					'FROM'		=> array(
+							CLASS_TABLE		=> 'c',
+							BB_LANGUAGE		=> 'l',
+					),
+					'WHERE'		=> " l.game_id = c.game_id  AND c.game_id = '" . $gamepreset . "'
+					AND l.attribute_id = c.class_id  AND l.language= '" . $config['bbdkp_lang'] . "' AND l.attribute = 'class' ",
+				);
+				
+				$sql = $db->sql_build_query('SELECT', $sql_array);
+				$result1 = $db->sql_query($sql);
+				while ( $row1 = $db->sql_fetchrow($result1) )
+				{
+					if ( $row1['class_min_level'] <= 1  )
+					{
+						$option = ( !empty($row['class_name']) ) ? $row1['class_name'] . "
+			 		Level (". $row1['class_min_level'] . " - ".$row1['class_max_level'].")" : '(None)';
+					}
+					else
+					{
+						$option = ( !empty($row1['class_name']) ) ? $row1['class_name'] . "
+			 		Level ". $row1['class_min_level'] . "+" : '(None)';
+					}
+				
+					$template->assign_block_vars('apptemplate.class_row', array(
+							'VALUE' => $row1['class_id'],
+							'SELECTED' => '',
+							'OPTION'   => $option ));
+				
+				}
+				$db->sql_freeresult($result1);
+				
+				
+				break; 
 			case 'Selectbox':
 			         $select_option = explode(',', $row['options']);
 			         foreach($select_option as  $key =>  $value) 

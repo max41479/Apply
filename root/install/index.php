@@ -339,21 +339,6 @@ $versions = array(
 				array('bbdkp_apply_fqcolor'), 
 		),
 		
-	  // new template class for characters
-	  'table_add' => array(
-			array($table_prefix . 'bbdkp_chartemplate', array(
-						'COLUMNS'		=> array(
-							'id'		=> array('INT:8', NULL, 'auto_increment'),
-							'qorder'	=> array('UINT', 0),
-							'type'		=> array('VCHAR:255', ''),
-							'mandatory'	=> array('VCHAR:255', ''),
-							'template_id'	=> array('UINT', 0),
-						),
-						'PRIMARY_KEY'	=> 'id',),
-				),
- 		),
- 		
-			
 		'custom' => array( 'tableupd', 'applyupdater', 'bbdkp_caches'),
 		),		
 		
