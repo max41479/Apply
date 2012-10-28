@@ -151,9 +151,65 @@ $versions = array(
 				
 			array($table_prefix . 'bbdkp_apptemplate', 
 				array(
-					
+					//*** char ****//						
 					array(
 						'qorder'		=> 1,
+						'header'		=> $user->lang['APPLY_CHAR_OVERVIEW'],
+						'question'		=> ' ',
+						'type'			=> 'title',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),	
+						
+						
+					array(
+						'qorder'		=> 2,
+						'header'		=> $user->lang['APPLY_NAME'],
+						'question'		=> ' ',
+						'type'			=> 'charname',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),	
+
+					array(
+						'qorder'		=> 3,
+						'header'		=> $user->lang['APPLY_ACP_REALM'],
+						'question'		=> ' ',
+						'type'			=> 'regionrealm',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),
+
+					array(
+						'qorder'		=> 4,
+						'header'		=> $user->lang['APPLY_GAME'],
+						'question'		=> ' ',
+						'type'			=> 'gameraceclass',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),
+
+					array(
+						'qorder'		=> 5,
+						'header'		=> $user->lang['APPLY_LEVEL'],
+						'question'		=> ' ',
+						'type'			=> 'level',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),
+					
+					//*** the motivation  ***//			
+					array(
+						'qorder'		=> 6,
+						'header'		=> $user->lang['APPLY_CHAR_MOTIVATION'],
+						'question'		=> ' ',
+						'type'			=> 'title',
+						'mandatory'		=> 'True',
+						'options'		=> ' ',
+					),	
+						
+					array(
+						'qorder'		=> 7,
 						'header'		=> $user->lang['DEFAULT_H1'],
 						'question'		=> $user->lang['DEFAULT_Q1'],
 						'type'			=> 'Textboxbbcode',
@@ -162,7 +218,7 @@ $versions = array(
 					),	
 					
 					array(
-						'qorder'		=> 2,
+						'qorder'		=> 8,
 						'header'		=> $user->lang['DEFAULT_H2'],
 						'question'		=> $user->lang['DEFAULT_Q2'],
 						'type'			=> 'Inputbox',
@@ -171,7 +227,7 @@ $versions = array(
 					),
 
 					array(
-						'qorder'		=>  3,
+						'qorder'		=>  9,
 						'header'		=> $user->lang['DEFAULT_H3'],
 						'question'		=> $user->lang['DEFAULT_Q3'],
 						'type'			=> 'Textboxbbcode',
@@ -179,7 +235,7 @@ $versions = array(
 						'options'		=> ' ',
 					),
 					array(
-						'qorder'		=> 4,
+						'qorder'		=> 10,
 						'header'		=> $user->lang['DEFAULT_H4'],
 						'question'		=> $user->lang['DEFAULT_Q4'],
 						'type'			=> 'Textboxbbcode',
@@ -188,7 +244,7 @@ $versions = array(
 					),
 
 					array(
-						'qorder'		=> 5,
+						'qorder'		=> 11,
 						'header'		=> $user->lang['DEFAULT_H5'],
 						'question'		=> $user->lang['DEFAULT_Q5'],
 						'type'			=> 'Textbox',
@@ -198,7 +254,7 @@ $versions = array(
 
 					
 					array(
-						'qorder'		=> 6,
+						'qorder'		=> 12,
 						'header'		=> $user->lang['DEFAULT_H6'],
 						'question'		=> $user->lang['DEFAULT_Q6'],
 						'type'			=> 'Textboxbbcode',
@@ -207,7 +263,7 @@ $versions = array(
 					),
 
 					array(
-						'qorder'		=> 7,
+						'qorder'		=> 13,
 						'header'		=> $user->lang['DEFAULT_H7'],
 						'question'		=> $user->lang['DEFAULT_Q7'],
 						'type'			=> 'Textbox',
@@ -216,7 +272,7 @@ $versions = array(
 					),
 										
 					array(
-						'qorder'		=> 8,
+						'qorder'		=> 14,
 						'header'		=> $user->lang['DEFAULT_H8'],
 						'question'		=> $user->lang['DEFAULT_Q8'],
 						'type'			=> 'Checkboxes',
@@ -225,7 +281,7 @@ $versions = array(
 					),	
 	
 					array(
-						'qorder'		=> 9,
+						'qorder'		=> 15,
 						'header'		=> $user->lang['DEFAULT_H9'],
 						'question'		=> $user->lang['DEFAULT_Q9'],
 						'type'			=> 'Textbox',
@@ -235,7 +291,7 @@ $versions = array(
 	
 
 					array(
-						'qorder'		=> 10,
+						'qorder'		=> 16,
 						'header'		=> $user->lang['DEFAULT_H10'],
 						'question'		=> $user->lang['DEFAULT_Q10'],
 						'type'			=> 'Textbox',
@@ -244,7 +300,7 @@ $versions = array(
 					),
 									
 					array(
-						'qorder'		=> 11,
+						'qorder'		=> 17,
 						'header'		=> $user->lang['DEFAULT_H11'],
 						'question'		=> $user->lang['DEFAULT_Q11'],
 						'type'			=> 'Radiobuttons',
