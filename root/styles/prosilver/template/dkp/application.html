@@ -403,6 +403,7 @@ apply plugin for bbDKP
 	<!-- IF apptemplate.TYPE == $TYPE_INPUTBOX -->
 		<input class="text" style="width:300px;" type="text" name="{apptemplate.DOMNAME}" size="40" maxlength="60" tabindex="{apptemplate.TABINDEX}" />	
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_TEXTBOX -->
+		<br/ >
 		<textarea class="text" name="{apptemplate.DOMNAME}" rows="2" cols="76" tabindex="{apptemplate.TABINDEX}" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" ></textarea>
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_TEXTBOXBBCODE -->
 		<div id="colour_palette{apptemplate.TABINDEX}" style="display: none;">
@@ -464,15 +465,18 @@ apply plugin for bbDKP
 		</div>
 		<textarea class="text" name="{apptemplate.DOMNAME}" rows="3" cols="76" tabindex="{apptemplate.TABINDEX}" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" ></textarea>	
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_SELECTBOX -->
+		<br/ >
 		<select class="inputbox" name="{apptemplate.DOMNAME}" tabindex="{apptemplate.TABINDEX}">
 			<option value="">----------------</option>
 			<!-- BEGIN selectboxoptions -->
 			<option value="{apptemplate.selectboxoptions.KEY}">{apptemplate.selectboxoptions.VALUE}</option><!-- END selectboxoptions -->
 		</select>
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_RADIOBUTTON -->
+			<br/ >
 			<!-- BEGIN radiobuttonoptions -->
 			<input type="radio" name="{apptemplate.DOMNAME}" tabindex="{apptemplate.TABINDEX}" value="{apptemplate.radiobuttonoptions.KEY}"/>&nbsp;{apptemplate.radiobuttonoptions.VALUE}&nbsp;&nbsp;<!-- END radiobuttonoptions -->
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_CHECKBOX -->
+			<br/>
 			<!-- BEGIN checkboxoptions -->
 			<input type="checkbox" name="{apptemplate.DOMNAME}[]" tabindex="{apptemplate.TABINDEX}" value="{apptemplate.checkboxoptions.KEY}"/>&nbsp;{apptemplate.checkboxoptions.VALUE}&nbsp;&nbsp;<!-- END checkboxoptions -->	
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_GAMERACECLASS -->
