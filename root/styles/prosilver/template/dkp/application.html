@@ -2,7 +2,7 @@
 
 <!-- 
 apply plugin for bbDKP 
- @version 1.3.6
+ @version 1.3.8
 -->
 
 <!-- DEFINE $TYPE_INPUTBOX = 'Inputbox' -->
@@ -251,106 +251,106 @@ apply plugin for bbDKP
 	    
 	    return true;
 	}
-
-/*  make a XMLHTTP Request object */
-function GetXmlHttpObject() 
-{ 
-	var xmlhttp=false;	
 	
-	try
+	/*  make a XMLHTTP Request object */
+	function GetXmlHttpObject() 
 	{ 
-		//  IE7+, Firefox, Chrome, Opera, Safari
-		xmlhttp=new XMLHttpRequest();
-	}
-	catch(e)	
-	{	// activex code for IE6, IE5
+		var xmlhttp=false;	
+		
 		try
-		{			
-			xmlhttp= new ActiveXObject("Microsoft.XMLHTTP");
+		{ 
+			//  IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
 		}
-		catch(e)
-		{
+		catch(e)	
+		{	// activex code for IE6, IE5
 			try
-			{
-				xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+			{			
+				xmlhttp= new ActiveXObject("Microsoft.XMLHTTP");
 			}
-			catch(e1)
+			catch(e)
 			{
-				xmlhttp=false;
+				try
+				{
+					xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+				}
+				catch(e1)
+				{
+					xmlhttp=false;
+				}
 			}
 		}
+		return xmlhttp;
 	}
-	return xmlhttp;
-}
-
-/* ajax function to find class and race array based on game */ 
-function GetClassRace(game_id)
-{
-   xmlhttp = GetXmlHttpObject();
-   if (xmlhttp == null)
-   {
-	   alert("{LA_ALERT_OLDBROWSER}");
-	   return;  
-   }
-    var strURL="{T_TEMPLATE_PATH}/dkp/findclassrace.php?game_id="+game_id;
-    xmlhttp.onreadystatechange=classracestateChanged;
-    xmlhttp.open("GET", strURL, true);
-    // send to server
-    xmlhttp.send(null);
-}
-
-/* called from GetClassRace when state changed */
-function classracestateChanged()
-{
-	if (xmlhttp.readyState==4) //request complete
+	
+	/* ajax function to find class and race array based on game */ 
+	function GetClassRace(game_id)
 	{
-		if (xmlhttp.status == 200)
-		{
-			//receive xml
-			xmlDoc=xmlhttp.responseXML;
-			var racelist = xmlDoc.getElementsByTagName('racelist')[0];
-			var classlist = xmlDoc.getElementsByTagName("classlist")[0];
-
-			var species = racelist.getElementsByTagName("race");
-			var classes = classlist.getElementsByTagName("class");
-			
-			//now modify html : first remove old select options
-			var rsel = document.getElementById('candidate_race_id'); 
-			rsel.options.length = 0; 
-
-			
-			for (var i = 0; i < species.length; i++)
-			{
-				var spec = species[i]; 
-				var raceid = spec.getElementsByTagName("race_id")[0].firstChild.nodeValue;
-				var racename = spec.getElementsByTagName("race_name")[0].firstChild.nodeValue;
-			    // add the options
-			    rsel.options[i] = new Option(racename,raceid, true, false); 
-			}
-			
-			var csel = document.getElementById('candidate_class_id'); 
-			csel.options.length = 0; 
-
-			
-			for (var j = 0; j < classes.length; j++)
-			{
-				
-				var cla = classes[j]; 
-				var classid = cla.getElementsByTagName("class_id")[0].firstChild.nodeValue;
-				var classname = cla.getElementsByTagName("class_name")[0].firstChild.nodeValue;
-			    // add the options
-			    csel.options[j] = new Option(classname,classid, true, false); 
-			}
-			
-			
-			
-		}
-		else 
-		{
-   	   		alert("{LA_ALERT_AJAX}:\n" + xmlhttp.statusText);
-	 	}
+	   xmlhttp = GetXmlHttpObject();
+	   if (xmlhttp == null)
+	   {
+		   alert("{LA_ALERT_OLDBROWSER}");
+		   return;  
+	   }
+	    var strURL="{T_TEMPLATE_PATH}/dkp/findclassrace.php?game_id="+game_id;
+	    xmlhttp.onreadystatechange=classracestateChanged;
+	    xmlhttp.open("GET", strURL, true);
+	    // send to server
+	    xmlhttp.send(null);
 	}
-}
+	
+	/* called from GetClassRace when state changed */
+	function classracestateChanged()
+	{
+		if (xmlhttp.readyState==4) //request complete
+		{
+			if (xmlhttp.status == 200)
+			{
+				//receive xml
+				xmlDoc=xmlhttp.responseXML;
+				var racelist = xmlDoc.getElementsByTagName('racelist')[0];
+				var classlist = xmlDoc.getElementsByTagName("classlist")[0];
+	
+				var species = racelist.getElementsByTagName("race");
+				var classes = classlist.getElementsByTagName("class");
+				
+				//now modify html : first remove old select options
+				var rsel = document.getElementById('candidate_race_id'); 
+				rsel.options.length = 0; 
+	
+				
+				for (var i = 0; i < species.length; i++)
+				{
+					var spec = species[i]; 
+					var raceid = spec.getElementsByTagName("race_id")[0].firstChild.nodeValue;
+					var racename = spec.getElementsByTagName("race_name")[0].firstChild.nodeValue;
+				    // add the options
+				    rsel.options[i] = new Option(racename,raceid, true, false); 
+				}
+				
+				var csel = document.getElementById('candidate_class_id'); 
+				csel.options.length = 0; 
+	
+				
+				for (var j = 0; j < classes.length; j++)
+				{
+					
+					var cla = classes[j]; 
+					var classid = cla.getElementsByTagName("class_id")[0].firstChild.nodeValue;
+					var classname = cla.getElementsByTagName("class_name")[0].firstChild.nodeValue;
+				    // add the options
+				    csel.options[j] = new Option(classname,classid, true, false); 
+				}
+				
+				
+				
+			}
+			else 
+			{
+	   	   		alert("{LA_ALERT_AJAX}:\n" + xmlhttp.statusText);
+		 	}
+		}
+	}
 
 // ]]>
 </script>
@@ -381,7 +381,7 @@ function classracestateChanged()
 <!-- BEGIN apptemplate -->
 
 <!-- IF apptemplate.TYPE == $TYPE_TITLE -->
-<h3>{apptemplate.TITLE}</h3>	
+<br /><h3>{apptemplate.TITLE}</h3>	
 <!-- ELSE -->
 <dl>
 <!-- IF apptemplate.TYPE == $TYPE_GAMERACECLASS -->
@@ -398,7 +398,7 @@ function classracestateChanged()
 	<dt><strong>{apptemplate.TITLE}</strong></dt>
 <!-- ENDIF -->
 	
-	<dd><!-- IF apptemplate.S_SHOWQUESTION -->{apptemplate.QUESTION}<br /><!-- ENDIF -->
+	<dd><!-- IF apptemplate.S_SHOWQUESTION -->{apptemplate.QUESTION}<!-- ENDIF -->
 	
 	<!-- IF apptemplate.TYPE == $TYPE_INPUTBOX -->
 		<input class="text" style="width:300px;" type="text" name="{apptemplate.DOMNAME}" size="40" maxlength="60" tabindex="{apptemplate.TABINDEX}" />	
@@ -477,7 +477,6 @@ function classracestateChanged()
 			<input type="checkbox" name="{apptemplate.DOMNAME}[]" tabindex="{apptemplate.TABINDEX}" value="{apptemplate.checkboxoptions.KEY}"/>&nbsp;{apptemplate.checkboxoptions.VALUE}&nbsp;&nbsp;<!-- END checkboxoptions -->	
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_GAMERACECLASS -->
 
-		<div>
 			<select name="game_id" class="input" onchange="return GetClassRace(this.value)">
 	        <!-- BEGIN game_row -->
 			<option value="{apptemplate.game_row.VALUE}"{apptemplate.game_row.SELECTED}>{apptemplate.game_row.OPTION}</option>
@@ -496,26 +495,24 @@ function classracestateChanged()
 	        <option value="{apptemplate.class_row.VALUE}"{apptemplate.class_row.SELECTED}>{apptemplate.class_row.OPTION}</option>
 	        <!-- END class_row -->
 	        </select>
-		    <!-- IF S_CLASS_IMAGE_EXISTS --><br/><img src="{CLASS_IMAGE}" alt="" /><!-- ELSE -->&nbsp;<!-- ENDIF --> &nbsp;<span style="color:red">{L_MANDATORY}</span>
-		</div>
+		    <!-- IF S_CLASS_IMAGE_EXISTS --><br/><img src="{CLASS_IMAGE}" alt="" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
 		
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_CHARNAME -->
-		<input type="text" name="candidate_name" size="25" maxlength="25" class="input" /> <span style="color:red">{L_MANDATORY}</span>
+		<input type="text" name="candidate_name" size="25" maxlength="25" class="input" />
 	
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_REGIONREALM -->
-		<input type="text" name="candidate_realm" size="25" maxlength="25" class="input" /> <span style="color:red">{L_MANDATORY}</span>
+		<input type="text" name="candidate_realm" size="25" maxlength="25" class="input" />
 	
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_LEVEL -->
-		<input type="text" name="candidate_level" size="3" maxlength="3" value="{MEMBER_LEVEL}" class="input" /> <span style="color:red">{L_MANDATORY}</span>
+		<input type="text" name="candidate_level" size="3" maxlength="3" value="{MEMBER_LEVEL}" class="input" />
 	
 	<!-- ELSEIF apptemplate.TYPE == $TYPE_GENDER -->
-	
 	    <input type="radio" name="candidate_gender"  value="0"{MALE_CHECKED} /> {L_MALE}&nbsp;&nbsp;
     	<input type="radio" name="candidate_gender"  value="1"{FEMALE_CHECKED} /> {L_FEMALE}
     
 	<!-- ENDIF -->
 	<!-- IF apptemplate.S_MANDATORY -->
-		&nbsp;<span style="color:red">{L_MANDATORY}</span>
+	<span style="color:red">{L_MANDATORY}</span>
 	<!-- ENDIF -->
 	
 	</dd>

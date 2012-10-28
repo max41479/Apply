@@ -204,7 +204,7 @@ $versions = array(
 						'header'		=> $user->lang['APPLY_CHAR_MOTIVATION'],
 						'question'		=> ' ',
 						'type'			=> 'title',
-						'mandatory'		=> 'True',
+						'mandatory'		=> 'False',
 						'options'		=> ' ',
 					),	
 						
@@ -239,7 +239,7 @@ $versions = array(
 						'header'		=> $user->lang['DEFAULT_H4'],
 						'question'		=> $user->lang['DEFAULT_Q4'],
 						'type'			=> 'Textboxbbcode',
-						'mandatory'		=> 'True',
+						'mandatory'		=> 'False',
 						'options'		=> ' ',
 					),
 

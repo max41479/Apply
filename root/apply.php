@@ -231,309 +231,6 @@ function build_candidate(dkp_character &$candidate, apply_post &$apply_post )
 	
 }
 
-/**
- * post application on forum
- *
- */
-function make_apply_posting($post_data, $current_time, $candidate_name, $template_id)
-{
-	global $auth, $config, $db, $user, $phpbb_root_path, $phpEx, $captcha;
-	
-	if(!class_exists('apply_post'))
-	{
-		include($phpbb_root_path . 'includes/bbdkp/apply/dkp_character.' . $phpEx);
-	}
-	$apply_post = new apply_post();
-	$candidate = new dkp_character();
-	$candidate->name =  $candidate_name; 
-	
-	$sql = "SELECT * from " . APPTEMPLATELIST_TABLE . " WHERE template_id  = " . $template_id;
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-	if(isset($row))
-	{
-		$apply_post->questioncolor = $row['question_color'];
-		$apply_post->answercolor = $row['answer_color'];
-		$apply_post->gchoice = $row['gchoice'];
-		$apply_post->candidate_guild_id = $row['guild_id'];
-	}
-	
-	build_candidate($candidate, $apply_post);
-	
-	// if user belongs to group that can add a character then attempt to register a dkp character
-	// guests should never be able to register characters (i.e user anonymous)
-	if($auth->acl_get('u_dkp_charadd') )
-	{
-		register_bbdkp($candidate);
-	}
-		
-	// build post
-	$apply_post->message = '';
-	
-	// load formatted questions and answers, max 100 lol
-	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id .'  ORDER BY qorder' ;
-	$result = $db->sql_query_limit($sql, 100, 0);
-	
-	while ( $row = $db->sql_fetchrow($result) )
-	{
-			switch ($row['type'])
-			{
-				case 'charname':
-					if(isset($_POST['candidate_name']) )
-					{
-						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]: ';
-						if($candidate->class_color_exists)
-						{
-							$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
-						}
-						else
-						{
-							$apply_post->message .= '[b]' . $candidate->name  . '[/b]' ;
-						}
-						$apply_post->message .= '<br />';
-					}
-					break;
-				case 'gameraceclass':
-					if(isset($_POST['game_id']))
-					{
-						//race
-						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color]: ';
-						if($candidate->race_image_exists )
-						{
-							$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
-						}
-						if($candidate->class_color_exists)
-						{
-							$apply_post->message .= ' [color='. $apply_post->questioncolor .']' . $candidate->race . '[/color]' ;
-						}
-						else
-						{
-							$apply_post->message .= $candidate->race;
-						}
-						$apply_post->message .= '<br />';								
-						// class
-						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color]: ';
-						if($candidate->class_image_exists )
-						{
-							$apply_post->message .= '[img]' .$candidate->class_image  . '[/img] ';
-						}
-					
-						if($candidate->class_color_exists)
-						{
-							$apply_post->message .= ' [color='. $candidate->class_color .']' . $candidate->class . '[/color]' ;
-						}
-						else
-						{
-							$apply_post->message .= $candidate->class;
-						}
-					
-						$apply_post->message .= '<br />';
-					}
-					break;
-						
-				case 'regionrealm':
-					if(isset($_POST['candidate_realm']))
-					{
-						//Realm
-						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_ACP_REALM'] . '[/color]: ' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
-						$apply_post->message .= '<br />';
-					}					
-					break;
-						
-				case 'level':
-					if(isset($_POST['candidate_level']))
-					{
-						// level
-						$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]: ' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
-						$apply_post->message .= '<br />';
-					}
-					break;
-				case 'gender':
-					
-					break;
-				case 'title':
-					$apply_post->message .= '<br/>[size=150][b]' . $row['header'] . ' [/b][/size]<br/>';
-					break;
-				case 'Checkboxes':
-					if(isset($_POST['templatefield_' . $row['qorder']]) )
-					{
-						$apply_post->message .= '[size=100][color='. $apply_post->questioncolor .'][b]' . $row['header'] . ': [/b][/color][/size]';
-						$cb_countis = count( request_var('templatefield_' . $row['qorder'], array(0 => 0)) );  
-						$cb_count = 0;
-						
-						if((int) $row['showquestion'] == 1)
-						{
-							$apply_post->message .= '[size=100][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
-							$apply_post->message .= '<br />';
-						}
-						                        
-						$checkboxes = utf8_normalize_nfc( request_var('templatefield_' . $row['qorder'], array(0 => '') , true));
-						foreach($checkboxes as $value) 
-						{
-							$apply_post->message .= $value;
-							if ($cb_count < $cb_countis-1)
-							{
-								$apply_post->message .= ',  ';
-							}
-							$cb_count++;
-						}
-						$apply_post->message .= '<br /><br />';                         
-					}
-					break;
-				case 'Inputbox':
-				case 'Textbox':
-				case 'Textboxbbcode':					
-				case 'Selectbox':					
-				case 'Radiobuttons':			
-					if(isset($_POST['templatefield_' . $row['qorder']]) )
-					{
-						$fieldcontents = utf8_normalize_nfc(request_var('templatefield_' . $row['qorder'], ' ', true));	
-						if((int) $row['showquestion'] == 1)
-						{
-							$apply_post->message .= '[size=100][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
-							$apply_post->message .= '<br />';
-						}
-						$apply_post->message .=	$fieldcontents;
-						$apply_post->message .= '<br /><br />'; 
-					}
-					break;
-
-
-		}
-	}
-	$db->sql_freeresult($result);
-	
-	// variables to hold the parameters for submit_post
-	$poll = $uid = $bitfield = $options = ''; 
-	// parsed code
-	generate_text_for_storage($apply_post->message, $uid, $bitfield, $options, true, true, true);
-
-	// subject & username
-
-	//$post_data['post_subject'] = utf8_normalize_nfc(request_var('headline', $user->data['username'], true));
-	$post_subj	= (string) $candidate->name . " - " . $candidate->level . " " . $candidate->race . " ". $candidate->class;
-	
-	// Store message, sync counters
-	
-		$data = array( 
-		'forum_id'			=> (int) $post_data['forum_id'],
-		'topic_first_post_id'	=> 0,
-		'topic_last_post_id'	=> 0,
-		'topic_attachment'		=> 0,		
-		'icon_id'			=> false,
-		'enable_bbcode'		=> true,
-		'enable_smilies'	=> true,
-		'enable_urls'		=> true,
-		'enable_sig'		=> true,
-		'message'			=> $apply_post->message,
-		'message_md5'		=> md5($apply_post->message),
-		'bbcode_bitfield'	=> $bitfield,
-		'bbcode_uid'		=> $uid,
-		'post_edit_locked'	=> 0,
-		'topic_title'		=> $post_subj,
-		'notify_set'		=> false,
-		'notify'			=> false,
-		'post_time' 		=> $current_time,
-		'poster_ip'			=> $user->ip,
-		'forum_name'		=> '',
-		'post_edit_locked'	=> 1,
-		'enable_indexing'	=> true,
-		'post_approved'        => 1,
-		);
-		
-		
-		//submit post
-		$post_url = submit_post('post', $post_subj, $user->data['username'], POST_NORMAL, $poll, $data);
-		
-		$redirect_url = $post_url;
-			
-		if ($config['enable_post_confirm'] && (isset($captcha) && $captcha->is_solved() === true))
-		{
-			$captcha->reset();
-		}
-		
-		//redirect to post
-		meta_refresh(3, $redirect_url);
-
-		$message = 'POST_STORED';
-		$message = $user->lang[$message] . '<br /><br />' . sprintf($user->lang['VIEW_MESSAGE'], '<a href="' . $redirect_url . '">', '</a>');
-		$message .= '<br /><br />' . sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $data['forum_id']) . '">', '</a>');
-		trigger_error($message);
-
-}
-
-function make_title()
-{
-	
-}
-
-/**
- * registers a bbDKP character 
- *
- * @param dkp_character $candidate
- */
-function register_bbdkp(dkp_character $candidate)
-{
-	global $db, $auth, $user, $config, $phpbb_root_path, $phpEx;
-	
-	// check if user exceeded allowed character count, to prevent alt spamming
-	$sql = 'SELECT count(*) as charcount
-			FROM ' . MEMBER_LIST_TABLE . '	
-			WHERE phpbb_user_id = ' . (int) $user->data['user_id'];
-	$result = $db->sql_query($sql);
-	$countc = $db->sql_fetchfield('charcount');
-	$db->sql_freeresult($result);
-	if ($countc >= $config['bbdkp_maxchars'])
-	{
-		//do nothing
-		return;
-	}
-	
-	// check if membername exists
-	$sql = 'SELECT count(*) as memberexists 
-			FROM ' . MEMBER_LIST_TABLE . "	
-			WHERE ucase(member_name)= ucase('" . $db->sql_escape($candidate->name) . "')"; 
-	$result = $db->sql_query($sql);
-	$countm = $db->sql_fetchfield('memberexists');
-	$db->sql_freeresult($result);
-	if ($countm != 0)
-	{
-		// give a nice alert and stop right here.
-		 trigger_error($user->lang['ERROR_MEMBEREXIST'], E_USER_WARNING);
-	}
-	
-	$member_comment = 'candidate'; 
-	
-	// add the char
-	if (! class_exists ( 'acp_dkp_mm' ))
-	{
-		include ($phpbb_root_path . 'includes/acp/acp_dkp_mm.' . $phpEx);
-	}
-	$acp_dkp_mm = new acp_dkp_mm ( );
-		
-	$member_id = $acp_dkp_mm->insertnewmember(
-		$candidate->name,
-		 1,
-		$candidate->level,
-		$candidate->raceid,
-		$candidate->classid,
-		$candidate->guildrank,
-		$member_comment, 
-		time(), 
-		0, 
-		$candidate->guild, 
-		$candidate->genderid, 
-		0, 
-		' ',
-		' ', 
-		$candidate->realm, 
-		$candidate->game, 
-		$user->data['user_id']
-	);
-	
-	return $member_id;
-	
-}
 
 /**
  *  build Application form 
@@ -698,7 +395,7 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha,
 				{
 					if ( $row1['class_min_level'] <= 1  )
 					{
-						$option = ( !empty($row['class_name']) ) ? $row1['class_name'] . "
+						$option = ( !empty($row1['class_name']) ) ? $row1['class_name'] . "
 			 		Level (". $row1['class_min_level'] . " - ".$row1['class_max_level'].")" : '(None)';
 					}
 					else
@@ -850,6 +547,307 @@ function check_apply_form_access($template_id)
 	}
 	
 	return $post_data;
+}
+
+
+/**
+ * registers a bbDKP character
+ *
+ * @param dkp_character $candidate
+ */
+function register_bbdkp(dkp_character $candidate)
+{
+	global $db, $auth, $user, $config, $phpbb_root_path, $phpEx;
+
+	// check if user exceeded allowed character count, to prevent alt spamming
+	$sql = 'SELECT count(*) as charcount
+			FROM ' . MEMBER_LIST_TABLE . '
+			WHERE phpbb_user_id = ' . (int) $user->data['user_id'];
+	$result = $db->sql_query($sql);
+	$countc = $db->sql_fetchfield('charcount');
+	$db->sql_freeresult($result);
+	if ($countc >= $config['bbdkp_maxchars'])
+	{
+		//do nothing
+		return;
+	}
+
+	// check if membername exists
+	$sql = 'SELECT count(*) as memberexists
+			FROM ' . MEMBER_LIST_TABLE . "
+			WHERE ucase(member_name)= ucase('" . $db->sql_escape($candidate->name) . "')";
+	$result = $db->sql_query($sql);
+	$countm = $db->sql_fetchfield('memberexists');
+	$db->sql_freeresult($result);
+	if ($countm != 0)
+	{
+		// give a nice alert and stop right here.
+		trigger_error($user->lang['ERROR_MEMBEREXIST'], E_USER_WARNING);
+	}
+
+	$member_comment = 'candidate';
+
+	// add the char
+	if (! class_exists ( 'acp_dkp_mm' ))
+	{
+		include ($phpbb_root_path . 'includes/acp/acp_dkp_mm.' . $phpEx);
+	}
+	$acp_dkp_mm = new acp_dkp_mm ( );
+
+	$member_id = $acp_dkp_mm->insertnewmember(
+			$candidate->name,
+		 1,
+			$candidate->level,
+			$candidate->raceid,
+			$candidate->classid,
+			$candidate->guildrank,
+			$member_comment,
+			time(),
+			0,
+			$candidate->guild,
+			$candidate->genderid,
+			0,
+			' ',
+			' ',
+			$candidate->realm,
+			$candidate->game,
+			$user->data['user_id']
+	);
+
+	return $member_id;
+
+}
+
+
+/**
+ * post application on forum
+ *
+ */
+function make_apply_posting($post_data, $current_time, $candidate_name, $template_id)
+{
+	global $auth, $config, $db, $user, $phpbb_root_path, $phpEx, $captcha;
+
+	if(!class_exists('apply_post'))
+	{
+		include($phpbb_root_path . 'includes/bbdkp/apply/dkp_character.' . $phpEx);
+	}
+	$apply_post = new apply_post();
+	$candidate = new dkp_character();
+	$candidate->name =  $candidate_name;
+
+	$sql = "SELECT * from " . APPTEMPLATELIST_TABLE . " WHERE template_id  = " . $template_id;
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+	if(isset($row))
+	{
+		$apply_post->questioncolor = $row['question_color'];
+		$apply_post->answercolor = $row['answer_color'];
+		$apply_post->gchoice = $row['gchoice'];
+		$apply_post->candidate_guild_id = $row['guild_id'];
+	}
+
+	build_candidate($candidate, $apply_post);
+
+	// if user belongs to group that can add a character then attempt to register a dkp character
+	// guests should never be able to register characters (i.e user anonymous)
+	if($auth->acl_get('u_dkp_charadd') )
+	{
+		register_bbdkp($candidate);
+	}
+
+	// build post
+	$apply_post->message = '';
+
+	// load formatted questions and answers, max 100 lol
+	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id .'  ORDER BY qorder' ;
+	$result = $db->sql_query_limit($sql, 100, 0);
+
+	while ( $row = $db->sql_fetchrow($result) )
+	{
+		switch ($row['type'])
+		{
+			case 'charname':
+				if(isset($_POST['candidate_name']) )
+				{
+					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]: ';
+					if($candidate->class_color_exists)
+					{
+						$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
+					}
+					else
+					{
+						$apply_post->message .= '[b]' . $candidate->name  . '[/b]' ;
+					}
+					$apply_post->message .= '<br />';
+				}
+				break;
+			case 'gameraceclass':
+				if(isset($_POST['game_id']))
+				{
+					//race
+					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color]: ';
+					if($candidate->race_image_exists )
+					{
+						$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
+					}
+					if($candidate->class_color_exists)
+					{
+						$apply_post->message .= ' [color='. $apply_post->questioncolor .']' . $candidate->race . '[/color]' ;
+					}
+					else
+					{
+						$apply_post->message .= $candidate->race;
+					}
+					$apply_post->message .= '<br />';
+					// class
+					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color]: ';
+					if($candidate->class_image_exists )
+					{
+						$apply_post->message .= '[img]' .$candidate->class_image  . '[/img] ';
+					}
+						
+					if($candidate->class_color_exists)
+					{
+						$apply_post->message .= ' [color='. $candidate->class_color .']' . $candidate->class . '[/color]' ;
+					}
+					else
+					{
+						$apply_post->message .= $candidate->class;
+					}
+						
+					$apply_post->message .= '<br />';
+				}
+				break;
+
+			case 'regionrealm':
+				if(isset($_POST['candidate_realm']))
+				{
+					//Realm
+					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_ACP_REALM'] . '[/color]: ' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
+					$apply_post->message .= '<br />';
+				}
+				break;
+
+			case 'level':
+				if(isset($_POST['candidate_level']))
+				{
+					// level
+					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]: ' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
+					$apply_post->message .= '<br />';
+				}
+				break;
+			case 'gender':
+					
+				break;
+			case 'title':
+				$apply_post->message .= '<br/>[size=150][b]' . $row['header'] . ' [/b][/size]<br/>';
+				break;
+			case 'Checkboxes':
+				if(isset($_POST['templatefield_' . $row['qorder']]) )
+				{
+					$apply_post->message .= '[size=100][color='. $apply_post->questioncolor .'][b]' . $row['header'] . ': [/b][/color][/size]';
+					$cb_countis = count( request_var('templatefield_' . $row['qorder'], array(0 => 0)) );
+					$cb_count = 0;
+
+					if((int) $row['showquestion'] == 1)
+					{
+						$apply_post->message .= '[size=100][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
+						$apply_post->message .= '<br />';
+					}
+
+					$checkboxes = utf8_normalize_nfc( request_var('templatefield_' . $row['qorder'], array(0 => '') , true));
+					foreach($checkboxes as $value)
+					{
+						$apply_post->message .= $value;
+						if ($cb_count < $cb_countis-1)
+						{
+							$apply_post->message .= ',  ';
+						}
+						$cb_count++;
+					}
+					$apply_post->message .= '<br /><br />';
+				}
+				break;
+			case 'Inputbox':
+			case 'Textbox':
+			case 'Textboxbbcode':
+			case 'Selectbox':
+			case 'Radiobuttons':
+				if(isset($_POST['templatefield_' . $row['qorder']]) )
+				{
+					$fieldcontents = utf8_normalize_nfc(request_var('templatefield_' . $row['qorder'], ' ', true));
+					if((int) $row['showquestion'] == 1)
+					{
+						$apply_post->message .= '[size=100][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
+						$apply_post->message .= '<br />';
+					}
+					$apply_post->message .=	$fieldcontents;
+					$apply_post->message .= '<br /><br />';
+				}
+				break;
+
+
+		}
+	}
+	$db->sql_freeresult($result);
+
+	// variables to hold the parameters for submit_post
+	$poll = $uid = $bitfield = $options = '';
+	// parsed code
+	generate_text_for_storage($apply_post->message, $uid, $bitfield, $options, true, true, true);
+
+	// subject & username
+
+	//$post_data['post_subject'] = utf8_normalize_nfc(request_var('headline', $user->data['username'], true));
+	$post_subj	= (string) $candidate->name . " - " . $candidate->level . " " . $candidate->race . " ". $candidate->class;
+
+	// Store message, sync counters
+
+	$data = array(
+			'forum_id'			=> (int) $post_data['forum_id'],
+			'topic_first_post_id'	=> 0,
+			'topic_last_post_id'	=> 0,
+			'topic_attachment'		=> 0,
+			'icon_id'			=> false,
+			'enable_bbcode'		=> true,
+			'enable_smilies'	=> true,
+			'enable_urls'		=> true,
+			'enable_sig'		=> true,
+			'message'			=> $apply_post->message,
+			'message_md5'		=> md5($apply_post->message),
+			'bbcode_bitfield'	=> $bitfield,
+			'bbcode_uid'		=> $uid,
+			'post_edit_locked'	=> 0,
+			'topic_title'		=> $post_subj,
+			'notify_set'		=> false,
+			'notify'			=> false,
+			'post_time' 		=> $current_time,
+			'poster_ip'			=> $user->ip,
+			'forum_name'		=> '',
+			'post_edit_locked'	=> 1,
+			'enable_indexing'	=> true,
+			'post_approved'        => 1,
+	);
+
+
+	//submit post
+	$post_url = submit_post('post', $post_subj, $user->data['username'], POST_NORMAL, $poll, $data);
+
+	$redirect_url = $post_url;
+		
+	if ($config['enable_post_confirm'] && (isset($captcha) && $captcha->is_solved() === true))
+	{
+		$captcha->reset();
+	}
+
+	//redirect to post
+	meta_refresh(3, $redirect_url);
+
+	$message = 'POST_STORED';
+	$message = $user->lang[$message] . '<br /><br />' . sprintf($user->lang['VIEW_MESSAGE'], '<a href="' . $redirect_url . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $data['forum_id']) . '">', '</a>');
+	trigger_error($message);
+
 }
 
 /**
