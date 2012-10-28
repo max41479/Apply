@@ -835,15 +835,31 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 			case 'charname':
 				if(isset($_POST['candidate_name']) )
 				{
+					if ($candidate->game =='wow')
+					{
+						//display portrait image
+						$apply_post->message .= '[url=' . $candidate->url  . '][img]'. $candidate->portraitimg .'[/img][/url] 
+';
+					}
+					
 					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]: ';
 					if($candidate->class_color_exists)
 					{
-						$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
+						if ($candidate->game =='wow')
+						{
+							$apply_post->message .= '[b][color='. $candidate->class_color .'][url=' . $candidate->url  . ']' . $candidate->name . '[/url][/color][/b]' ;
+						}
+						else
+						{
+							$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
+						}
+						
 					}
 					else
 					{
 						$apply_post->message .= '[b]' . $candidate->name  . '[/b]' ;
 					}
+					
 					$apply_post->message .= '<br />';
 				}
 				break;
@@ -906,8 +922,12 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 					
 				break;
 			case 'title':
-				$apply_post->message .= '<br/>[size=150][b]' . $row['header'] . ' [/b][/size]<br/>';
+				$apply_post->message .= '
+[color=#00CC55][size=200][b]' . strtoupper($row['header']) . ' [/b][/size][/color]
+
+';
 				break;
+				
 			case 'Checkboxes':
 				if(isset($_POST['templatefield_' . $row['qorder']]) )
 				{
@@ -931,7 +951,9 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 						}
 						$cb_count++;
 					}
-					$apply_post->message .= '<br /><br />';
+					$apply_post->message .= '
+							
+							';
 				}
 				break;
 			case 'Inputbox':
