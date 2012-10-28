@@ -77,7 +77,7 @@ $lang = array_merge($lang, array(
 'APPLY_RACE'  => 'Race',
 'APPLY_TALENT'  => 'Talent',
 'APPLY_PROFF'  =>  'Profession',
-'APPLY_GENDER'  =>  'Sex',
+'APPLY_GENDER'  =>  'Gender',
 'EU'  =>  'Europe',
 'US'  =>  'America',
 'KR'  =>  'Korea',
@@ -92,7 +92,7 @@ $lang = array_merge($lang, array(
 'APPLY_INFO' => '[size=150]Welcome and thank you for choosing us as a possible home for your character. 
 To help us with your application please answer the questions below. Enter your character name exactly as it appears in the armory. [/size] ',
 'APPLY_PUBLICQUESTION' => 'Visible Application ?', 
-'APPLY_REQUIRED'  => 'You need to fill in all required fields. ', 
+'APPLY_REQUIRED'  => 'You need to fill in : %s', 
 'MANDATORY'	=> '*',	
 'APPLY_QUESTION'  => 'Question ',
 'APPLY_ANSWER'  => 'Answer ',
@@ -192,7 +192,7 @@ To help us with your application please answer the questions below. Enter your c
 'DEFAULT_O8' => 'monday,tuesday,wednesday,thursday,friday,saturday,sunday',  
 'DEFAULT_O11' => 'yes,no',  
 
-
+'MEMBER_COMMENT' => 'Candidate'
 ));
 
 ?>

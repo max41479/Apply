@@ -365,7 +365,7 @@ define('APPTEMPLATELIST_TABLE',			$table_prefix . 'bbdkp_apptemplatelist');
 				<comment lang="de"><![CDATA[weiterleitung zum fragebogen]]></comment>
 				<find><![CDATA[$error = $post_data = array();]]></find>
 				<action type="before-add"><![CDATA[//apply
-if($submit==true && $mode !='edit')
+if($mode =='post')
 {
 	$result = $db->sql_query ( 'SELECT * FROM ' . APPTEMPLATELIST_TABLE . ' ORDER BY template_id');
 	while ( $row = $db->sql_fetchrow ( $result ) )

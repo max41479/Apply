@@ -95,21 +95,60 @@ if ($submit)
 	$result = $db->sql_query_limit($sql, 100, 1);
 	while ( $row = $db->sql_fetchrow($result))
 	{
-		if ($row['type']=='Checkboxes')
-		{
-			if ( request_var('templatefield_' .$row['qorder'],  array('' => '')) == '') 
-			{
-				$error[] = $user->lang['APPLY_REQUIRED'];
-			}
-		}
-		else 
-		{
-			if ( request_var('templatefield_' . $row['qorder'], '') == '') 
-			{
-				// return user to index
-				$error[] = $user->lang['APPLY_REQUIRED'];
-			}
-		
+		switch($row['type'])
+		{	
+			case 'Checkboxes':
+				if ( request_var('templatefield_' .$row['qorder'],  array('' => '')) == '') 
+				{
+					$error[] = sprintf($user->lang['APPLY_REQUIRED'],  $row['header']);
+				}
+				break;
+			case 'gameraceclass':
+				if (request_var('game_id', '') == '') 
+				{
+					$error[] = sprintf($user->lang['APPLY_REQUIRED'],  $user->lang['APPLY_GAME']);
+				}
+				if (request_var('candidate_race_id', '') == '') 
+				{
+					$error[] = sprintf($user->lang['APPLY_REQUIRED'],  $user->lang['APPLY_RACE']);
+				}
+				if (request_var('candidate_class_id', '') == '') 
+				{
+					$error[] = sprintf($user->lang['APPLY_REQUIRED'],  $user->lang['APPLY_CLASS']);
+				}
+				break;
+			case 'charname':
+				if (request_var('candidate_name', '') == '') 
+				{
+					$error[] = sprintf($user->lang['APPLY_REQUIRED'],  $user->lang['APPLY_NAME']);
+				}
+				break;
+			case 'level':
+				if (request_var('candidate_level', '') == '') 
+				{
+					$error[] = sprintf($user->lang['APPLY_REQUIRED'],  $user->lang['APPLY_LEVEL']);
+				}
+				break;
+			case 'regionrealm':
+				if (request_var('candidate_realm', '') == '') 
+				{
+					$error[] = sprintf($user->lang['APPLY_REQUIRED'],  $user->lang['APPLY_REGION']);
+				}
+				break;
+			case 'gender':
+				if (request_var('candidate_gender', 0) == '')
+				{
+					$error[] = sprintf($user->lang['APPLY_REQUIRED'],  $user->lang['APPLY_GENDER']);
+				}				
+				break;
+			default:
+				if ( request_var('templatefield_' . $row['qorder'], '') == '') 
+				{
+					// return user to index
+					$error[] = sprintf($user->lang['APPLY_REQUIRED'],  $row['header']);
+				}
+				break;
+			
 		}
 		
 	}
@@ -568,7 +607,7 @@ function register_bbdkp(dkp_character $candidate)
 	$db->sql_freeresult($result);
 	if ($countc >= $config['bbdkp_maxchars'])
 	{
-		//do nothing
+		//do not register this new alt...
 		return;
 	}
 
@@ -581,11 +620,12 @@ function register_bbdkp(dkp_character $candidate)
 	$db->sql_freeresult($result);
 	if ($countm != 0)
 	{
-		// give a nice alert and stop right here.
-		trigger_error($user->lang['ERROR_MEMBEREXIST'], E_USER_WARNING);
+		// don't add it to the roster
+		
+		// no alert
+		//trigger_error($user->lang['ERROR_MEMBEREXIST'], E_USER_WARNING);
+		return;
 	}
-
-	$member_comment = 'candidate';
 
 	// add the char
 	if (! class_exists ( 'acp_dkp_mm' ))
@@ -594,6 +634,9 @@ function register_bbdkp(dkp_character $candidate)
 	}
 	$acp_dkp_mm = new acp_dkp_mm ( );
 
+	$boardtime = getdate(time() + $user->timezone + $user->dst - date('Z'));
+	$jointime = $boardtime[0];
+	
 	$member_id = $acp_dkp_mm->insertnewmember(
 			$candidate->name,
 		 1,
@@ -601,10 +644,10 @@ function register_bbdkp(dkp_character $candidate)
 			$candidate->raceid,
 			$candidate->classid,
 			$candidate->guildrank,
-			$member_comment,
-			time(),
+			$user->lang['MEMBER_COMMENT'],
+			$jointime,
 			0,
-			$candidate->guild,
+			$candidate->guild_id,
 			$candidate->genderid,
 			0,
 			' ',
