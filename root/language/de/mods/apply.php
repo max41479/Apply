@@ -42,40 +42,10 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 
-/***** Questionnaire ******/
-'APPLY_MENU' => 'Bewerbungen',
-'APPLY_TITLE' => 'Bewerbungs-Formular',
-'APPLY_INFO' => '[size=150]Willkommen und schön, dass du dich entschieden hast, bei uns ein neues zu Hause für deinen Charakter zu suchen. 
-Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gib deinen Charakternamen exakt an.[/size]  ',
-'APPLY_PUBLICQUESTION' => 'Öffentliche Bewerbung ?', 
-'APPLY_REQUIRED'  => 'Du musst alle Pflichtfelder ausfüllen. ', 
-'MANDATORY'	=> 'Pflichtfeld',	
-'APPLY_REALM' => 'Server (leer für ',
-'APPLY_NAME' => ' Charaktername: ',
-'APPLY_QUESTION'  => 'Frage ',
-'APPLY_ANSWER'  => 'Antwort ',
-'APPLY_REALM1' => 'Server: ',
-'APPLY_LEVEL'  => 'Level: ',
-'APPLY_CLASS'  => 'Klasse: ',
-'APPLY_RACE'  => 'Rasse: ',
-'APPLY_TALENT'  => 'Talente: ',
-'APPLY_PROFF'  =>  'Berufe: ',
-'TEMPLATE'	=> 'Schablone', 
-'CONFIRM_DELETE_TEMPLATE'	=> 'Bitte bestätige die Löschung von Schablone %s. ', 
-'ALERT_TEMPLATENAME_EMPTY'	=> 'Name der Vorlage kann nicht leer sein',
-
-/***** ACP Armory settings *****/
-'APPLY_ACP_TEMPLATESETTING'	=> 'Formular Einstellungen',
+/***** ACP template settings *****/
 'APPLY_WELCOME'			=> 'Einladungstext',
 'APPLY_WELCOME_EXPLAIN'		=> 'BBcodes werden unterstützt. ',
-'APPLY_ACP_CHARNAME' 		=> 'Charaktername',
-'APPLY_ACP_REALM' 		=> 'Server',
-'APPLY_ACP_REGION' 			=> 'Region',
-'APPLY_ACP_APPTEMPLATEUPD'	=> 'Aktualisiere Bewerbungsbogen',
-'APPLY_ACP_APPTEMPLATELIST_EXPLAIN'	=> 'Die Vorlage ID wird benötigt als Parameter für apply.php : zb Schablone id 7 wird aufgerufen bei url http://www.myguild.org/apply.php?template_id=7; mache zoviel Schnittstellen wie du Vorlagen angemacht hast. ',
-'TEMPLATE_ID'				=> 'Template ID', 
 
-/***** ACP template settings *****/
 'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'Entscheidet in welches Forum die Bewerbung geschrieben wird.',
 'APPLY_ACP_FORUM_PUB'		=> 'Bewerbungs Forum (öffentlich) ',
 'APPLY_ACP_PUBLIC'			=> 'öffentlich',
@@ -88,6 +58,42 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'ACP_APPLY_WHATGUILD_EXPLAIN' => 'Bewerber bekommt den niedrigsten Rank falls er zur Gilde hinzugefügt wird.',
 'ACP_APPLY_GNONE'  			 => 'zu Keine hinzufügen',
 'ACP_APPLY_GSEL'  			 => 'zu ausgewählte Gilde hinzufügen',
+
+/***** ACP Armory settings *****/
+'APPLY_ACP_TEMPLATESETTING'	=> 'Formular Einstellungen',
+'APPLY_ACP_CHARNAME' 		=> 'Charaktername',
+'APPLY_ACP_REALM' 		=> 'Server',
+'APPLY_ACP_REGION' 			=> 'Region',
+'APPLY_ACP_APPTEMPLATEUPD'	=> 'Aktualisiere Bewerbungsbogen',
+'APPLY_ACP_APPTEMPLATELIST_EXPLAIN'	=> 'Die Vorlage ID wird benötigt als Parameter für apply.php : zb Schablone id 7 wird aufgerufen bei url http://www.myguild.org/apply.php?template_id=7; mache zoviel Schnittstellen wie du Vorlagen angemacht hast. ',
+'TEMPLATE_ID'				=> 'Template ID',
+/***** ACP charsettings *****/
+'APPLY_REALM1' => 'Server: ',
+'APPLY_LEVEL'  => 'Level: ',
+'APPLY_CLASS'  => 'Klasse: ',
+'APPLY_RACE'  => 'Rasse: ',
+'APPLY_TALENT'  => 'Talente: ',
+'APPLY_PROFF'  =>  'Berufe: ', 
+
+
+/***** Questionnaire ******/
+'APPLY_MENU' => 'Bewerbungen',
+'APPLY_TITLE' => 'Bewerbungs-Formular',
+'APPLY_INFO' => '[size=150]Willkommen und schön, dass du dich entschieden hast, bei uns ein neues zu Hause für deinen Charakter zu suchen. 
+Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gib deinen Charakternamen exakt an.[/size]  ',
+'APPLY_PUBLICQUESTION' => 'Öffentliche Bewerbung ?', 
+'APPLY_REQUIRED'  => 'Du musst alle Pflichtfelder ausfüllen. ', 
+'MANDATORY'	=> 'Pflichtfeld',	
+'APPLY_REALM' => 'Server (leer für ',
+'APPLY_NAME' => ' Charaktername: ',
+'APPLY_QUESTION'  => 'Frage ',
+'APPLY_ANSWER'  => 'Antwort ',
+
+
+'TEMPLATE'	=> 'Schablone', 
+'CONFIRM_DELETE_TEMPLATE'	=> 'Bitte bestätige die Löschung von Schablone %s. ', 
+'ALERT_TEMPLATENAME_EMPTY'	=> 'Name der Vorlage kann nicht leer sein',
+
 'ACP_DKP_APPLY_EXPLAIN'  	=> 'Hier kannst du alle Einstellungen zum Bewerbungsformular vornehmen.',
 'APPLY_ACP_APPTEMPLATENEW'  => 'Bewerbungsvorlage für neue Frage', 
 'APPLY_CHGMAND' 			=> 'Ändere bestehende Fragen hier. ',
@@ -149,6 +155,7 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'UMIL_CACHECLEARED' => 'Template, Theme, Imageset Caches geleert', 
 'APPLY'		=> 'Bewerbe', 
 'ERROR_MINIMUM133' => 'Minimum Version benötigt ist 1.3.3',
+
 'DEFAULT_Q1' => 'Kannst du uns etwas über dich erzählen ?', 
 'DEFAULT_Q2' => 'Bitte nenne deine Alts.', 
 'DEFAULT_Q3' => 'Grund zum verlassen deiner vorherige Gilde ?', 
@@ -160,6 +167,7 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'DEFAULT_Q9' => 'Bist du enverstanden mit folgende Raidzeiten 19:30 bis 23:00 Serverzeit (UTC+1) ?', 
 'DEFAULT_Q10' => 'Ist es gut genug für ein hohes FPS ? Nenne den Spec' , 
 'DEFAULT_Q11' => 'Bist du mehrjärig ? Kreuz Ja oder Nein an.', 
+
 'DEFAULT_H1' => 'Informationen zur Person',  
 'DEFAULT_H2' => 'Alts',  
 'DEFAULT_H3' => 'Gildenhistorie',  
@@ -174,7 +182,7 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'DEFAULT_O8' => 'montag,dienstag,mittwoch,donnerstag,freitag,samstag,sonntag',  
 'DEFAULT_O11' => 'ja,nein',  
 
-
+'MEMBER_COMMENT' => 'Kandidat'
 ));
 
 ?>

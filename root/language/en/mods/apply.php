@@ -179,6 +179,7 @@ To help us with your application please answer the questions below. Enter your c
 'DEFAULT_Q11' => 'Are you underage ? Check yes or no', 
 
 'DEFAULT_H1' => 'Motivation',  
+'DEFAULT_H10' => 'Personal Information', 
 'DEFAULT_H2' => 'Build, Glyphs, Gear',  
 'DEFAULT_H3' => 'Raiding Experience',  
 'DEFAULT_H4' => 'Guild history',  
@@ -187,7 +188,7 @@ To help us with your application please answer the questions below. Enter your c
 'DEFAULT_H7' => 'Raiding Schedule',  
 'DEFAULT_H8' => 'Raid times',  
 'DEFAULT_H9' => 'Computer Specifications',  
-'DEFAULT_H10' => 'Personal Information',  
+ 
 'DEFAULT_H11' => 'Age',  
 'DEFAULT_O8' => 'monday,tuesday,wednesday,thursday,friday,saturday,sunday',  
 'DEFAULT_O11' => 'yes,no',  
