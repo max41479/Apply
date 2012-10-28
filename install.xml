@@ -79,7 +79,8 @@
 				<changelog lang="en">
 					<change><![CDATA[[fix] fix issue with multiple templates]]></change>
 					<change><![CDATA[[fix] fix issue with blank installer german]]></change>
-					<change><![CDATA[[new] posting redirection to apply]]></change>					
+					<change><![CDATA[[new] posting redirection to apply]]></change>
+					<change><![CDATA[[new] removed hardcoded character template, added new template elements for character, game, race, class, gender, realm, region, title]]></change>		
 				</changelog>
 			</entry>	
 			<entry>
@@ -353,7 +354,6 @@
 				<action type="after-add"><![CDATA[define('APPTEMPLATE_TABLE',			$table_prefix . 'bbdkp_apptemplate');
 define('APPHEADER_TABLE',			$table_prefix . 'bbdkp_apphdr');
 define('APPTEMPLATELIST_TABLE',			$table_prefix . 'bbdkp_apptemplatelist');
-define('CHARTEMPLATE_TABLE',			$table_prefix . 'bbdkp_chartemplate');
 	]]></action>
 			</edit>
 		</open>
