@@ -392,7 +392,8 @@ $versions = array(
 		'config_remove' => array(
 				array('bbdkp_apply_pacolor'),
 				array('bbdkp_apply_pqcolor'), 
-				array('bbdkp_apply_fqcolor'), 
+				array('bbdkp_apply_fqcolor'),
+				array('bbdkp_apply_region'),
 		),
 		
 		'custom' => array( 'tableupd', 'applyupdater', 'bbdkp_caches'),

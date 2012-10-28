@@ -174,102 +174,6 @@ if ($submit)
 
 fill_application_form($form_key, $post_data, $submit, $error, $captcha, $template_id);
 
-/**
- * makes a candidate object
- * 
- * @param dkp_character $candidate
- */
-function build_candidate(dkp_character &$candidate, apply_post &$apply_post )
-{
-	global $config, $db, $user;
-	
-	$board_url = generate_board_url() . '/';
-	
-	switch ($apply_post->gchoice)
-	{
-		case '1':
-			//get the lowest rank (in WoW rank 8 is lowest)
-			$sql = "SELECT max(rank_id) as rank_id from " . MEMBER_RANKS_TABLE . " WHERE rank_id < 90 and guild_id = " . $apply_post->candidate_guild_id;
-			$result = $db->sql_query($sql);
-			$candidate->guildrank = max((int) $db->sql_fetchfield('rank_id'), 0);
-			$candidate->guild_id = $apply_post->candidate_guild_id;
-			$db->sql_freeresult($result);
-			break;
-		default:
-			// don't add char to guild roster but insert anyways
-			$candidate->guild_id = 0;
-			$candidate->guildrank = 99;
-			break;
-	}
-	
-	$candidate->realm = trim(utf8_normalize_nfc(request_var('candidate_realm', $config['bbdkp_apply_realm'], true)));
-	$candidate->level = utf8_normalize_nfc(request_var('candidate_level', ' ', true));
-	$candidate->game = request_var('game_id', '');
-	$candidate->genderid = request_var('candidate_gender', 0);
-	$candidate->raceid = request_var('candidate_race_id', 0);
-	
-	//character class
-	$sql_array = array(
-			'SELECT'	=>	' r.race_id, r.image_female, r.image_male, l.name as race_name ',
-			'FROM'		=> array(
-					RACE_TABLE		=> 'r',
-					BB_LANGUAGE		=> 'l',
-			),
-			'WHERE'		=> " l.game_id = r.game_id 
-							AND r.race_id = '". $candidate->raceid ."' 
-							AND r.game_id = '" . $candidate->game . "'
-							AND l.attribute_id = r.race_id  
-							AND l.language= '" . $config['bbdkp_lang'] . "' 
-							AND l.attribute = 'race' ",
-	);
-	
-	$sql = $db->sql_build_query('SELECT', $sql_array);
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-	if(isset($row))
-	{
-		$candidate->race = $row['race_name'];
-		$candidate->race_image = (string) (($candidate->genderid == 0) ? $row['image_male'] : $row['image_female']);
-		$candidate->race_image = (strlen($candidate->race_image) > 1) ? $board_url . "images/race_images/" . $candidate->race_image . ".png" : '';
-		$candidate->race_image_exists = (strlen($candidate->race_image) > 1) ? true : false;
-	}
-	unset($row);
-	$db->sql_freeresult($result);
-	
-	$candidate->classid = request_var('candidate_class_id', 0);
-	
-	//character class
-	$sql_array = array(
-			'SELECT'	=>	' c.class_armor_type AS armor_type , c.colorcode, c.imagename,  c.class_id, l.name as class_name ',
-			'FROM'		=> array(
-					CLASS_TABLE		=> 'c',
-					BB_LANGUAGE		=> 'l',
-			),
-			'WHERE'		=> " l.game_id = c.game_id 
-							AND c.class_id = '". $candidate->classid ."' 
-							AND c.game_id = '" . $candidate->game . "'
-							AND l.attribute_id = c.class_id  
-							AND l.language= '" . $config['bbdkp_lang'] . "' 
-							AND l.attribute = 'class' ",
-	);
-	
-	$sql = $db->sql_build_query('SELECT', $sql_array);
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-	if(isset($row))
-	{
-		$candidate->class =	$row['class_name'];
-		$candidate->class_color =  (strlen($row['colorcode']) > 1) ? $row['colorcode'] : '';
-		$candidate->class_color_exists =  (strlen($row['colorcode']) > 1) ?  true : false;
-		$candidate->class_image = 	strlen($row['imagename']) > 1 ? $board_url . "images/class_images/" . $row['imagename'] . ".png" : '';
-		$candidate->class_image_exists =    (strlen($row['imagename']) > 1) ? true : false;
-	}
-	
-	unset($row);
-	$db->sql_freeresult($result);
-	
-}
-
 
 /**
  *  build Application form 
@@ -590,6 +494,226 @@ function check_apply_form_access($template_id)
 
 
 /**
+ * makes a candidate object
+ *
+ * @param dkp_character $candidate
+ */
+function build_candidate(dkp_character &$candidate, apply_post &$apply_post )
+{
+	global $config, $db, $user, $phpbb_root_path, $phpEx; 
+
+	$board_url = generate_board_url() . '/';
+	
+	switch ($apply_post->gchoice)
+	{
+		case '1':
+			//get the lowest rank (in WoW rank 8 is lowest)
+			$sql = "SELECT max(rank_id) as rank_id from " . MEMBER_RANKS_TABLE . " WHERE rank_id < 90 and guild_id = " . $apply_post->candidate_guild_id;
+			$result = $db->sql_query($sql);
+			$candidate->guildrank = max((int) $db->sql_fetchfield('rank_id'), 0);
+			$candidate->guild_id = $apply_post->candidate_guild_id;
+			$db->sql_freeresult($result);
+			break;
+		default:
+			// don't add char to guild roster but insert anyways
+			$candidate->guild_id = 0;
+			$candidate->guildrank = 99;
+			break;
+	}
+
+	$candidate->realm = trim(utf8_normalize_nfc(request_var('candidate_realm', $config['bbdkp_apply_realm'], true)));
+	$candidate->level = utf8_normalize_nfc(request_var('candidate_level', ' ', true));
+	$candidate->game = request_var('game_id', '');
+	$candidate->genderid = request_var('candidate_gender', 0);
+	$candidate->raceid = request_var('candidate_race_id', 0);
+	$candidate->classid = request_var('candidate_class_id', 0);
+	
+	/**
+	 * call Blizzard API if it is a wow char
+	 * complete missing fields in candidate object
+	 * use info later for insert in db & post
+	 */
+	if($candidate->game =='wow')
+	{
+		$regions = array(
+				'US' => 'us',
+				'us' => 'us',
+				'EU' => 'eu',
+				'en' => 'eu',
+				'kr' => 'kr',
+				'tw' => 'kr',
+				'sea' => 'sea'
+		);
+		
+		$candidate->region = $regions[$config['bbdkp_default_region']]; 
+		
+		// try to call Blizzard armory
+		//Initialising the class
+		if (!class_exists('WowAPI'))
+		{
+			require($phpbb_root_path . 'includes/bbdkp/wowapi/WowAPI.' . $phpEx);
+		}
+		// initialise the character api class
+		$api = new WowAPI('character', $candidate->region);
+		// available extra fields :
+		// 'guild','stats','talents','items','reputation','titles','professions','appearance',
+		// 'companions','mounts','pets','achievements','progression','pvp','quests'
+		$params = array('guild', 'stats', 'professions');
+	
+		///$params = array('guild','stats','talents','items','reputation','titles','professions');
+		$blizzard = $api->Character->getCharacter($candidate->name, $candidate->realm, $params);
+		$blizzarderror = 0;
+	
+		if(!is_array($blizzard))
+		{
+			$blizzarderror += 1;
+		}
+			
+		if(count($blizzard) == 0)
+		{
+			$blizzarderror += 1;
+		}
+			
+		// check if character status is 'Character not found'
+		if( array_key_exists('status', $blizzard))
+		{
+			$blizzarderror += 1;
+		}
+		
+		if($blizzarderror  == 0)
+		{
+			
+			$candidate->classid=$blizzard['class'];
+			$candidate->level=$blizzard['level'];
+			$candidate->raceid = $blizzard['race'];
+			$candidate->genderid = $blizzard['gender'];
+			$candidate->achievements =$blizzard['achievementPoints']; 
+			//example  http://eu.battle.net/static-render/eu/argent-dawn/232/56689128-avatar.jpg?alt=/wow/static/images/2d/avatar/1-0.jpg
+			$candidate->portraitimg = sprintf('http://%s.battle.net/static-render/%s/%s', $candidate->region, $candidate->region, $blizzard['thumbnail']);
+			$candidate->guild = $blizzard['guild']['name'] . '@' . $blizzard['guild']['realm'];
+			$candidate->url = sprintf('http://%s.battle.net/wow/en/', $candidate->region) . 'character/' . $candidate->realm. '/' .$candidate->name . '/simple';
+			
+			$candidate->health= $blizzard['stats']['health'];
+			$candidate->powerType= $blizzard['stats']['powerType'];
+			$candidate->power=$blizzard['stats']['power'];
+			$candidate->str=$blizzard['stats']['str'];
+			$candidate->agi=$blizzard['stats']['agi'];
+			$candidate->sta	=$blizzard['stats']['sta'];
+			$candidate->int	=$blizzard['stats']['int'];
+			$candidate->spr	=$blizzard['stats']['spr'];
+			$candidate->attackPower	=$blizzard['stats']['attackPower'];
+			$candidate->rangedAttackPower=$blizzard['stats']['rangedAttackPower'];
+			$candidate->mastery	=$blizzard['stats']['mastery'];
+			$candidate->masteryRating	=$blizzard['stats']['masteryRating'];
+			$candidate->crit=$blizzard['stats']['crit'];
+			$candidate->critRating	=$blizzard['stats']['critRating'];
+			$candidate->hitPercent	=$blizzard['stats']['hitPercent'];
+			$candidate->hitRating	=$blizzard['stats']['hitRating'];
+			$candidate->hasteRating	=$blizzard['stats']['hasteRating'];
+			$candidate->expertiseRating	=$blizzard['stats']['expertiseRating'];
+			$candidate->spellPower	=$blizzard['stats']['spellPower'];
+			$candidate->spellPen	=$blizzard['stats']['spellPen'];
+			$candidate->spellCrit	=$blizzard['stats']['spellCrit'];
+			$candidate->spellCritRating	=$blizzard['stats']['spellCritRating'];
+			$candidate->spellHitPercent	=$blizzard['stats']['spellHitPercent'];
+			$candidate->spellHitRating	=$blizzard['stats']['spellHitRating'];
+			$candidate->mana5=$blizzard['stats']['mana5'];
+			$candidate->mana5Combat=$blizzard['stats']['mana5Combat'];
+			$candidate->armor	=$blizzard['stats']['armor'];
+			$candidate->dodge	=$blizzard['stats']['dodge'];
+			$candidate->dodgeRating	=$blizzard['stats']['dodgeRating'];
+			$candidate->parry=$blizzard['stats']['parry'];
+			$candidate->parryRating	=$blizzard['stats']['parryRating'];
+			$candidate->block	=$blizzard['stats']['block'];
+			$candidate->blockRating	=$blizzard['stats']['blockRating'];
+			$candidate->pvpResilience	=$blizzard['stats']['pvpResilience'];
+			$candidate->pvpResilienceRating	=$blizzard['stats']['pvpResilienceRating'];
+			$candidate->mainHandDmgMin	=$blizzard['stats']['mainHandDmgMin'];
+			$candidate->mainHandDmgMax	=$blizzard['stats']['mainHandDmgMax'];
+			$candidate->mainHandSpeed	=$blizzard['stats']['mainHandSpeed'];
+			$candidate->mainHandDps	=$blizzard['stats']['mainHandDps'];
+			$candidate->mainHandExpertise	=$blizzard['stats']['mainHandExpertise'];
+			$candidate->offHandDmgMin	=$blizzard['stats']['offHandDmgMin'];
+			$candidate->offHandDmgMax	=$blizzard['stats']['offHandDmgMax'];
+			$candidate->offHandSpeed	=$blizzard['stats']['offHandSpeed'];
+			$candidate->offHandDps	=$blizzard['stats']['offHandDps'];
+			$candidate->offHandExpertise	=$blizzard['stats']['offHandExpertise'];
+			$candidate->rangedDmgMin=$blizzard['stats']['rangedDmgMin'];
+			$candidate->rangedDmgMax	=$blizzard['stats']['rangedDmgMax'];
+			$candidate->rangedSpeed	=$blizzard['stats']['rangedSpeed'];
+			$candidate->rangedDps	=$blizzard['stats']['rangedDps'];
+			$candidate->rangedExpertise	=$blizzard['stats']['rangedExpertise'];
+			$candidate->rangedCrit	=$blizzard['stats']['rangedCrit'];
+			$candidate->rangedCritRating =$blizzard['stats']['rangedCritRating'];
+			$candidate->rangedHitPercent=$blizzard['stats']['rangedHitPercent'];
+			$candidate->rangedHitRating	=$blizzard['stats']['rangedHitRating'];
+			$candidate->pvpPower	=$blizzard['stats']['pvpPower'];
+			$candidate->pvpPowerRating	=$blizzard['stats']['pvpPowerRating'];
+		}
+		
+	}
+
+	//character race names...
+	$sql_array = array(
+			'SELECT'	=>	' r.race_id, r.image_female, r.image_male, l.name as race_name ',
+			'FROM'		=> array(
+					RACE_TABLE		=> 'r',
+					BB_LANGUAGE		=> 'l',
+			),
+			'WHERE'		=> " l.game_id = r.game_id
+						AND r.race_id = '". $candidate->raceid ."'
+						AND r.game_id = '" . $candidate->game . "'
+						AND l.attribute_id = r.race_id
+						AND l.language= '" . $config['bbdkp_lang'] . "'
+						AND l.attribute = 'race' ",
+	);
+	
+	$sql = $db->sql_build_query('SELECT', $sql_array);
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+	if(isset($row))
+	{
+		$candidate->race = $row['race_name'];
+		$candidate->race_image = (string) (($candidate->genderid == 0) ? $row['image_male'] : $row['image_female']);
+		$candidate->race_image = (strlen($candidate->race_image) > 1) ? $board_url . "images/race_images/" . $candidate->race_image . ".png" : '';
+		$candidate->race_image_exists = (strlen($candidate->race_image) > 1) ? true : false;
+	}
+	unset($row);
+	$db->sql_freeresult($result);
+	
+	//character class names...
+	$sql_array = array(
+			'SELECT'	=>	' c.class_armor_type AS armor_type , c.colorcode, c.imagename,  c.class_id, l.name as class_name ',
+			'FROM'		=> array(
+					CLASS_TABLE		=> 'c',
+					BB_LANGUAGE		=> 'l',
+			),
+			'WHERE'		=> " l.game_id = c.game_id
+						AND c.class_id = '". $candidate->classid ."'
+						AND c.game_id = '" . $candidate->game . "'
+						AND l.attribute_id = c.class_id
+						AND l.language= '" . $config['bbdkp_lang'] . "'
+						AND l.attribute = 'class' ",
+	);
+	
+	$sql = $db->sql_build_query('SELECT', $sql_array);
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+	if(isset($row))
+	{
+		$candidate->class =	$row['class_name'];
+		$candidate->class_color =  (strlen($row['colorcode']) > 1) ? $row['colorcode'] : '';
+		$candidate->class_color_exists =  (strlen($row['colorcode']) > 1) ?  true : false;
+		$candidate->class_image = 	strlen($row['imagename']) > 1 ? $board_url . "images/class_images/" . $row['imagename'] . ".png" : '';
+		$candidate->class_image_exists =    (strlen($row['imagename']) > 1) ? true : false;
+	}
+	
+	unset($row);
+	$db->sql_freeresult($result);
+
+}
+
+/**
  * registers a bbDKP character
  *
  * @param dkp_character $candidate
@@ -621,7 +745,6 @@ function register_bbdkp(dkp_character $candidate)
 	if ($countm != 0)
 	{
 		// don't add it to the roster
-		
 		// no alert
 		//trigger_error($user->lang['ERROR_MEMBEREXIST'], E_USER_WARNING);
 		return;

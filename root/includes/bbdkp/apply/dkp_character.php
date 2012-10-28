@@ -37,6 +37,7 @@ class dkp_character
 {
 	// character definition
 	public $name ='';
+	public $region = '';
 	public $realm = '';
 	public $ModelViewURL;
 	public $url;
@@ -65,41 +66,67 @@ class dkp_character
 	public $guild = '';
 	public $guild_id = 0;
 	public $guildrank = 0;
-	 
-	public $spellpower = 0; 
-	public $spellhit = 0; 
-	public $firecrit = 0;
-	public $frostcrit = 0; 
-	public $arcanecrit = 0; 
-	public $holycrit = 0; 
-	public $shadowcrit = 0; 
-	public $naturecrit = 0; 
-	public $mrcast = 0; 
-	public $spellhaste = 0; 
 	
-	public $hp = 0; 
-	public $mana = 0; 
-	public $rap = 0; 
-	public $rcr = 0; 
-	public $rhr = 0;  
-	public $rdps = 0; 
-	public $rspeed = 0; 
-	public $map = 0; 
-	public $mcr = 0;
-	public $mhr = 0; 
-	public $mhdps = 0; 
-	public $ohdps = 0; 
-	public $mspeed = 0; 
+	//stats in MOP
 	
-	public $expertise = 0; 
-	public $armor = 0; 
-	public $defense = 0; 
-	public $dodge = 0; 
-	public $parry = 0; 
-	public $block = 0;  
-
-	public $glyphminor;
-	public $glyphmajor;
+	public $health= 0;
+	public $powerType= '';
+	public $power=0;
+	public $str=0;
+	public $agi=0;
+	public $sta	=0;
+	public $int	=0;
+	public $spr	=0;
+	public $attackPower	=0;
+	public $rangedAttackPower=0;
+	public $mastery	=0.0;
+	public $masteryRating	=0;
+	public $crit=0.0;
+	public $critRating	=0;
+	public $hitPercent	=0.0;
+	public $hitRating	=0;
+	public $hasteRating	=0;
+	public $expertiseRating	=0;
+	public $spellPower	=0;
+	public $spellPen	=0;
+	public $spellCrit	=0.0;
+	public $spellCritRating	=0;
+	public $spellHitPercent	=0.0;
+	public $spellHitRating	=0;
+	public $mana5=0.0;
+	public $mana5Combat=0.0;
+	public $armor	=0;
+	public $dodge	=0.0;
+	public $dodgeRating	=0.0;
+	public $parry=0.0;
+	public $parryRating	=0;
+	public $block	=0.0;
+	public $blockRating	=0;
+	public $pvpResilience	=0.0;
+	public $pvpResilienceRating	=0;
+	public $mainHandDmgMin	=0.0;
+	public $mainHandDmgMax	=0.0;
+	public $mainHandSpeed	=0.0;
+	public $mainHandDps	=0.0;
+	public $mainHandExpertise	=0.0;
+	public $offHandDmgMin	=0.0;
+	public $offHandDmgMax	=0.0;
+	public $offHandSpeed	=0.0;
+	public $offHandDps	=0.0;
+	public $offHandExpertise	=0.0;
+	public $rangedDmgMin=0.0;
+	public $rangedDmgMax	=0.0;
+	public $rangedSpeed	=0.0;
+	public $rangedDps	=0.0;
+	public $rangedExpertise	=0.0;
+	public $rangedCrit	=0.0;
+	public $rangedCritRating =0;
+	public $rangedHitPercent=0.0;
+	public $rangedHitRating	=0;
+	public $pvpPower	=0.0;
+	public $pvpPowerRating	=0;
+	
+	//gear	
 	public $item = array();
 	public $achievements;
 	public $gear = array();
@@ -110,7 +137,9 @@ class dkp_character
 	public $ench = array();
 	public $gearNameLink = array();
 	
+	//image
 	public $modeltemplate; 
+	public $portraitimg;
 	
 	
 }

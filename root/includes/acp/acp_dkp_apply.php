@@ -63,12 +63,11 @@ class acp_dkp_apply extends bbDkp_Admin
 		);
 
 		$this->regions = array(
-				'US' => $user->lang ['US'],
-				'EU' => $user->lang ['EU'],
-				'CN' => $user->lang ['CN'],
-				'KR' => $user->lang ['KR'],
-				'TW' => $user->lang ['TW'],
-				'SEA' => $user->lang ['SEA']);
+				'us' => $user->lang ['US'],
+				'en' => $user->lang ['EU'],
+				'kr' => $user->lang ['KR'],
+				'tw' => $user->lang ['TW'],
+				'sea' => $user->lang ['SEA']);
 		
 		// getting guilds
 		$sql_array = array (
