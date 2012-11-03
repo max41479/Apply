@@ -42,6 +42,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 
 /***** ACP template settings *****/
+'ACP_DKP_APPLY_EXPLAIN'  	=> 'Here you can set all preferences of the Recruitment Mod',
 'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'decides in which forum the application will be published. Set up the forum acccess priveleges beforehand.',
 'APPLY_WELCOME'				=> 'Welcome message',
 'APPLY_WELCOME_EXPLAIN'		=> 'Message shown on top of this template. supports bbcodes. ',
@@ -62,9 +63,8 @@ $lang = array_merge($lang, array(
 'TEMPLATE_ID'				=> 'Template ID', 
 'APPLY_ACP_APPTEMPLATELIST' => 'Templates', 
 
-/***** ACP charsettings *****/
+/***** ACP templatelines *****/
 'APPLY_ACP_TEMPLATELINES'  => 'Template lines', 
-'APPLY_CHGCHAR' 			=> 'Change Character questions here. ',
 'APPLY_CHGCHAR_EXPLAIN' 	=> 'Choose between game, region, realm, name, class, race, gender',
 'APPLY_ACP_CHARNAME' 		=> 'Character name',
 'APPLY_ACP_REALM' 			=> 'Region, Realm',
@@ -102,7 +102,8 @@ To help us with your application please answer the questions below. Enter your c
 'ALERT_NOTEMPLATE'	=> 'No Apply template found',
 'ALERT_NOQUESTIONS'	=> 'No questions found for template %s',
 'APPLY_ACP_APPTEMPLATELINES'  => 'Application Template lines',
-'ACP_DKP_APPLY_EXPLAIN'  	=> 'Here you can set all preferences of the Recruitment Mod',
+
+/***** ACP Armory settings *****/
 'APPLY_CHGMAND' 			=> 'Change Questionnaire here. ',
 'APPLY_CHGMAND_EXPLAIN' 	=> 'Change the type mandatory check, question type (h3 Title, Inputbox, Textbox, Textbox with bbcode buttons, selectbox, radiobuttons or checkboxes), Title and question.  <br /> If Selectbox, radiobutton or checkbox, separate the options with a comma "," with no spaces.(ex. 1,2,3,4,5") ',
 'APPLY_ACP_NEWQUESTION' 	=> 'Enter new questions here.',
@@ -179,8 +180,7 @@ To help us with your application please answer the questions below. Enter your c
 'DEFAULT_Q11' => 'Are you underage ? Check yes or no', 
 
 'DEFAULT_H1' => 'Motivation',  
-'DEFAULT_H10' => 'Personal Information', 
-'DEFAULT_H2' => 'Build, Glyphs, Gear',  
+'DEFAULT_H2' => 'Build, and Gear',  
 'DEFAULT_H3' => 'Raiding Experience',  
 'DEFAULT_H4' => 'Guild history',  
 'DEFAULT_H5' => 'Ranks and WOL logs',  
@@ -188,8 +188,9 @@ To help us with your application please answer the questions below. Enter your c
 'DEFAULT_H7' => 'Raiding Schedule',  
 'DEFAULT_H8' => 'Raid times',  
 'DEFAULT_H9' => 'Computer Specifications',  
- 
+'DEFAULT_H11' => 'Person information',  
 'DEFAULT_H11' => 'Age',  
+
 'DEFAULT_O8' => 'monday,tuesday,wednesday,thursday,friday,saturday,sunday',  
 'DEFAULT_O11' => 'yes,no',  
 

@@ -1,7 +1,7 @@
 <?php
 /**
 * language file Application form German
-* @author Sheeper, Sajaki
+* @author Sajaki, Sheeper 
 * @package bbDkp
 * @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
@@ -45,8 +45,11 @@ $lang = array_merge($lang, array(
 /***** ACP template settings *****/
 'APPLY_WELCOME'			=> 'Einladungstext',
 'APPLY_WELCOME_EXPLAIN'		=> 'BBcodes werden unterstützt. ',
-
 'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'Entscheidet in welches Forum die Bewerbung geschrieben wird.',
+'ACP_DKP_APPLY_EXPLAIN'  	=> 'Hier kannst du alle Einstellungen zum Bewerbungsformular vornehmen.',
+'APPLY_ACP_FORUM_PREF_EXPLAIN'		=> 'Entscheidet in welches Forum die Bewerbung geschrieben wird.',
+'APPLY_WELCOME'			=> 'Einladungstext',
+'APPLY_WELCOME_EXPLAIN'		=> 'BBcodes werden unterstützt. ',
 'APPLY_ACP_FORUM_PUB'		=> 'Bewerbungs Forum (öffentlich) ',
 'APPLY_ACP_PUBLIC'			=> 'öffentlich',
 'APPLY_ACP_GUESTPOST' 		=> 'Können Gäste schreiben? :',
@@ -78,6 +81,40 @@ $lang = array_merge($lang, array(
 
 /***** Questionnaire ******/
 'APPLY_MENU' => 'Bewerbungen',
+'ACP_APPLY_QUESTION_SHOW'  		 => '(ankreuzen zum anzeigen)',
+'ACP_APPLY_CONTENTS'  		=> 'Wähle Optionen',
+'ACP_APPLY_GSEL'  			 => 'zu ausgewählte Gilde hinzufügen',
+'ACP_APPLY_QORDER'			 => 'Folge', 
+'ACP_APPLY_WHATGUILD_EXPLAIN' => 'Bewerber bekommt den niedrigsten Rank falls er zur Gilde hinzugefügt wird.',
+'ACP_APPLY_TEMPLATEEDIT_SUCCESS'  	=> 'Vorlage %s wurde bearbeitet',
+'APPLY_ACP_APPTEMPLATELIST_EXPLAIN'	=> 'Das Bewerbungsformular kann entweder aufgerufen werden jeweils eine neue Nachricht erstellt wird oder direkt zur Snittstelle http://www.domain.tld/apply.php?template_id=7; im letzteren Fall kannst du zoviel Links im html einblenden wie du Vorlagen erstellst hast.',
+'TEMPLATE_ID'				=> 'Vorlagen Id', 
+'APPLY_ACP_APPTEMPLATELIST' => 'Vorlagen', 
+
+/***** ACP templatelines *****/
+'APPLY_ACP_TEMPLATELINES'   => 'Vorlagenlinien', 
+'APPLY_CHGCHAR_EXPLAIN' 	=> 'Wähle zwischen Spiel, Region, Realm, Namen, Klasse, Rasse, und Genus',
+'APPLY_ACP_CHARNAME' 	=> 'Charaktername',
+'APPLY_ACP_REALM' 		=> 'Server',
+'APPLY_ACP_REGION' 		=> 'Region',
+'APPLY_GAME' 			=> 'Spiel, Rasse, Klasse',
+'APPLY_REGION' 			=> 'Region',
+'APPLY_NAME' 			=> ' Charaktername: ',
+'APPLY_LEVEL'  			=> 'Level: ',
+'APPLY_CLASS'  			=> 'Klasse: ',
+'APPLY_RACE'  			=> 'Rasse: ',
+'APPLY_TALENT'  		=> 'Talente: ',
+'APPLY_PROFF'  			=>  'Berufe: ',
+'APPLY_GENDER'  		=>  'Genus',
+'EU'  =>  'Europa',
+'US'  =>  'Amerika',
+'KR'  =>  'Korea',
+'TW'  =>  'Taiwan',
+'CN'  =>  'China',
+'SEA'  => 'Oceaniën',
+
+/***** Questionnaire ******/
+'APPLY_MENU' => 'Bewerbungs-Formular',
 'APPLY_TITLE' => 'Bewerbungs-Formular',
 'APPLY_INFO' => '[size=150]Willkommen und schön, dass du dich entschieden hast, bei uns ein neues zu Hause für deinen Charakter zu suchen. 
 Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gib deinen Charakternamen exakt an.[/size]  ',
@@ -96,6 +133,17 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 
 'ACP_DKP_APPLY_EXPLAIN'  	=> 'Hier kannst du alle Einstellungen zum Bewerbungsformular vornehmen.',
 'APPLY_ACP_APPTEMPLATENEW'  => 'Bewerbungsvorlage für neue Frage', 
+'MANDATORY'	=> '*',	
+'APPLY_QUESTION'  => 'Frage ',
+'APPLY_ANSWER'  => 'Antwort ',
+'TEMPLATE'	=> 'Vorlage', 
+'CONFIRM_DELETE_TEMPLATE'	=> 'Bitte bestätige die Löschung von Vorlage %s. ', 
+'ALERT_TEMPLATENAME_EMPTY'	=> 'Name der Vorlage kann nicht leer sein',
+'ALERT_NOTEMPLATE'	=> 'Keine Vorlagen gefunden',
+'ALERT_NOQUESTIONS'	=> 'Keine Fragen gefunden für Vorlage %s',
+'APPLY_ACP_APPTEMPLATELINES'  => 'Vorlagenlinien',
+
+/***** ACP Armory settings *****/
 'APPLY_CHGMAND' 			=> 'Ändere bestehende Fragen hier. ',
 'APPLY_CHGMAND_EXPLAIN' 	=> 'Ändere die Pflichtprüfung, Reihenfolge, Frage und Art der Eingabe. Grenze verschiedene Optionen durch Komma "," ohne Leerzeichen voneinander ab. Die ersten beiden Fragen sind reserviert.',
 'APPLY_ACP_NEWQUESTION' 	=> 'Trage hier neue Fragen ein.',
@@ -106,12 +154,14 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'APPLY_ACP_SELECTBOX' 		=> 'Auswahlbox (selectbox)',
 'APPLY_ACP_RADIOBOX' 		=> 'Auswahlknöpfe (radiobutton)',
 'APPLY_ACP_CHECKBOX' 		=> 'Kontrollkästchen (checkbox)',
+'APPLY_ACP_TITLE'			=> 'Titel', 
 
 //warnings
-'APPLY_ACP_RETURN' 		=> '<h3>Zurück zur Bewerbungskonfiguration.</h3>',
+'APPLY_ACP_RETURN' 			=> '<h3>Zurück zur Bewerbungskonfiguration.</h3>',
 'APPLY_ACP_REALMBLANKWARN' 	=> 'Server Feld darf nicht leer sein.', 
 'APPLY_ACP_SETTINGSAVED' 	=> 'allgemeine Bewerbungseinstellungen gespeichert',
-'APPLY_NO_GUILD'		=> 'keine Gilde', 
+'APPLY_NO_GUILD'			=> 'keine Gilde', 
+
 //upd
 'APPLY_ACP_TWOREALM' 		=> 'Du kannst keine 2 Server oder Charakternamen einrichten.', 
 'APPLY_ACP_QUESTUPD' 		=> 'Bewerbungsfragen aktualisiert',
@@ -130,6 +180,7 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'APPLY_FORMCOLOR'			=> 'Fragebogenfarbe',
 'APPLY_POSTCOLOR'			=> 'Farben für Fragebogen und Bewerbungsbeitrage',
 'APPLY_POSTCOLOR_EXPLAIN' 	=> 'Farben angezeigt im Fragebogen und in den Beitragen. Wenn du einen eher dunkler Style gebrauchst, kann hier eine Kontrastierende Farbe gewählt werden.',
+'APPLY_POSTANSWERCOLOR_EXPLAIN' 	=> 'Farben der Bewerbungsbeitrageantworten.',
 
 /** posting template **/
 'APPLY_CHAR_OVERVIEW' 		=> 'Charakter',
@@ -145,7 +196,6 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'APPLY_ERROR_NAME'  =>  'Fehler : Name muss alphabetisch (a-zA-ZàäåâÅÂçÇéèëêïÏîÎæŒæÆÅóòÓÒöÖôÔøØüÜ sind erlaubt). ',
 'APPLY_REQUIRED_LEVEL'  => 'Level ist erforderlich. ', 
 'APPLY_REQUIRED_NAME'	=> 'Name ist erforderlich. ', 
-
 'RETURN_APPLY'  =>  'Zurück zum Fragebogen.',
 
 /** installer **/
@@ -156,33 +206,33 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'APPLY'		=> 'Bewerbe', 
 'ERROR_MINIMUM133' => 'Minimum Version benötigt ist 1.3.3',
 
-'DEFAULT_Q1' => 'Kannst du uns etwas über dich erzählen ?', 
-'DEFAULT_Q2' => 'Bitte nenne deine Alts.', 
-'DEFAULT_Q3' => 'Grund zum verlassen deiner vorherige Gilde ?', 
-'DEFAULT_Q4' => 'Was bringst du uns und weshalb sollten wir dir einladen ?', 
-'DEFAULT_Q5' => 'Kommentiere deinen Charakteraufbau, Glyphs, und Ausrüstung.', 
-'DEFAULT_Q6' => 'Beschreibe deine Raiderfahrung', 
-'DEFAULT_Q7' => 'Füge ein link zur Raid logs zu.', 
-'DEFAULT_Q8' => 'Kreuze die Tage an bei welche du generell verfügbar bist', 
-'DEFAULT_Q9' => 'Bist du enverstanden mit folgende Raidzeiten 19:30 bis 23:00 Serverzeit (UTC+1) ?', 
-'DEFAULT_Q10' => 'Ist es gut genug für ein hohes FPS ? Nenne den Spec' , 
+'DEFAULT_Q1' => 'Was bringst du uns und weshalb sollten wir dir einladen ?', 
+'DEFAULT_Q2' => 'Kommentiere deinen Charakteraufbau, Glyphs, und Ausrüstung.', 
+'DEFAULT_Q3' => 'Beschreibe deine Raiderfahrung', 
+'DEFAULT_Q4' => 'Grund zum verlassen deiner vorherige Gilde ?', 
+'DEFAULT_Q5' => 'Füge ein link zur Raid logs zu.', 
+'DEFAULT_Q6' => 'Bitte nenne deine Alts.', 
+'DEFAULT_Q7' => 'Kreuze die Tage an bei welche du generell verfügbar bist', 
+'DEFAULT_Q8' => 'Bist du enverstanden mit folgende Raidzeiten 19:30 bis 23:00 Serverzeit (UTC+1) ?', 
+'DEFAULT_Q9' => 'Ist es gut genug für ein hohes FPS ? Nenne den Spec', 
+'DEFAULT_Q10' => 'Kannst du uns etwas über dich erzählen ?' , 
 'DEFAULT_Q11' => 'Bist du mehrjärig ? Kreuz Ja oder Nein an.', 
 
-'DEFAULT_H1' => 'Informationen zur Person',  
-'DEFAULT_H2' => 'Alts',  
-'DEFAULT_H3' => 'Gildenhistorie',  
-'DEFAULT_H4' => 'Motivation',  
-'DEFAULT_H5' => 'Aufbau, Glyphs, Ausrüstung',  
-'DEFAULT_H6' => 'Raiderfahrung',  
-'DEFAULT_H7' => 'Raking und Wol Logs',  
-'DEFAULT_H8' => 'Raid Tage',  
-'DEFAULT_H9' => 'Raidzeiten',  
-'DEFAULT_H10' => 'Computer Connection info',  
+'DEFAULT_H1' => 'Motivation',  
+'DEFAULT_H2' => 'Aufbau und Ausrüstung',  
+'DEFAULT_H3' => 'Raiderfahrung',  
+'DEFAULT_H4' => 'Gildenhistorie',  
+'DEFAULT_H5' => 'Ranking und Wol Logs',  
+'DEFAULT_H6' => 'Alts',  
+'DEFAULT_H7' => 'Raid Tage',  
+'DEFAULT_H8' => 'Raidzeiten',  
+'DEFAULT_H9' => 'Computer Connection info',  
+'DEFAULT_H10' => 'Informationen zur Person',  
 'DEFAULT_H11' => 'Alter',  
 'DEFAULT_O8' => 'montag,dienstag,mittwoch,donnerstag,freitag,samstag,sonntag',  
 'DEFAULT_O11' => 'ja,nein',  
 
-'MEMBER_COMMENT' => 'Kandidat'
+'MEMBER_COMMENT' => 'Bewerber'
 ));
 
 ?>
