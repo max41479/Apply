@@ -229,6 +229,7 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 'DEFAULT_H9' => 'Computer Connection info',  
 'DEFAULT_H10' => 'Informationen zur Person',  
 'DEFAULT_H11' => 'Alter',  
+
 'DEFAULT_O8' => 'montag,dienstag,mittwoch,donnerstag,freitag,samstag,sonntag',  
 'DEFAULT_O11' => 'ja,nein',  
 

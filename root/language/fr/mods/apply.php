@@ -185,7 +185,7 @@ $lang = array_merge($lang, array(
 'DEFAULT_H7' => 'Jours de raid',  
 'DEFAULT_H8' => 'temps de raid',  
 'DEFAULT_H9' => 'Ordinateur et connection',  
-'DEFAULT_H11' => 'Informations personelles',  
+'DEFAULT_H10' => 'Informations personelles',  
 'DEFAULT_H11' => 'Age',  
 
 'DEFAULT_O8' => 'lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche',  

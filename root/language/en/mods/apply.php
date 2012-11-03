@@ -188,7 +188,7 @@ To help us with your application please answer the questions below. Enter your c
 'DEFAULT_H7' => 'Raiding Schedule',  
 'DEFAULT_H8' => 'Raid times',  
 'DEFAULT_H9' => 'Computer Specifications',  
-'DEFAULT_H11' => 'Person information',  
+'DEFAULT_H10' => 'Person information',  
 'DEFAULT_H11' => 'Age',  
 
 'DEFAULT_O8' => 'monday,tuesday,wednesday,thursday,friday,saturday,sunday',  
