@@ -183,7 +183,7 @@ To help us with your application please answer the questions below. Enter your c
 'DEFAULT_H2' => 'Build, and Gear',  
 'DEFAULT_H3' => 'Raiding Experience',  
 'DEFAULT_H4' => 'Guild history',  
-'DEFAULT_H5' => 'Ranks and WOL logs',  
+'DEFAULT_H5' => 'Ranks & logs',  
 'DEFAULT_H6' => 'Alts',  
 'DEFAULT_H7' => 'Raiding Schedule',  
 'DEFAULT_H8' => 'Raid times',  
