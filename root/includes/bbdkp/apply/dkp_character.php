@@ -3,10 +3,10 @@
 * bbdkp Apply core class
 *
 * @package bbDkp.includes
-* @version $Id$
 * @copyright (c) 2010 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Kapli, Malfate, Sajaki, Blazeflack, Twizted, Ethereal
+* @version 1.4
 *
 *
 **/

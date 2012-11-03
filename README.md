@@ -31,7 +31,7 @@ Apply is the same as [Appforms](https://github.com/Sajaki/Appforms) but with add
 
 ## current
 
-v1.3.8 (dev)
+v1.3.8
 
 ## community
 

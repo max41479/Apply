@@ -3,7 +3,7 @@
 * Apply Installer
 * Powered by bbDkp (c) 2009 www.bbdkp.com
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.3.8
+* @version 1.4
 *
 */
 
@@ -374,7 +374,7 @@ $versions = array(
 			
 	),		
 
-	'1.3.8' => array(
+	'1.4' => array(
 		'module_add' => array(
 				array('acp', 'ACP_DKP_MEMBER', array(
 					'module_basename'	=> 'dkp_apply',
@@ -504,7 +504,7 @@ function check_oldversion()
 
 /**
  * version 1.3.6 : adds a new double pk to template table
- * version 1.3.8 : install one header per template
+ * version 1.4 : install one header per template
  */
 function tableupd($action, $version)
 {
@@ -522,7 +522,7 @@ function tableupd($action, $version)
 					// make new unique composite key
 					$db->sql_query('CREATE UNIQUE INDEX template ON ' . $table_prefix . 'bbdkp_apptemplate (template_id, lineid) ');
 					break;
-				case '1.3.8':
+				case '1.4':
 					
 					$sql='SELECT * FROM ' . $table_prefix . 'bbdkp_apphdr'; 
 					$result = $db->sql_query($sql);

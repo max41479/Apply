@@ -5,7 +5,7 @@
 * @package bbDkp
 * @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.3.8
+* @version 1.4
 * 
 */
  
