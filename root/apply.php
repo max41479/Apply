@@ -6,7 +6,7 @@
 * @copyright (c) 2009 bbDkp https://github.com/bbDKP/Apply
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Kapli, Malfate, Sajaki, Blazeflack, Twizted
-* @version 1.3.8
+* @version 1.4
 */
 
 
@@ -29,8 +29,9 @@ $error = array();
 $current_time = $user->time_now; 
 $user->setup(array('posting', 'mcp', 'viewtopic', 'mods/apply', 'mods/dkp_common', 'mods/dkp_admin'), false);
 
-// set apply template id from $_GET: 
-$template_id = request_var('template_id', 0);
+// set apply template id from $_GET, orelse from POST
+$template_id = request_var ( 'template_id', request_var ( 'apptemplate_id_hidden', 0 ));
+
 if($template_id == 0)
 {
 	//no parameters passed... go find the nearest template
@@ -91,7 +92,7 @@ if ($submit)
 	}
 	
 	//check if user forgot to enter a required field other than those covered with js
-	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . " where mandatory = 'True' ORDER BY qorder   ";
+	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . " WHERE mandatory = 'True' AND template_id = " . $template_id . " ORDER BY qorder   ";
 	$result = $db->sql_query_limit($sql, 100, 1);
 	while ( $row = $db->sql_fetchrow($result))
 	{
@@ -396,7 +397,8 @@ function fill_application_form($form_key, $post_data, $submit, $error, $captcha,
 	
 	// assign global template vars to questionnaire
 	$template->assign_vars(array(
-		'WELCOME_MSG'			=> $welcome_message,	
+		'TEMPLATE_ID'			=> $template_id,
+		'WELCOME_MSG'			=> $welcome_message,
 		'MALE_CHECKED'			=> ' checked="checked"',
 		'L_POST_A'				=> $page_title,
 		'ERROR'					=> (sizeof($error)) ? implode('<br />', $error) : '',
