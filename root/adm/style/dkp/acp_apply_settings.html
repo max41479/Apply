@@ -117,6 +117,11 @@ function check_addtemplate()
 
 <input type="hidden" name="apptemplate_id_hidden" value="{TEMPLATE_ID}" />
 
+<select name="applytemplate_id" id="applytemplate_id" class="input" onchange="javascript:form.submit();" >
+<!-- BEGIN apptemplatelist -->
+<option value="{apptemplatelist.ID}" {apptemplatelist.SELECTED} >{apptemplatelist.TEMPLATE_NAME}</option><!-- END apptemplatelist -->
+</select>
+
 <dl>
 	<dt style= "width: 100%"><label>{L_APPLY_CHGMAND}</label><br/>{L_APPLY_CHGMAND_EXPLAIN}{L_APPLY_CHGCHAR_EXPLAIN}</dt>
 </dl>
