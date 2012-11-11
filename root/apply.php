@@ -746,76 +746,6 @@ function build_candidate(dkp_character &$candidate, apply_post &$apply_post )
 
 }
 
-/**
- * registers a bbDKP character
- *
- * @param dkp_character $candidate
- */
-function register_bbdkp(dkp_character $candidate)
-{
-	global $db, $auth, $user, $config, $phpbb_root_path, $phpEx;
-
-	// check if user exceeded allowed character count, to prevent alt spamming
-	$sql = 'SELECT count(*) as charcount
-			FROM ' . MEMBER_LIST_TABLE . '
-			WHERE phpbb_user_id = ' . (int) $user->data['user_id'];
-	$result = $db->sql_query($sql);
-	$countc = $db->sql_fetchfield('charcount');
-	$db->sql_freeresult($result);
-	if ($countc >= $config['bbdkp_maxchars'])
-	{
-		//do not register this new alt...
-		return;
-	}
-
-	// check if membername exists
-	$sql = 'SELECT count(*) as memberexists
-			FROM ' . MEMBER_LIST_TABLE . "
-			WHERE ucase(member_name)= ucase('" . $db->sql_escape($candidate->name) . "')";
-	$result = $db->sql_query($sql);
-	$countm = $db->sql_fetchfield('memberexists');
-	$db->sql_freeresult($result);
-	if ($countm != 0)
-	{
-		// don't add it to the roster
-		// no alert
-		//trigger_error($user->lang['ERROR_MEMBEREXIST'], E_USER_WARNING);
-		return;
-	}
-
-	// add the char
-	if (! class_exists ( 'acp_dkp_mm' ))
-	{
-		include ($phpbb_root_path . 'includes/acp/acp_dkp_mm.' . $phpEx);
-	}
-	$acp_dkp_mm = new acp_dkp_mm ( );
-
-	$boardtime = getdate(time() + $user->timezone + $user->dst - date('Z'));
-	$jointime = $boardtime[0];
-	
-	$member_id = $acp_dkp_mm->insertnewmember(
-			$candidate->name,
-		 1,
-			$candidate->level,
-			$candidate->raceid,
-			$candidate->classid,
-			$candidate->guildrank,
-			$user->lang['MEMBER_COMMENT'],
-			$jointime,
-			0,
-			$candidate->guild_id,
-			$candidate->genderid,
-			0,
-			' ',
-			' ',
-			$candidate->realm,
-			$candidate->game,
-			$user->data['user_id']
-	);
-
-	return $member_id;
-
-}
 
 
 /**
@@ -868,12 +798,8 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 		switch ($row['type'])
 		{
 			case 'title':
-			
-				$apply_post->message .= '
-
-[color=#FFF][size=150][b]' . strtoupper($row['header']) . ' [/b][/size][/color]
-			
-';
+					
+				$apply_post->message .= $newline . '[color=#FFF][size=150][b]' . strtoupper($row['header']) . ' [/b][/size][/color]' . $newline;
 				break;
 					
 			case 'charname':
@@ -884,12 +810,12 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 						//display portrait image
 						$apply_post->message .= '[img]'. $candidate->portraitimg .'[/img]';
 					}
-					
+						
 					if($candidate->race_image_exists )
 					{
 						$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
 					}
-					
+						
 					if($candidate->class_image_exists )
 					{
 						$apply_post->message .= '[img]' .$candidate->class_image  . '[/img]';
@@ -899,8 +825,8 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 					{
 						$apply_post->message .= $newline .'[size=150][url=' . $candidate->url  . '][b][color='. $candidate->class_color .']'. $candidate->name . '[/color][/b][/url][/size]';
 						$apply_post->message .= $newline . '[color='. $candidate->class_color .']';
-						$apply_post->message .= $candidate->level . ' '; 
-						$apply_post->message .= $candidate->race . ' ';  
+						$apply_post->message .= $candidate->level . ' ';
+						$apply_post->message .= $candidate->race . ' ';
 						$apply_post->message .= $candidate->talent1['role'] . ' ' . $candidate->talent1['spec'] . ' ';
 						$apply_post->message .= $candidate->class . ' ';
 						$apply_post->message .= '[/color] ' ;
@@ -908,21 +834,21 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 						$apply_post->message .= $candidate->region . '/' . $candidate->realm;
 						$apply_post->message .= $newline . 'Guild: ' . $candidate->guild;
 						$apply_post->message .= '[/color]';
-						
-						$apply_post->message .= $newline .$newline .'[color=#FFF][size=120][b]Stats[/b][/size][/color]'; 
-						
+
+						$apply_post->message .= $newline .$newline .'[color=#FFF][size=120][b]Stats[/b][/size][/color]';
+
 						$apply_post->message .= '[color='. $apply_post->answercolor .']';
-						
-						$apply_post->message .= $newline . 'Achievement points: [size=110]' . $candidate->achievements . '[/size]'; 
-						
-						$apply_post->message .= $newline . 'Average Ilvl: ' . $candidate->averageItemLevel; 
+
+						$apply_post->message .= $newline . 'Achievement points: [size=110]' . $candidate->achievements . '[/size]';
+
+						$apply_post->message .= $newline . 'Average Ilvl: ' . $candidate->averageItemLevel;
 						$apply_post->message .= $newline . 'Average equipped Ilvl: ' . $candidate->averageItemLevelEquipped;
-						
+
 						$apply_post->message .= $newline . 'Health: ' . $candidate->health;
-						
+
 						// mastery
 						$apply_post->message .= $newline . 'Mastery: ' . $candidate->mastery . ', Rating ' . $candidate->masteryRating  ;
-						
+
 						switch ($candidate->class)
 						{
 							case 'Druid':
@@ -931,25 +857,25 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 							case 'Priest':
 							case 'Warlock':
 								// this is spellpower, maximum mana
-							$apply_post->message .= $newline . 'Mana Pool: ' . $candidate->power;
-							$apply_post->message .= $newline . 'SpellPower: ' . $candidate->spellPower;
+								$apply_post->message .= $newline . 'Mana Pool: ' . $candidate->power;
+								$apply_post->message .= $newline . 'SpellPower: ' . $candidate->spellPower;
 						}
-						
-						
+
+
 						switch ($candidate->class)
 						{
 							case 'Druid':
 							case 'Mage':
 							case 'Paladin':
 							case 'Priest':
-							case 'Shaman':								
+							case 'Shaman':
 							case 'Warlock':
 								// intellect
 								$apply_post->message .= $newline . 'Intellect: ' . $candidate->int;
 									
 						}
-						
-						 
+
+							
 						switch ($candidate->class)
 						{
 							case 'Druid':
@@ -962,11 +888,11 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 						switch ($candidate->class)
 						{
 							case 'Warrior':
-							case 'Paladin':								
+							case 'Paladin':
 							case 'Death Knight':
 								$apply_post->message .= $newline . 'Strength: ' . $candidate->str;
 						}
-						
+
 						switch ($candidate->class)
 						{
 							case 'Hunter':
@@ -976,9 +902,9 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 							case 'Monk':
 								$apply_post->message .= $newline . 'Agility: ' . $candidate->agi;
 						}
-						
+
 						$apply_post->message .= $newline . 'Stamina: ' . $candidate->sta;
-						
+
 						switch ($candidate->talent1['role'])
 						{
 							case 'Defense':
@@ -988,60 +914,58 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 								$apply_post->message .= $newline . 'Block: ' . $candidate->block. ', Rating: '. $candidate->blockRating;
 								break;
 						}
-						
+
 						$apply_post->message .= $newline . 'Hit: ' . $candidate->hitRating . ', Pct: ' . $candidate->hitPercent;
 						$apply_post->message .= $newline . 'Expertise: ' . $candidate->expertiseRating;
 						$apply_post->message .= $newline . 'Crit: ' . $candidate->crit . ', Rating: '. $candidate->critRating ;
 						$apply_post->message .= $newline . 'Haste: ' . $candidate->hasteRating;
-						
+
 						$apply_post->message .= '[/color]';
-						
-						
+
+
 					}
 					else
 					{
-										
-						$apply_post->message .= '[size=120][b]';
-						
-						if($candidate->class_color_exists)
-						{
-							$apply_post->message .= '[color='. $candidate->class_color .']'; 
-						}	
-							
-						$apply_post->message .=  $candidate->name; 
-						if($candidate->class_color_exists)
-						{
-							$apply_post->message . '[/color]'; 
-						}
-						
-						$apply_post->message .=  '[/b][/size]'; 
+
+						$apply_post->message .= $newline . '[size=150][b]';
 
 						if($candidate->class_color_exists)
 						{
-							$apply_post->message .= '[color='. $candidate->class_color .']'; 
+							$apply_post->message .= '[color='. $candidate->class_color .']';
 						}
 						else
 						{
-							
 							$apply_post->message .= '[color='. $apply_post->answercolor .']';
 						}
-						
+							
+						$apply_post->message .=  $candidate->name;
+
+						$apply_post->message .= '[/color][/b][/size]';
+
+						if($candidate->class_color_exists)
+						{
+							$apply_post->message .= $newline . '[color='. $candidate->class_color .']';
+						}
+						else
+						{
+							$apply_post->message .= $newline . '[color='. $apply_post->answercolor .']';
+						}
+
 						$apply_post->message .= $candidate->level . ' ';
 						$apply_post->message .= $candidate->race . ' ';
 						$apply_post->message .= $candidate->class . ' ';
-						if($candidate->class_color_exists)
-						{
-							$apply_post->message .= '[/color]'; 
-						}
-						$apply_post->message .= $newline . $candidate->region . '/' . $candidate->realm;
-						
+						$apply_post->message .= $newline . $candidate->realm;
+						$apply_post->message .= '[/color]';
+							
+
+
 					}
-					
-					
+						
+						
 				}
 				break;
 
-				
+
 			case 'Checkboxes':
 				if(isset($_POST['templatefield_' . $row['qorder']]) )
 				{
@@ -1052,10 +976,12 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 					if((int) $row['showquestion'] == 1)
 					{
 						$apply_post->message .= '[size=100][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
-						$apply_post->message .= '<br />';
+						$apply_post->message .= $newline;
 					}
 
 					$checkboxes = utf8_normalize_nfc( request_var('templatefield_' . $row['qorder'], array(0 => '') , true));
+						
+					$apply_post->message .= '[color='. $apply_post->answercolor .']';
 					foreach($checkboxes as $value)
 					{
 						$apply_post->message .= $value;
@@ -1065,9 +991,9 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 						}
 						$cb_count++;
 					}
-					$apply_post->message .= '
-							
-							';
+					$apply_post->message .= '[/color]';
+					$apply_post->message .= $newline . $newline;
+						
 				}
 				break;
 			case 'Inputbox':
@@ -1138,7 +1064,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	$post_url = submit_post('post', $post_subj, $user->data['username'], POST_NORMAL, $poll, $data);
 
 	$redirect_url = $post_url;
-		
+
 	if ($config['enable_post_confirm'] && (isset($captcha) && $captcha->is_solved() === true))
 	{
 		$captcha->reset();
@@ -1151,6 +1077,77 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	$message = $user->lang[$message] . '<br /><br />' . sprintf($user->lang['VIEW_MESSAGE'], '<a href="' . $redirect_url . '">', '</a>');
 	$message .= '<br /><br />' . sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $data['forum_id']) . '">', '</a>');
 	trigger_error($message);
+
+}
+
+/**
+ * registers a bbDKP character
+ *
+ * @param dkp_character $candidate
+ */
+function register_bbdkp(dkp_character $candidate)
+{
+	global $db, $auth, $user, $config, $phpbb_root_path, $phpEx;
+
+	// check if user exceeded allowed character count, to prevent alt spamming
+	$sql = 'SELECT count(*) as charcount
+			FROM ' . MEMBER_LIST_TABLE . '
+			WHERE phpbb_user_id = ' . (int) $user->data['user_id'];
+	$result = $db->sql_query($sql);
+	$countc = $db->sql_fetchfield('charcount');
+	$db->sql_freeresult($result);
+	if ($countc >= $config['bbdkp_maxchars'])
+	{
+		//do not register this new alt...
+		return;
+	}
+
+	// check if membername exists
+	$sql = 'SELECT count(*) as memberexists
+			FROM ' . MEMBER_LIST_TABLE . "
+			WHERE ucase(member_name)= ucase('" . $db->sql_escape($candidate->name) . "')";
+	$result = $db->sql_query($sql);
+	$countm = $db->sql_fetchfield('memberexists');
+	$db->sql_freeresult($result);
+	if ($countm != 0)
+	{
+		// don't add it to the roster
+		// no alert
+		//trigger_error($user->lang['ERROR_MEMBEREXIST'], E_USER_WARNING);
+		return;
+	}
+
+	// add the char
+	if (! class_exists ( 'acp_dkp_mm' ))
+	{
+		include ($phpbb_root_path . 'includes/acp/acp_dkp_mm.' . $phpEx);
+	}
+	$acp_dkp_mm = new acp_dkp_mm ( );
+
+	$boardtime = getdate(time() + $user->timezone + $user->dst - date('Z'));
+	$jointime = $boardtime[0];
+	
+	$member_id = $acp_dkp_mm->insertnewmember(
+			$candidate->name,
+		 1,
+			$candidate->level,
+			$candidate->raceid,
+			$candidate->classid,
+			$candidate->guildrank,
+			$user->lang['MEMBER_COMMENT'],
+			$jointime,
+			0,
+			$candidate->guild_id,
+			$candidate->genderid,
+			0,
+			' ',
+			' ',
+			$candidate->realm,
+			$candidate->game,
+			$user->data['user_id']
+	);
+
+	return $member_id;
 
 }
 
