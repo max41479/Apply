@@ -3,7 +3,7 @@
 * Apply Installer
 * Powered by bbDkp (c) 2009 www.bbdkp.com
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.4
+* @version 1.4.1
 *
 */
 
@@ -398,7 +398,11 @@ $versions = array(
 		
 		'custom' => array( 'tableupd', 'applyupdater', 'bbdkp_caches'),
 		),		
-		
+	'1.4.1' => array( 
+	
+	     // no change in db 
+		'custom' => array( 'applyupdater', 'bbdkp_caches'),
+	),
 		
 );
 
