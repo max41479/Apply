@@ -35,10 +35,18 @@ class apply_post
  */
 class dkp_character
 {
+	
+	//image
+	public $modeltemplate; 
+	public $portraitimg;
+	
 	// character definition
+	//http://blizzard.github.com/api-wow-docs/#character-profile-api
+	
 	public $name ='';
 	public $region = '';
 	public $realm = '';
+	public $achievementPoints;
 	public $ModelViewURL;
 	public $url;
 	public $feedurl; 
@@ -49,26 +57,54 @@ class dkp_character
 	public $classid = 0;
 	public $class_image = '';
 	public $class_image_exists = '';
-	public $talents ='';
 	public $race ='';
 	public $raceid = 0;
 	public $race_image ='';
 	public $race_image_exists = '';
 	public $game ='';
-	
-	public $talent1name ='';
-	public $talent1 ='';
-	public $talent2name ='';
-	public $talent2 ='';
-	public $professions ='';
 	public $genderid = 0;
 	public $faction = 0;
+	
+	//http://blizzard.github.com/api-wow-docs/#character-profile-api/guild
 	public $guild = '';
 	public $guild_id = 0;
 	public $guildrank = 0;
+
+	//http://blizzard.github.com/api-wow-docs/#character-profile-api/items	
+	public $averageItemLevel;
+	public $averageItemLevelEquipped;
+	public $item_back = array();
+	public $item_chest = array();
+	public $item_feet = array();
+	public $item_finger1 = array();
+	public $item_finger2 = array();
+	public $item_hands = array();
+	public $item_legs = array();
+	public $item_mainHand = array();
+	public $item_neck = array();
+	public $item_shoulder = array();
+	public $item_trinket1 = array();
+	public $item_trinket2 = array();
+	public $item_waist = array();
+	public $item_wrist = array();
 	
+	//http://blizzard.github.com/api-wow-docs/#character-profile-api/professions
+	public $profession1 = array();
+	public $profession2 = array();
+	
+	//http://blizzard.github.com/api-wow-docs/#character-profile-api/talents
+	public $talent1 = array(
+		'spec'	=> '', 
+		'role'	=> '', 
+		'icon'	=> '');
+	
+	public $talent2 = array(
+			'spec'	=> '',
+			'role'	=> '',
+			'icon'	=> '');
+		
 	//stats in MOP
-	
+	//http://blizzard.github.com/api-wow-docs/#character-profile-api/stats
 	public $health= 0;
 	public $powerType= '';
 	public $power=0;
@@ -125,21 +161,6 @@ class dkp_character
 	public $rangedHitRating	=0;
 	public $pvpPower	=0.0;
 	public $pvpPowerRating	=0;
-	
-	//gear	
-	public $item = array();
-	public $achievements;
-	public $gear = array();
-	public $ilvl = array();
-	public $gems1 = array();
-	public $gems2 = array();
-	public $gems3 = array();
-	public $ench = array();
-	public $gearNameLink = array();
-	
-	//image
-	public $modeltemplate; 
-	public $portraitimg;
 	
 	
 }

@@ -562,7 +562,7 @@ function build_candidate(dkp_character &$candidate, apply_post &$apply_post )
 		// available extra fields :
 		// 'guild','stats','talents','items','reputation','titles','professions','appearance',
 		// 'companions','mounts','pets','achievements','progression','pvp','quests'
-		$params = array('guild', 'stats', 'professions');
+		$params = array('guild', 'stats', 'professions', 'items', 'progression', 'talents');
 	
 		///$params = array('guild','stats','talents','items','reputation','titles','professions');
 		$blizzard = $api->Character->getCharacter($candidate->name, $candidate->realm, $params);
@@ -592,11 +592,40 @@ function build_candidate(dkp_character &$candidate, apply_post &$apply_post )
 			$candidate->raceid = $blizzard['race'];
 			$candidate->genderid = $blizzard['gender'];
 			$candidate->achievements =$blizzard['achievementPoints']; 
-			//example  http://eu.battle.net/static-render/eu/argent-dawn/232/56689128-avatar.jpg?alt=/wow/static/images/2d/avatar/1-0.jpg
 			$candidate->portraitimg = sprintf('http://%s.battle.net/static-render/%s/%s', $candidate->region, $candidate->region, $blizzard['thumbnail']);
-			$candidate->guild = $blizzard['guild']['name'] . '@' . $blizzard['guild']['realm'];
+			//example  http://eu.battle.net/static-render/eu/argent-dawn/232/56689128-avatar.jpg?alt=/wow/static/images/2d/avatar/1-0.jpg
 			$candidate->url = sprintf('http://%s.battle.net/wow/en/', $candidate->region) . 'character/' . urlencode($candidate->realm). '/' . urlencode($candidate->name) . '/simple';
+			//guild
+			$candidate->guild = $blizzard['guild']['name'] . '@' . $blizzard['guild']['realm'];
 
+			//gear
+			$candidate->averageItemLevel = $blizzard['items']['averageItemLevel'];
+			$candidate->averageItemLevelEquipped = $blizzard['items']['averageItemLevelEquipped'];
+			$candidate->item_back= $blizzard['items']['back']['id'];
+			$candidate->item_chest= $blizzard['items']['chest']['id'];
+			$candidate->item_wrist= $blizzard['items']['wrist']['id'];
+			$candidate->item_hands= $blizzard['items']['hands']['id'];
+			$candidate->item_waist= $blizzard['items']['waist']['id'];
+			$candidate->item_legs= $blizzard['items']['legs']['id'];
+			$candidate->item_finger1= $blizzard['items']['finger1']['id'];
+			$candidate->item_finger2= $blizzard['items']['finger2']['id'];
+			$candidate->item_trinket1= $blizzard['items']['trinket1']['id'];
+			$candidate->item_trinket2= $blizzard['items']['trinket2']['id'];
+			$candidate->item_mainHand= $blizzard['items']['mainHand']['id'];
+			
+			//talents
+			$candidate->talent1['spec'] = $blizzard['talents'][0]['spec']['name'];
+			$candidate->talent1['role'] = $blizzard['talents'][0]['spec']['role'];
+			$candidate->talent2['spec'] = $blizzard['talents'][1]['spec']['name'];
+			$candidate->talent2['role'] = $blizzard['talents'][1]['spec']['role'];
+
+			//proffessions
+			$candidate->profession1['name'] = $blizzard['professions']['primary'][0]['name']; 
+			$candidate->profession1['rank'] = $blizzard['professions']['primary'][0]['rank'];
+			$candidate->profession2['name'] = $blizzard['professions']['primary'][1]['name'];
+			$candidate->profession2['rank'] = $blizzard['professions']['primary'][1]['rank'];
+						
+			//stats
 			$candidate->health= $blizzard['stats']['health'];
 			$candidate->powerType= $blizzard['stats']['powerType'];
 			$candidate->power=$blizzard['stats']['power'];
