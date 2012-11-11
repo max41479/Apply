@@ -8,13 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package   WoWAPI-PHP-SDK
+ * @package   bbDKP-WOWAPI
  * @author	  Chris Saylor
  * @author	  Daniel Cannon <daniel@danielcannon.co.uk>
  * @author	  Andy Vandenberghe <sajaki9@gmail.com> 
  * @copyright Copyright (c) 2011, Chris Saylor, Daniel Cannon,  Andy Vandenberghe
- * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link	  https://github.com/bbDKP/WoWAPI-phpBB3
+ * @license   http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link 	  http://blizzard.github.com/api-wow-docs
+ * @link	  https://github.com/bbDKP/WoWAPI
+ * @version   1.0.4 
  */
 
 
@@ -33,12 +35,15 @@ if (!defined('IN_PHPBB'))
  */
 class WowAPI 
 {
-	protected $region;
-	
-	protected $Resources_allowed = array(
+	protected $region = array(
+		'us', 'eu', 'kr', 'tw', 'cn', 'sea'
+	);
+		
+	protected $API = array(
 		'guild', 'realm', 'character'
 	);
-	
+
+
 	/**
 	 * Realm object instance
 	 *
@@ -61,25 +66,26 @@ class WowAPI
 	public $Character;
 	
 	/**
-	 * WoWApi Class. 
-	 * 
-	 * $resource, : one of : "'guild', 'realm', 'character' "
-	 * if realm then $parameters array must look like : 
-	 * $region = array ('region'  => one of 'en', 'us', 'tw', 'sea', 'kr')
+	 * WoWAPI Class constructor
 	 * 
 	 * @param string $resource, 
 	 * @param string $region
 	 * 
 	 */
-	public function __construct($resource, $region) 
+	public function __construct($API, $region) 
 	{
 		global $user, $phpEx, $phpbb_root_path; 
 		$user->add_lang ( array ('mods/wowapi'));
 		
-		// check for correct resource call
-		if (!in_array($resource, $this->Resources_allowed)) 
+		// check for correct API call
+		if (!in_array($API, $this->API)) 
 		{
-			trigger_error($user->lang['WOWAPI_RESOURCE_NOTALLOWED']);
+			trigger_error($user->lang['WOWAPI_API_NOTIMPLEMENTED']);
+		}
+		
+		if (!in_array($region, $this->region))
+		{
+			trigger_error($user->lang['WOWAPI_REGION_NOTALLOWED']);
 		}
 		
 		// Check for required extensions
@@ -95,26 +101,26 @@ class WowAPI
 		}
 		
 		
-		switch ($resource)
+		switch ($API)
 		{
 			case 'realm':
 				if (!class_exists('Realm')) 
 				{
-					require($phpbb_root_path . "includes/bbdkp/wowapi/Resource/Realm.$phpEx");
+					require($phpbb_root_path . "includes/bbdkp/wowapi/API/Realm.$phpEx");
 				}
 				$this->Realm = new Realm($region);
 				break;
 			case 'guild':
 				if (!class_exists('Guild')) 
 				{
-					require($phpbb_root_path . "includes/bbdkp/wowapi/Resource/Guild.$phpEx");
+					require($phpbb_root_path . "includes/bbdkp/wowapi/API/Guild.$phpEx");
 				}				
 				$this->Guild = new Guild($region);
 				break;
 			case 'character':
 				if (!class_exists('Character')) 
 				{
-					require($phpbb_root_path . "includes/bbdkp/wowapi/Resource/Character.$phpEx");
+					require($phpbb_root_path . "includes/bbdkp/wowapi/API/Character.$phpEx");
 				}				
 				$this->Character = new Character($region);
 				break;

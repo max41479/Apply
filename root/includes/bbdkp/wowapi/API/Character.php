@@ -7,16 +7,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package   WoWAPI-phpBB3
+ * @package   bbDKP-WOWAPI
  * @author	  Andy Vandenberghe <sajaki9@gmail.com> 
  * @copyright Copyright (c) 2011, Chris Saylor, Daniel Cannon,  Andy Vandenberghe
- * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link	  https://github.com/bbDKP/WoWAPI-PHP-SDK/
+ * @license   http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link	  https://github.com/bbDKP/WoWAPI
+ * @link 	  http://blizzard.github.com/api-wow-docs/#character-profile-api
+ * @version   1.0.4
  * 
  * 
- * http://blizzard.github.com/api-wow-docs/#id3381550
- * 
- * Profile
 
 The Character Profile API is the primary way to access character information. 
 This Character Profile API can be used to fetch a single character at a time through an 
@@ -54,7 +53,7 @@ if (!defined('IN_PHPBB'))
 
 if (!class_exists('Resource')) 
 {
-	require($phpbb_root_path . "includes/bbdkp/wowapi/Resource/Resource.$phpEx");
+	require($phpbb_root_path . "includes/bbdkp/wowapi/API/Resource.$phpEx");
 }
 
 /**
@@ -78,21 +77,23 @@ class Character extends Resource
 	+ * @var array
 	 */
 	private $extrafields = array(
-		'guild',
-		'stats',
-		'talents',
-		'items',
-		'reputation',
-		'titles',
-		'professions',
+		'achievements',
 		'appearance',
-		'companions',
+		'feed', 
+		'guild',
+		'hunterPets',
+		'items',
 		'mounts',
 		'pets',
-		'achievements',
+		'petSlots', 
+		'professions',
 		'progression',
 		'pvp',
-		'quests'
+		'quests',
+		'reputation',
+		'stats',
+		'talents',
+		'titles',
 	  );
 	  
 	/**

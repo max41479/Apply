@@ -8,13 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package   WoWAPI-PHP-SDK
+ * @package   bbDKP-WoWAPI
  * @author	  Chris Saylor
  * @author	  Daniel Cannon <daniel@danielcannon.co.uk>
  * @author	  Andy Vandenberghe <sajaki9@gmail.com> 
  * @copyright Copyright (c) 2011, Chris Saylor, Daniel Cannon,  Andy Vandenberghe
- * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link	  https://github.com/bbDKP/WoWAPI-PHP-SDK/
+ * @license   http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link	  https://github.com/bbDKP/WoWAPI
+ * @link 	  http://blizzard.github.com/api-wow-docs 
+ * @version   1.0.4
  */
 
 
@@ -36,9 +38,27 @@ if (!class_exists('Curl'))
  * 
  * @throws ResourceException If no methods are defined.
  */
-abstract class Resource 
+abstract class Resource
 {
-	const API_URI = 'http://%s.battle.net/api/wow/';
+	/**
+	 * List of region urls
+	 * @var string
+	 */
+	protected $api_url = array(
+		'eu' => 'http://eu.battle.net/api/wow/',
+		'us' => 'http://us.battle.net/api/wow/',
+		'kr' => 'http://kr.battle.net/api/wow/',
+		'tw' => 'http://tw.battle.net/api/wow/',
+		'cn' => 'http://www.battlenet.com.cn/api/wow/',
+		'sea' => 'http://sea.battle.net/api/wow/'
+	);
+	
+	/**
+	 * Battlenet regions
+	 * 
+	 * @var string
+	 */
+	public $region; 
 	
 	/**
 	 * Methods allowed by this resource (or available).
@@ -50,12 +70,12 @@ abstract class Resource
 	/**
 	 * Curl object instance.
 	 *
-	 * @var \Curl
+	 * @var Curl
 	 */
 	protected $Curl;
 	
 	/**
-	 * @param string $region Server region(`us` or `eu`)
+	 * @param string $region Server region
 	 */
 	public function __construct($region='us') 
 	{
@@ -67,6 +87,25 @@ abstract class Resource
 		}
 		$this->region = $region;
 		$this->Curl = new Curl();
+	}
+	
+	public function GetURI($region)
+	{
+		return $this->api_url[$this->region];
+	}
+	
+	/**
+	 * Returns the URI for use with the request object
+	 *
+	 * @param string $method
+	 * @return string API URI
+	 */
+	private function getResourceUri($method)
+	{
+		$uri = $this->GetURI($this->region);
+		$uri .= strtolower(get_class($this));
+		$uri .= '/'.$method;
+		return $uri;
 	}
 
 	/**
@@ -155,17 +194,5 @@ abstract class Resource
 		return $data['response'];
 	}
 
-	/**
-	 * Returns the URI for use with the request object
-	 *
-	 * @param string $method
-	 * @return string API URI
-	 */
-	private function getResourceUri($method) 
-	{
-		$uri = sprintf(self::API_URI, $this->region);
-		$uri .= strtolower(get_class($this));
-		$uri .= '/'.$method;
-		return $uri;
-	}
+	
 }

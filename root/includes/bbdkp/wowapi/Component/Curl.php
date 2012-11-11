@@ -8,13 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package   WoWAPI-PHP-SDK
+ * @package   bbDKP-WoWAPI
  * @author	  Chris Saylor
  * @author	  Daniel Cannon <daniel@danielcannon.co.uk>
  * @author	  Andy Vandenberghe <sajaki9@gmail.com> 
  * @copyright Copyright (c) 2011, Chris Saylor, Daniel Cannon,  Andy Vandenberghe
- * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link	  https://github.com/bbDKP/WoWAPI-PHP-SDK/
+ * @license   http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link	  https://github.com/bbDKP/WoWAPI
+ * @version	  1.0.4
  */
 
 

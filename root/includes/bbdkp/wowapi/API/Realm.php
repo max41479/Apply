@@ -8,15 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package   WoWAPI-PHP-SDK
+ * @package   bbDKP-WoWAPI
  * @author	  Chris Saylor
  * @author	  Daniel Cannon <daniel@danielcannon.co.uk>
  * @author	  Andy Vandenberghe <sajaki9@gmail.com> 
  * @copyright Copyright (c) 2011, Chris Saylor, Daniel Cannon,  Andy Vandenberghe
- * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link	  https://github.com/bbDKP/WoWAPI-PHP-SDK/
- * 
- * http://blizzard.github.com/api-wow-docs/#id3381933
+ * @license   http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link	  https://github.com/bbDKP/WoWAPI
+ * @link 	  http://blizzard.github.com/api-wow-docs/#realm-status-api
+ * @version   1.0.4 
  */
 
 /**
@@ -29,7 +29,7 @@ if (!defined('IN_PHPBB'))
 
 if (!class_exists('Resource')) 
 {
-	require($phpbb_root_path . "includes/bbdkp/wowapi/Resource/Resource.$phpEx");
+	require($phpbb_root_path . "includes/bbdkp/wowapi/API/Resource.$phpEx");
 }
 
 /**
