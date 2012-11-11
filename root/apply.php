@@ -595,8 +595,8 @@ function build_candidate(dkp_character &$candidate, apply_post &$apply_post )
 			//example  http://eu.battle.net/static-render/eu/argent-dawn/232/56689128-avatar.jpg?alt=/wow/static/images/2d/avatar/1-0.jpg
 			$candidate->portraitimg = sprintf('http://%s.battle.net/static-render/%s/%s', $candidate->region, $candidate->region, $blizzard['thumbnail']);
 			$candidate->guild = $blizzard['guild']['name'] . '@' . $blizzard['guild']['realm'];
-			$candidate->url = sprintf('http://%s.battle.net/wow/en/', $candidate->region) . 'character/' . $candidate->realm. '/' .$candidate->name . '/simple';
-			
+			$candidate->url = sprintf('http://%s.battle.net/wow/en/', $candidate->region) . 'character/' . urlencode($candidate->realm). '/' . urlencode($candidate->name) . '/simple';
+
 			$candidate->health= $blizzard['stats']['health'];
 			$candidate->powerType= $blizzard['stats']['powerType'];
 			$candidate->power=$blizzard['stats']['power'];
@@ -842,7 +842,7 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 					if ($candidate->game =='wow')
 					{
 						//display portrait image
-						$apply_post->message .= '[url=' . $candidate->url  . '][img]'. $candidate->portraitimg .'[/img][/url] 
+						$apply_post->message .= '[img]'. $candidate->portraitimg .'[/img]
 ';
 					}
 					
