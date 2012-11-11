@@ -6,7 +6,7 @@
 * @copyright (c) 2009 bbDkp https://github.com/bbDKP/Apply
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Kapli, Malfate, Sajaki, Blazeflack, Twizted
-* @version 1.4
+* @version 1.4.1
 */
 
 
@@ -160,7 +160,9 @@ if ($submit)
 	// check for validate name. name can only be alphanumeric without spaces or special characters
 	// this is to keep gibberish out of our dkpmember database
 	//if this preg_match returns true then there is something other than letters
-   if (preg_match('/[^a-zA-ZàäåâÅÂçÇéèëËêÊïÏîÎíÍìÌæŒæÆÅóòÓÒöÖôÔøØüÜ\s]+/', $candidate_name  ))
+   $match="/^[a-zA-Z\s,.'-\pL]+$/u";
+
+   if (!preg_match($match, $candidate_name  ))
    {
 	  $error[] = $user->lang['APPLY_ERROR_NAME']. $candidate_name . ' ';  
    }

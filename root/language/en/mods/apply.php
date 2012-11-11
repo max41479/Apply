@@ -5,7 +5,7 @@
 * @package bbDkp
 * @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.4
+* @version 1.4.1
 * 
 */
  
@@ -154,7 +154,7 @@ To help us with your application please answer the questions below. Enter your c
 %s',
 'APPLY_CHAR_BUILD' 	=> '[color=%s][u]Talent build : [/u][/color]%s',
 'APPLY_CHAR_URL' => '[color=%s][/color][url=%s]Armory Link[/url]', 
-'APPLY_ERROR_NAME'  =>  'Error : Name must be Alphabetic (a-zA-ZàäåâÅÂçÇéèëêïÏîÎæŒæÆÅóòÓÒöÖôÔøØüÜ are allowed). ',
+'APPLY_ERROR_NAME'  =>  'Error : Name must be Alphabetic. ',
 'APPLY_REQUIRED_LEVEL'  => 'Level is required. ', 
 'APPLY_REQUIRED_NAME'	=> 'Name is required. ', 
 'RETURN_APPLY'  =>  'Return to Application',

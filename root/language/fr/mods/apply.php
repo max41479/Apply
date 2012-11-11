@@ -5,7 +5,7 @@
 * @package bbDkp
 * @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.4
+* @version 1.4.1
 * 
 */
  
@@ -151,7 +151,7 @@ $lang = array_merge($lang, array(
 %s',
 'APPLY_CHAR_BUILD' 	=> '[color=%s][u]Spécialisation de talents : [/u][/color]%s',
 'APPLY_CHAR_URL' => '[color=%s][/color][url=%s]Lien Armurerie[/url]', 
-'APPLY_ERROR_NAME'  =>  'Erreur : Nom doit être alphabetique (a-zA-ZàäåâÅÂçÇéèëêïÏîÎæŒæÆÅóòÓÒöÖôÔøØüÜ sont permis). ',
+'APPLY_ERROR_NAME'  =>  'Erreur : Nom doit être alphabetique. ',
 'APPLY_REQUIRED_LEVEL'  => 'Niveau obligatoire',  
 'APPLY_REQUIRED_NAME'	=> 'Nom obligatoire.', 
 'RETURN_APPLY'  =>  'Retourne au formulaire.',

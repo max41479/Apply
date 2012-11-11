@@ -5,7 +5,7 @@
 * @package bbDkp
 * @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.4
+* @version 1.4.1
 * @translation various authors, killerpommes
 * 
 */
@@ -193,7 +193,7 @@ Um dich bei uns zu bewerben, beantworte bitte die unten aufgeführten Fragen. Gi
 %s',
 'APPLY_CHAR_BUILD' 	=> '[color=%s][u]Talent Verteilung : [/u][/color]%s',
 'APPLY_CHAR_URL' => '[color=%s][/color][url=%s]WoW Armory Link[/url]', 
-'APPLY_ERROR_NAME'  =>  'Fehler : Name muss alphabetisch (a-zA-ZàäåâÅÂçÇéèëêïÏîÎæŒæÆÅóòÓÒöÖôÔøØüÜ sind erlaubt). ',
+'APPLY_ERROR_NAME'  =>  'Fehler : Name muss alphabetisch sein. ',
 'APPLY_REQUIRED_LEVEL'  => 'Level ist erforderlich. ', 
 'APPLY_REQUIRED_NAME'	=> 'Name ist erforderlich. ', 
 'RETURN_APPLY'  =>  'Zurück zum Fragebogen.',

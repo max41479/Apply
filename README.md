@@ -5,11 +5,10 @@
 ## about
 
 Recruitment form plugin for bbDKP
-
 - multiple bbcode blocks
 - multiple html controls: 
 	- title
-	- charactername
+	- charactername (accepts unicode names only)
 	- game, race, class, gender
 	- regio, realm
 	- textarea with bbcode
@@ -31,7 +30,7 @@ Apply is the same as [Appforms](https://github.com/Sajaki/Appforms) but with add
 
 ## current
 
-v1.4
+v1.4.1
 
 ## community
 
