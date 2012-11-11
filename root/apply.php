@@ -861,105 +861,186 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 	$sql = "SELECT * FROM " . APPTEMPLATE_TABLE . ' WHERE template_id = ' . $template_id .'  ORDER BY qorder' ;
 	$result = $db->sql_query_limit($sql, 100, 0);
 
+	$newline = '
+';
 	while ( $row = $db->sql_fetchrow($result) )
 	{
 		switch ($row['type'])
 		{
+			case 'title':
+			
+				$apply_post->message .= '
+
+[color=#FFF][size=150][b]' . strtoupper($row['header']) . ' [/b][/size][/color]
+			
+';
+				break;
+					
 			case 'charname':
 				if(isset($_POST['candidate_name']) )
 				{
 					if ($candidate->game =='wow')
 					{
 						//display portrait image
-						$apply_post->message .= '[img]'. $candidate->portraitimg .'[/img]
-';
+						$apply_post->message .= '[img]'. $candidate->portraitimg .'[/img]';
 					}
 					
-					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_NAME'] . '[/color]: ';
-					if($candidate->class_color_exists)
-					{
-						if ($candidate->game =='wow')
-						{
-							$apply_post->message .= '[b][color='. $candidate->class_color .'][url=' . $candidate->url  . ']' . $candidate->name . '[/url][/color][/b]' ;
-						}
-						else
-						{
-							$apply_post->message .= '[b][color='. $candidate->class_color .']' . $candidate->name . '[/color][/b]' ;
-						}
-						
-					}
-					else
-					{
-						$apply_post->message .= '[b]' . $candidate->name  . '[/b]' ;
-					}
-					
-					$apply_post->message .= '<br />';
-				}
-				break;
-			case 'gameraceclass':
-				if(isset($_POST['game_id']))
-				{
-					//race
-					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_RACE'] . '[/color]: ';
 					if($candidate->race_image_exists )
 					{
 						$apply_post->message .= '[img]' .$candidate->race_image . '[/img] ';
 					}
-					if($candidate->class_color_exists)
-					{
-						$apply_post->message .= ' [color='. $apply_post->questioncolor .']' . $candidate->race . '[/color]' ;
-					}
-					else
-					{
-						$apply_post->message .= $candidate->race;
-					}
-					$apply_post->message .= '<br />';
-					// class
-					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_CLASS'] . '[/color]: ';
+					
 					if($candidate->class_image_exists )
 					{
-						$apply_post->message .= '[img]' .$candidate->class_image  . '[/img] ';
+						$apply_post->message .= '[img]' .$candidate->class_image  . '[/img]';
 					}
-						
-					if($candidate->class_color_exists)
+
+					if ($candidate->game =='wow')
 					{
-						$apply_post->message .= ' [color='. $candidate->class_color .']' . $candidate->class . '[/color]' ;
+						$apply_post->message .= $newline .'[size=150][url=' . $candidate->url  . '][b][color='. $candidate->class_color .']'. $candidate->name . '[/color][/b][/url][/size]';
+						$apply_post->message .= $newline . '[color='. $candidate->class_color .']';
+						$apply_post->message .= $candidate->level . ' '; 
+						$apply_post->message .= $candidate->race . ' ';  
+						$apply_post->message .= $candidate->talent1['role'] . ' ' . $candidate->talent1['spec'] . ' ';
+						$apply_post->message .= $candidate->class . ' ';
+						$apply_post->message .= '[/color] ' ;
+						$apply_post->message .= '[color='. $apply_post->answercolor .']';
+						$apply_post->message .= $candidate->region . '/' . $candidate->realm;
+						$apply_post->message .= $newline . 'Guild: ' . $candidate->guild;
+						$apply_post->message .= '[/color]';
+						
+						$apply_post->message .= $newline .$newline .'[color=#FFF][size=120][b]Stats[/b][/size][/color]'; 
+						
+						$apply_post->message .= '[color='. $apply_post->answercolor .']';
+						
+						$apply_post->message .= $newline . 'Achievement points: [size=110]' . $candidate->achievements . '[/size]'; 
+						
+						$apply_post->message .= $newline . 'Average Ilvl: ' . $candidate->averageItemLevel; 
+						$apply_post->message .= $newline . 'Average equipped Ilvl: ' . $candidate->averageItemLevelEquipped;
+						
+						$apply_post->message .= $newline . 'Health: ' . $candidate->health;
+						
+						// mastery
+						$apply_post->message .= $newline . 'Mastery: ' . $candidate->mastery . ', Rating ' . $candidate->masteryRating  ;
+						
+						switch ($candidate->class)
+						{
+							case 'Druid':
+							case 'Mage':
+							case 'Paladin':
+							case 'Priest':
+							case 'Warlock':
+								// this is spellpower, maximum mana
+							$apply_post->message .= $newline . 'Mana Pool: ' . $candidate->power;
+							$apply_post->message .= $newline . 'SpellPower: ' . $candidate->spellPower;
+						}
+						
+						
+						switch ($candidate->class)
+						{
+							case 'Druid':
+							case 'Mage':
+							case 'Paladin':
+							case 'Priest':
+							case 'Shaman':								
+							case 'Warlock':
+								// intellect
+								$apply_post->message .= $newline . 'Intellect: ' . $candidate->int;
+									
+						}
+						
+						 
+						switch ($candidate->class)
+						{
+							case 'Druid':
+							case 'Paladin':
+							case 'Priest':
+								// Spirit
+								$apply_post->message .= $newline . 'Spirit: ' . $candidate->spr;
+						}
+
+						switch ($candidate->class)
+						{
+							case 'Warrior':
+							case 'Paladin':								
+							case 'Death Knight':
+								$apply_post->message .= $newline . 'Strength: ' . $candidate->str;
+						}
+						
+						switch ($candidate->class)
+						{
+							case 'Hunter':
+							case 'Rogue':
+							case 'Shaman':
+							case 'Druid':
+							case 'Monk':
+								$apply_post->message .= $newline . 'Agility: ' . $candidate->agi;
+						}
+						
+						$apply_post->message .= $newline . 'Stamina: ' . $candidate->sta;
+						
+						switch ($candidate->talent1['role'])
+						{
+							case 'Defense':
+								$apply_post->message .= $newline . 'Armor: ' . $candidate->armor;
+								$apply_post->message .= $newline . 'Dodge: ' . $candidate->dodge . ', Rating: '. $candidate->dodgeRating ;
+								$apply_post->message .= $newline . 'Parry: ' . $candidate->parry. ', Rating: '. $candidate->parryRating ;
+								$apply_post->message .= $newline . 'Block: ' . $candidate->block. ', Rating: '. $candidate->blockRating;
+								break;
+						}
+						
+						$apply_post->message .= $newline . 'Hit: ' . $candidate->hitRating . ', Pct: ' . $candidate->hitPercent;
+						$apply_post->message .= $newline . 'Expertise: ' . $candidate->expertiseRating;
+						$apply_post->message .= $newline . 'Crit: ' . $candidate->crit . ', Rating: '. $candidate->critRating ;
+						$apply_post->message .= $newline . 'Haste: ' . $candidate->hasteRating;
+						
+						$apply_post->message .= '[/color]';
+						
+						
 					}
 					else
 					{
-						$apply_post->message .= $candidate->class;
-					}
+										
+						$apply_post->message .= '[size=120][b]';
 						
-					$apply_post->message .= '<br />';
-				}
-				break;
+						if($candidate->class_color_exists)
+						{
+							$apply_post->message .= '[color='. $candidate->class_color .']'; 
+						}	
+							
+						$apply_post->message .=  $candidate->name; 
+						if($candidate->class_color_exists)
+						{
+							$apply_post->message . '[/color]'; 
+						}
+						
+						$apply_post->message .=  '[/b][/size]'; 
 
-			case 'regionrealm':
-				if(isset($_POST['candidate_realm']))
-				{
-					//Realm
-					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_ACP_REALM'] . '[/color]: ' . '[color='. $apply_post->answercolor .']' . $candidate->realm . '[/color]' ;
-					$apply_post->message .= '<br />';
-				}
-				break;
-
-			case 'level':
-				if(isset($_POST['candidate_level']))
-				{
-					// level
-					$apply_post->message .= '[color='. $apply_post->questioncolor .']' . $user->lang['APPLY_LEVEL'] . '[/color]: ' . '[color='. $apply_post->answercolor .']' . $candidate->level . '[/color]' ;
-					$apply_post->message .= '<br />';
-				}
-				break;
-			case 'gender':
+						if($candidate->class_color_exists)
+						{
+							$apply_post->message .= '[color='. $candidate->class_color .']'; 
+						}
+						else
+						{
+							
+							$apply_post->message .= '[color='. $apply_post->answercolor .']';
+						}
+						
+						$apply_post->message .= $candidate->level . ' ';
+						$apply_post->message .= $candidate->race . ' ';
+						$apply_post->message .= $candidate->class . ' ';
+						if($candidate->class_color_exists)
+						{
+							$apply_post->message .= '[/color]'; 
+						}
+						$apply_post->message .= $newline . $candidate->region . '/' . $candidate->realm;
+						
+					}
 					
+					
+				}
 				break;
-			case 'title':
-				$apply_post->message .= '
-[color=#00CC55][size=200][b]' . strtoupper($row['header']) . ' [/b][/size][/color]
 
-';
-				break;
 				
 			case 'Checkboxes':
 				if(isset($_POST['templatefield_' . $row['qorder']]) )
@@ -1000,10 +1081,12 @@ function make_apply_posting($post_data, $current_time, $candidate_name, $templat
 					if((int) $row['showquestion'] == 1)
 					{
 						$apply_post->message .= '[size=100][color='. $apply_post->questioncolor .'][b]' . $row['question'] . ': [/b][/color][/size]';
-						$apply_post->message .= '<br />';
+						$apply_post->message .= $newline;
 					}
+					$apply_post->message .= '[color='. $apply_post->answercolor .']';
 					$apply_post->message .=	$fieldcontents;
-					$apply_post->message .= '<br /><br />';
+					$apply_post->message .= '[/color]';
+					$apply_post->message .= $newline . $newline;
 				}
 				break;
 

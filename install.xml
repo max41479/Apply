@@ -78,6 +78,8 @@
 				<rev-version>1.4.1</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[[fix] now accepts unicode names]]></change>
+					<change><![CDATA[[new] improved posting layout]]></change>					
+					<change><![CDATA[[new] WoW character statistics from Battle.NET]]></change>					
 				</changelog>
 			</entry>	
 			<entry>
